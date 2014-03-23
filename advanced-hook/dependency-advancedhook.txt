@@ -1,0 +1,3 @@
+To protect the authors and the project from copyright claims, this dependency is not included with any form of release of this project, this dependency can be download from the authors source:
+
+	AdvancedHook.dll (look in http://gta4-mods.com/script/indicator-lights-script-v1-f15265)

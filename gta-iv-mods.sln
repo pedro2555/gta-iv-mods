@@ -1,0 +1,27 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "scripthook-net", "scripthook-net", "{FFE772BE-11B0-4023-85B6-717815B80FE3}"
+	ProjectSection(SolutionItems) = preProject
+		scripthook-net\dependency-scripthook.txt = scripthook-net\dependency-scripthook.txt
+		scripthook-net\GTA IV ScriptHook.Net Documentation.chm = scripthook-net\GTA IV ScriptHook.Net Documentation.chm
+		scripthook-net\ScriptHookDotNet.dll = scripthook-net\ScriptHookDotNet.dll
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{4844A034-37B6-4A99-8AC7-083D84090129}"
+	ProjectSection(SolutionItems) = preProject
+		LICENSE.txt = LICENSE.txt
+		README.txt = README.txt
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "advanced-hook", "advanced-hook", "{69E99D95-EA13-4D2A-98ED-10BF7E310867}"
+	ProjectSection(SolutionItems) = preProject
+		advanced-hook\AdvancedHook.dll = advanced-hook\AdvancedHook.dll
+		advanced-hook\dependency-advancedhook.txt = advanced-hook\dependency-advancedhook.txt
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
