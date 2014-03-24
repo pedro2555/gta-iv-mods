@@ -1,4 +1,5 @@
 Thumbs.db
+*.chm
 ScriptHookDotNet.dll
 AdvancedHook.dll
 *.obj
