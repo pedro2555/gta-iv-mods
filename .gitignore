@@ -1,4 +1,5 @@
 Thumbs.db
+*.zip
 *.chm
 ScriptHookDotNet.dll
 AdvancedHook.dll

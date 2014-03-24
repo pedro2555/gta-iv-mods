@@ -9,7 +9,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>ultimate_indicator_script</RootNamespace>
-    <AssemblyName>script_name.net</AssemblyName>
+    <AssemblyName>ultimate-indicator-script.net</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -31,14 +31,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AdvancedHook, Version=0.0.0.0, Culture=neutral, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>.\AdvancedHook.dll</HintPath>
+    <Reference Include="AdvancedHook">
+      <HintPath>..\advanced-hook\AdvancedHook.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="ScriptHookDotNet, Version=0.0.0.0, Culture=neutral, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>.\ScriptHookDotNet.dll</HintPath>
+    <Reference Include="ScriptHookDotNet">
+      <HintPath>..\scripthook-net\ScriptHookDotNet.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />
@@ -55,18 +53,14 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="AdvancedHook.dll" />
     <None Include="LICENSE.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="README.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Development data\AssemblyInfo.tmpl" />
-    <None Include="Development data\ScriptHookDotNet.dll" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Development data\GTA IV ScriptHook.Net Documentation.chm" />
     <None Include="ultimate-indicator-script.ini">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -74,11 +68,16 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <UseHostCompilerIfAvailable>False</UseHostCompilerIfAvailable>
-    <PostBuildEvent>xcopy "$(ProjectDir)$(OutDir)*.*" "D:\Program Files\Rockstar Games\Grand Theft Auto IV\scripts\*.*" /Y</PostBuildEvent>
+    <PostBuildEvent>cd "$(ProjectDir)"
+git log --pretty=format:%25%25H -1 &gt; version
+set /p hash= &lt; version
+del version
+cd "$(TargetDir)"
+"C:\Program Files\7-Zip\7z.exe" a -tzip -i!*.dll -i!*.ini -i!README.txt -i!LICENSE.txt ultimate-overtaking-fix-%25hash%25.zip</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PreBuildEvent>cd C:\Program Files\TortoiseSVN\bin\
-SubWCRev "$(SolutionDir)\" "$(ProjectDir)Development data\AssemblyInfo.tmpl" "$(ProjectDir)Properties\AssemblyInfo.cs"</PreBuildEvent>
+    <PreBuildEvent>
+    </PreBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
