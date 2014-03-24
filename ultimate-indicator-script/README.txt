@@ -6,7 +6,7 @@ This mod requires files by other authors:
 	Scripthook v1.7.1.7b installed
 	AdvancedHook.dll in your game directory
 
-The mod runs by it's own, no need to start it or stop it. It simply keeps the car behind you stopped for as long as your car is stopped.
+This mod provides 
 
 Check http://github.com/pedro2555/gta-iv-mods/releases for newer versions and other mods.
 
