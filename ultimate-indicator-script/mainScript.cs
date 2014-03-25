@@ -253,7 +253,7 @@ namespace ultimate_indicator_script
         {
             try
             {
-                if ((GetLockerState(veh) && GetLockerGuid(veh) == senderGuid) || GetLockerState(veh))
+                if ((GetLockerState(veh) && GetLockerGuid(veh) == senderGuid) || !GetLockerState(veh))
                 {
                     AVehicle aVehicle = TypeConverter.ConvertToAVehicle(veh);
                     MethodInfo method = aVehicle.GetType().GetMethod("IndicatorLight");
@@ -314,7 +314,7 @@ namespace ultimate_indicator_script
 		{
 			try
             {
-                if ((GetLockerState(veh) && GetLockerGuid(veh) == senderGuid) || GetLockerState(veh))
+                if ((GetLockerState(veh) && GetLockerGuid(veh) == senderGuid) || !GetLockerState(veh))
                 {
                     AVehicle aVehicle = TypeConverter.ConvertToAVehicle(veh);
                     MethodInfo method = aVehicle.GetType().GetMethod("IndicatorLight");
@@ -375,7 +375,7 @@ namespace ultimate_indicator_script
 		{
 			try
 			{
-                if ((GetLockerState(veh) && GetLockerGuid(veh) == senderGuid) || GetLockerState(veh))
+                if ((GetLockerState(veh) && GetLockerGuid(veh) == senderGuid) || !GetLockerState(veh))
                 {
                     AVehicle aVehicle = TypeConverter.ConvertToAVehicle(veh);
                     MethodInfo method = aVehicle.GetType().GetMethod("IndicatorLight");
@@ -436,7 +436,7 @@ namespace ultimate_indicator_script
 		{
 			try
 			{
-                if ((GetLockerState(veh) && GetLockerGuid(veh) == senderGuid) || GetLockerState(veh))
+                if ((GetLockerState(veh) && GetLockerGuid(veh) == senderGuid) || !GetLockerState(veh))
                 {
                     AVehicle aVehicle = TypeConverter.ConvertToAVehicle(veh);
                     MethodInfo method = aVehicle.GetType().GetMethod("IndicatorLight");
