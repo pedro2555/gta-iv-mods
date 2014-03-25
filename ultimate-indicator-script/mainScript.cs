@@ -12,7 +12,9 @@ namespace ultimate_indicator_script
     public class mainScript : Script
     {
         #region Properties
-
+        /// <summary>
+        /// Defines if the help message should be displayed
+        /// </summary>
         internal bool showHelpMessage;
 
         internal static readonly string scriptName = "ultimate-indicator-script";
@@ -23,6 +25,21 @@ namespace ultimate_indicator_script
         /// </summary>
         public mainScript()
         {
+            // Defauld script GUID
+            GUID = new Guid("775df3cb-41c0-45f7-bd8f-d989853c838b");
+            // Bind of external methods
+            //
+            //  Example of usage: 
+            //
+            //      SendScriptCommand(new Guid("775df3cb-41c0-45f7-bd8f-d989853c838b"), "HazardsOn", Player.Character.CurrentVehicle);
+            //      
+            //      Should turn the hazard lights for the vehicle the player is driving
+            //
+            BindScriptCommand("ResetAll", new ScriptCommandDelegate(ResetAll));
+            BindScriptCommand("HazardsOn", new ScriptCommandDelegate(HazardsOn));
+            BindScriptCommand("TurnLeft", new ScriptCommandDelegate(TurnLeft));
+            BindScriptCommand("TurnRight", new ScriptCommandDelegate(TurnRight));
+
             showHelpMessage = Settings.GetValueBool("HELPMSG", "OPTIONS", true);
 
             if (Settings.GetValueString("MODE", "KEYS", "keyboard").ToLower().Trim() != "gamepad")
@@ -94,6 +111,7 @@ namespace ultimate_indicator_script
         }
 
         #region Methods
+
 
         /// <summary>
         /// Binds keyboard keys to indicator functions
@@ -190,10 +208,46 @@ namespace ultimate_indicator_script
         /// </summary>
         /// <param name="veh"></param>
         private void ResetAll(Vehicle veh)
+        {
+            try
+            {
+                AVehicle aVehicle = TypeConverter.ConvertToAVehicle(veh);
+                MethodInfo method = aVehicle.GetType().GetMethod("IndicatorLight");
+                PropertyInfo property = aVehicle.GetType().GetProperty("IndicatorLightsMode");
+                (method.Invoke(aVehicle, new object[]
+				{
+					3
+				}) as AIndicatorLight).On = true;
+                (method.Invoke(aVehicle, new object[]
+				{
+					1
+				}) as AIndicatorLight).On = true;
+                (method.Invoke(aVehicle, new object[]
+				{
+					2
+				}) as AIndicatorLight).On = true;
+                (method.Invoke(aVehicle, new object[]
+				{
+					0
+				}) as AIndicatorLight).On = true;
+                property.SetValue(aVehicle, 0, null);
+
+                SetMode(veh, 0);
+            }
+            catch (Exception ex)
+            {
+                mainScript.Log("ResetAll", ex.Message, false);
+            }
+        }
+        /// <summary>
+        /// Resets all vehicle lights to their defaults, for external script triggering
+        /// </summary>
+        /// <param name="veh"></param>
+        private void ResetAll(GTA.Script sender, GTA.ObjectCollection Parameter)
 		{
 			try
 			{
-				AVehicle aVehicle = TypeConverter.ConvertToAVehicle(veh);
+				AVehicle aVehicle = TypeConverter.ConvertToAVehicle(Parameter.Convert<Vehicle>(0));
 				MethodInfo method = aVehicle.GetType().GetMethod("IndicatorLight");
 				PropertyInfo property = aVehicle.GetType().GetProperty("IndicatorLightsMode");
 				(method.Invoke(aVehicle, new object[]
@@ -214,7 +268,7 @@ namespace ultimate_indicator_script
 				}) as AIndicatorLight).On = true;
 				property.SetValue(aVehicle, 0, null);
 
-                SetMode(veh, 0);
+                SetMode(Parameter.Convert<Vehicle>(0), 0);
 			}
 			catch (Exception ex)
 			{
@@ -258,6 +312,42 @@ namespace ultimate_indicator_script
 			}
 		}
         /// <summary>
+        /// Turns all indicator lights on in flashing mode, for external script triggering
+        /// </summary>
+        /// <param name="veh"></param>
+        private void HazardsOn(GTA.Script sender, GTA.ObjectCollection Parameter)
+        {
+            try
+            {
+                AVehicle aVehicle = TypeConverter.ConvertToAVehicle(Parameter.Convert<Vehicle>(0));
+                MethodInfo method = aVehicle.GetType().GetMethod("IndicatorLight");
+                PropertyInfo property = aVehicle.GetType().GetProperty("IndicatorLightsMode");
+                (method.Invoke(aVehicle, new object[]
+				{
+					3
+				}) as AIndicatorLight).On = true;
+                (method.Invoke(aVehicle, new object[]
+				{
+					1
+				}) as AIndicatorLight).On = true;
+                (method.Invoke(aVehicle, new object[]
+				{
+					2
+				}) as AIndicatorLight).On = true;
+                (method.Invoke(aVehicle, new object[]
+				{
+					0
+				}) as AIndicatorLight).On = true;
+                property.SetValue(aVehicle, 2, null);
+
+                SetMode(Parameter.Convert<Vehicle>(0), 3);
+            }
+            catch (Exception ex)
+            {
+                mainScript.Log("HazardsOn", ex.Message, false);
+            }
+        }
+        /// <summary>
         /// Places in flashing mode and disables right hand side lights
         /// </summary>
         /// <param name="veh"></param>
@@ -294,6 +384,42 @@ namespace ultimate_indicator_script
 			}
 		}
         /// <summary>
+        /// Places in flashing mode and disables right hand side lights, for external script triggering
+        /// </summary>
+        /// <param name="veh"></param>
+        private void TurnLeft(GTA.Script sender, GTA.ObjectCollection Parameter)
+        {
+            try
+            {
+                AVehicle aVehicle = TypeConverter.ConvertToAVehicle(Parameter.Convert<Vehicle>(0));
+                MethodInfo method = aVehicle.GetType().GetMethod("IndicatorLight");
+                PropertyInfo property = aVehicle.GetType().GetProperty("IndicatorLightsMode");
+                (method.Invoke(aVehicle, new object[]
+				{
+					3
+				}) as AIndicatorLight).On = false;
+                (method.Invoke(aVehicle, new object[]
+				{
+					1
+				}) as AIndicatorLight).On = false;
+                (method.Invoke(aVehicle, new object[]
+				{
+					2
+				}) as AIndicatorLight).On = true;
+                (method.Invoke(aVehicle, new object[]
+				{
+					0
+				}) as AIndicatorLight).On = true;
+                property.SetValue(aVehicle, 2, null);
+
+                SetMode(Parameter.Convert<Vehicle>(0), 1);
+            }
+            catch (Exception ex)
+            {
+                mainScript.Log("TurnLeft", ex.Message, false);
+            }
+        }
+        /// <summary>
         /// Places in flashing mode and disables left hand side lights
         /// </summary>
         /// <param name="veh"></param>
@@ -329,6 +455,42 @@ namespace ultimate_indicator_script
 				mainScript.Log("TurnRight", ex.Message, false);
 			}
 		}
+        /// <summary>
+        /// Places in flashing mode and disables left hand side lights, for external script triggering
+        /// </summary>
+        /// <param name="veh"></param>
+        private void TurnRight(GTA.Script sender, GTA.ObjectCollection Parameter)
+        {
+            try
+            {
+                AVehicle aVehicle = TypeConverter.ConvertToAVehicle(Parameter.Convert<Vehicle>(0));
+                MethodInfo method = aVehicle.GetType().GetMethod("IndicatorLight");
+                PropertyInfo property = aVehicle.GetType().GetProperty("IndicatorLightsMode");
+                (method.Invoke(aVehicle, new object[]
+				{
+					3
+				}) as AIndicatorLight).On = true;
+                (method.Invoke(aVehicle, new object[]
+				{
+					1
+				}) as AIndicatorLight).On = true;
+                (method.Invoke(aVehicle, new object[]
+				{
+					2
+				}) as AIndicatorLight).On = false;
+                (method.Invoke(aVehicle, new object[]
+				{
+					0
+				}) as AIndicatorLight).On = false;
+                property.SetValue(aVehicle, 2, null);
+
+                SetMode(Parameter.Convert<Vehicle>(0), 2);
+            }
+            catch (Exception ex)
+            {
+                mainScript.Log("TurnRight", ex.Message, false);
+            }
+        }
 
         /// <summary>
         /// Displays a message at the bottom of the screen
