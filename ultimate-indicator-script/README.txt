@@ -21,7 +21,8 @@ This script allows other scripts to use it's functions, a brief example of this 
 				Puts the left hand side indicator in a flashing state, !important, you should ensure that ResetAll is called after this function somewhere in the execution flow of your script
 			d. TurnRight
 				Puts the right hand side indicator in a flashing state, !important, you should ensure that ResetAll is called after this function somewhere in the execution flow of your script
-		3. And a vehicle handle
+		3. A vehicle handle
+		4. An optional bool value for locking the state sent. A locked state means only the script GUID that sent the lock can unlock the current state.
 
 	A less verbose example:
 
