@@ -6,20 +6,13 @@ using GTA;
 using GTA.Native;
 using System.Windows.Forms;
 using System.Reflection;
+using Microsoft.CSharp.RuntimeBinder;
 
 namespace ultimate_indicator_script
 {
     public class mainScript : Script
     {
         #region Properties
-        /// <summary>
-        /// GUID of the lock requester
-        /// </summary>
-        internal Guid requesterGuid;
-        /// <summary>
-        /// Sets if a request should obey to requesterGuid
-        /// </summary>
-        internal bool requesterLock;
         /// <summary>
         /// Defines if the help message should be displayed
         /// </summary>
@@ -174,6 +167,47 @@ namespace ultimate_indicator_script
             }
         }
         /// <summary>
+        /// Gets the vehicle metadata for the locker GUID or returns Guid.Empty
+        /// </summary>
+        /// <param name="veh"></param>
+        /// <returns></returns>
+        private Guid GetLockerGuid(Vehicle veh)
+        {
+            try
+            {
+                return veh.Metadata.Guid;
+            }
+            catch (RuntimeBinderException)
+            {
+                return Guid.Empty;
+            }
+            catch (Exception E)
+            {
+                mainScript.Log("GetLockerGuid", E.Message);
+                return Guid.Empty;
+            }
+        }/// <summary>
+        /// Gets the vehicle metadata for the locker state or returns false
+        /// </summary>
+        /// <param name="veh"></param>
+        /// <returns></returns>
+        private bool GetLockerState(Vehicle veh)
+        {
+            try
+            {
+                return veh.Metadata.Locked;
+            }
+            catch (RuntimeBinderException)
+            {
+                return false;
+            }
+            catch (Exception E)
+            {
+                mainScript.Log("GetLockerGuid", E.Message);
+                return false;
+            }
+        }
+        /// <summary>
         /// Gets vehicle metadata for IndicatorLightsMode
         /// 
         /// Modes:
@@ -219,7 +253,7 @@ namespace ultimate_indicator_script
         {
             try
             {
-                if ((requesterLock && requesterGuid == senderGuid) || !requesterLock)
+                if ((GetLockerState(veh) && GetLockerGuid(veh) == senderGuid) || GetLockerState(veh))
                 {
                     AVehicle aVehicle = TypeConverter.ConvertToAVehicle(veh);
                     MethodInfo method = aVehicle.GetType().GetMethod("IndicatorLight");
@@ -245,8 +279,8 @@ namespace ultimate_indicator_script
                     SetMode(veh, 0);
 
                     // Set the GUID lock
-                    requesterLock = senderLock;
-                    requesterGuid = senderGuid;
+                    veh.Metadata.Guid = senderGuid;
+                    veh.Metadata.Locked = senderLock;
                 }
             }
             catch (Exception ex)
@@ -280,7 +314,7 @@ namespace ultimate_indicator_script
 		{
 			try
             {
-                if ((requesterLock && requesterGuid == senderGuid) || !requesterLock)
+                if ((GetLockerState(veh) && GetLockerGuid(veh) == senderGuid) || GetLockerState(veh))
                 {
                     AVehicle aVehicle = TypeConverter.ConvertToAVehicle(veh);
                     MethodInfo method = aVehicle.GetType().GetMethod("IndicatorLight");
@@ -306,8 +340,8 @@ namespace ultimate_indicator_script
                     SetMode(veh, 3);
 
                     // Set the GUID lock
-                    requesterLock = senderLock;
-                    requesterGuid = senderGuid;
+                    veh.Metadata.Guid = senderGuid;
+                    veh.Metadata.Locked = senderLock;
                 }
 			}
 			catch (Exception ex)
@@ -341,7 +375,7 @@ namespace ultimate_indicator_script
 		{
 			try
 			{
-                if ((requesterLock && requesterGuid == senderGuid) || !requesterLock)
+                if ((GetLockerState(veh) && GetLockerGuid(veh) == senderGuid) || GetLockerState(veh))
                 {
                     AVehicle aVehicle = TypeConverter.ConvertToAVehicle(veh);
                     MethodInfo method = aVehicle.GetType().GetMethod("IndicatorLight");
@@ -367,8 +401,8 @@ namespace ultimate_indicator_script
                     SetMode(veh, 1);
 
                     // Set the GUID lock
-                    requesterLock = senderLock;
-                    requesterGuid = senderGuid;
+                    veh.Metadata.Guid = senderGuid;
+                    veh.Metadata.Locked = senderLock;
                 }
 			}
 			catch (Exception ex)
@@ -402,7 +436,7 @@ namespace ultimate_indicator_script
 		{
 			try
 			{
-                if ((requesterLock && requesterGuid == senderGuid) || !requesterLock)
+                if ((GetLockerState(veh) && GetLockerGuid(veh) == senderGuid) || GetLockerState(veh))
                 {
                     AVehicle aVehicle = TypeConverter.ConvertToAVehicle(veh);
                     MethodInfo method = aVehicle.GetType().GetMethod("IndicatorLight");
@@ -428,8 +462,8 @@ namespace ultimate_indicator_script
                     SetMode(veh, 2);
 
                     // Set the GUID lock
-                    requesterLock = senderLock;
-                    requesterGuid = senderGuid;
+                    veh.Metadata.Guid = senderGuid;
+                    veh.Metadata.Locked = senderLock;
                 }
 			}
 			catch (Exception ex)

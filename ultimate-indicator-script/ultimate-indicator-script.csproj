@@ -73,7 +73,10 @@ git log --pretty=format:%25%25H -1 &gt; version
 set /p hash= &lt; version
 del version
 cd "$(TargetDir)"
-"C:\Program Files\7-Zip\7z.exe" a -tzip -i!*.dll -i!*.ini -i!README.txt -i!LICENSE.txt ultimate-overtaking-fix-%25hash%25.zip</PostBuildEvent>
+"C:\Program Files\7-Zip\7z.exe" a -tzip -i!*.dll -i!*.ini -i!README.txt -i!LICENSE.txt ultimate-overtaking-fix-%25hash%25.zip
+
+cd "D:\Program Files\Rockstar Games\Grand Theft Auto IV Modded\scripts\"
+xcopy "$(TargetDir)*.*" /Y</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PreBuildEvent>
