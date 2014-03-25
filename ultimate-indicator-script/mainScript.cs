@@ -12,6 +12,8 @@ namespace ultimate_indicator_script
     public class mainScript : Script
     {
         #region Properties
+        internal Guid requesterGuid;
+        internal bool requesterLock;
         /// <summary>
         /// Defines if the help message should be displayed
         /// </summary>
@@ -96,11 +98,11 @@ namespace ultimate_indicator_script
                     Function.Call("GET_POSITION_OF_ANALOGUE_STICKS", new Parameter[] { 0, pointer, new GTA.Native.Pointer(typeof(int)), new GTA.Native.Pointer(typeof(int)), new GTA.Native.Pointer(typeof(int)) });
                     int num = (int)pointer.Value;
                     if (num < 0)
-                        this.TurnLeft(Player.Character.CurrentVehicle);
+                        this.TurnLeft(Player.Character.CurrentVehicle, this.GUID);
                     else if (num > 0)
-                        this.TurnRight(Player.Character.CurrentVehicle);
+                        this.TurnRight(Player.Character.CurrentVehicle, this.GUID);
                     else
-                        this.ResetAll(Player.Character.CurrentVehicle);
+                        this.ResetAll(Player.Character.CurrentVehicle, this.GUID);
                 }
             }
             catch (Exception E)
@@ -129,9 +131,9 @@ namespace ultimate_indicator_script
                     // Turn off case it's on
                     if (Player.Character.isInVehicle() && Player.Character.CurrentVehicle.GetPedOnSeat(VehicleSeat.Driver) == Player.Character)
                         if (GetMode(Player.Character.CurrentVehicle) == 2)
-                            ResetAll(Player.Character.CurrentVehicle);
+                            ResetAll(Player.Character.CurrentVehicle, this.GUID);
                         else
-                            TurnRight(Player.Character.CurrentVehicle);
+                            TurnRight(Player.Character.CurrentVehicle, this.GUID);
                 });
                 // Bind left indicator key
                 BindKey(Settings.GetValueKey("LEFT", Keys.Q), () =>
@@ -142,9 +144,9 @@ namespace ultimate_indicator_script
                     // Turn off case it's on
                     if (Player.Character.isInVehicle() && Player.Character.CurrentVehicle.GetPedOnSeat(VehicleSeat.Driver) == Player.Character)
                         if (GetMode(Player.Character.CurrentVehicle) == 1)
-                            ResetAll(Player.Character.CurrentVehicle);
+                            ResetAll(Player.Character.CurrentVehicle, this.GUID);
                         else
-                            TurnLeft(Player.Character.CurrentVehicle);
+                            TurnLeft(Player.Character.CurrentVehicle, this.GUID);
                 });
                 // Bind hazard lights key
                 BindKey(Settings.GetValueKey("HAZARDS", Keys.Z), () =>
@@ -155,9 +157,9 @@ namespace ultimate_indicator_script
                     // Turn off case it's on
                     if (Player.Character.isInVehicle() && Player.Character.CurrentVehicle.GetPedOnSeat(VehicleSeat.Driver) == Player.Character)
                         if (GetMode(Player.Character.CurrentVehicle) == 3)
-                            ResetAll(Player.Character.CurrentVehicle);
+                            ResetAll(Player.Character.CurrentVehicle, this.GUID);
                         else
-                            HazardsOn(Player.Character.CurrentVehicle);
+                            HazardsOn(Player.Character.CurrentVehicle, this.GUID);
                 });
             }
             catch (Exception E)
@@ -207,32 +209,39 @@ namespace ultimate_indicator_script
         /// Resets all vehicle lights to their defaults
         /// </summary>
         /// <param name="veh"></param>
-        private void ResetAll(Vehicle veh)
+        private void ResetAll(Vehicle veh, Guid senderGuid, bool senderLock = false)
         {
             try
             {
-                AVehicle aVehicle = TypeConverter.ConvertToAVehicle(veh);
-                MethodInfo method = aVehicle.GetType().GetMethod("IndicatorLight");
-                PropertyInfo property = aVehicle.GetType().GetProperty("IndicatorLightsMode");
-                (method.Invoke(aVehicle, new object[]
-				{
-					3
-				}) as AIndicatorLight).On = true;
-                (method.Invoke(aVehicle, new object[]
-				{
-					1
-				}) as AIndicatorLight).On = true;
-                (method.Invoke(aVehicle, new object[]
-				{
-					2
-				}) as AIndicatorLight).On = true;
-                (method.Invoke(aVehicle, new object[]
-				{
-					0
-				}) as AIndicatorLight).On = true;
-                property.SetValue(aVehicle, 0, null);
+                if ((requesterLock && requesterGuid == senderGuid) || !requesterLock)
+                {
+                    AVehicle aVehicle = TypeConverter.ConvertToAVehicle(veh);
+                    MethodInfo method = aVehicle.GetType().GetMethod("IndicatorLight");
+                    PropertyInfo property = aVehicle.GetType().GetProperty("IndicatorLightsMode");
+                    (method.Invoke(aVehicle, new object[]
+				    {
+					    3
+				    }) as AIndicatorLight).On = true;
+                    (method.Invoke(aVehicle, new object[]
+				    {
+					    1
+				    }) as AIndicatorLight).On = true;
+                    (method.Invoke(aVehicle, new object[]
+				    {
+					    2
+				    }) as AIndicatorLight).On = true;
+                    (method.Invoke(aVehicle, new object[]
+				    {
+					    0
+				    }) as AIndicatorLight).On = true;
+                    property.SetValue(aVehicle, 0, null);
 
-                SetMode(veh, 0);
+                    SetMode(veh, 0);
+
+                    // Set the GUID lock
+                    requesterLock = senderLock;
+                    requesterGuid = senderGuid;
+                }
             }
             catch (Exception ex)
             {
@@ -245,66 +254,55 @@ namespace ultimate_indicator_script
         /// <param name="veh"></param>
         private void ResetAll(GTA.Script sender, GTA.ObjectCollection Parameter)
 		{
-			try
-			{
-				AVehicle aVehicle = TypeConverter.ConvertToAVehicle(Parameter.Convert<Vehicle>(0));
-				MethodInfo method = aVehicle.GetType().GetMethod("IndicatorLight");
-				PropertyInfo property = aVehicle.GetType().GetProperty("IndicatorLightsMode");
-				(method.Invoke(aVehicle, new object[]
-				{
-					3
-				}) as AIndicatorLight).On = true;
-				(method.Invoke(aVehicle, new object[]
-				{
-					1
-				}) as AIndicatorLight).On = true;
-                (method.Invoke(aVehicle, new object[]
-				{
-					2
-				}) as AIndicatorLight).On = true;
-				(method.Invoke(aVehicle, new object[]
-				{
-					0
-				}) as AIndicatorLight).On = true;
-				property.SetValue(aVehicle, 0, null);
+            try
+            {
+                Vehicle veh = Parameter.Convert<Vehicle>(0);
+                bool senderLock = (Parameter.Count == 2) ? Parameter.Convert<bool>(1) : false;
 
-                SetMode(Parameter.Convert<Vehicle>(0), 0);
-			}
-			catch (Exception ex)
-			{
-				mainScript.Log("ResetAll", ex.Message, false);
-			}
+                ResetAll(veh, sender.GUID, senderLock);
+            }
+            catch (Exception E)
+            {
+                Log("ResetAll - external-call", E.Message);
+            }
 		}
         /// <summary>
         /// Turns all indicator lights on in flashing mode
         /// </summary>
         /// <param name="veh"></param>
-        private void HazardsOn(Vehicle veh)
+        private void HazardsOn(Vehicle veh, Guid senderGuid, bool senderLock = false)
 		{
 			try
-			{
-				AVehicle aVehicle = TypeConverter.ConvertToAVehicle(veh);
-				MethodInfo method = aVehicle.GetType().GetMethod("IndicatorLight");
-				PropertyInfo property = aVehicle.GetType().GetProperty("IndicatorLightsMode");
-				(method.Invoke(aVehicle, new object[]
-				{
-					3
-				}) as AIndicatorLight).On = true;
-				(method.Invoke(aVehicle, new object[]
-				{
-					1
-				}) as AIndicatorLight).On = true;
-				(method.Invoke(aVehicle, new object[]
-				{
-					2
-				}) as AIndicatorLight).On = true;
-				(method.Invoke(aVehicle, new object[]
-				{
-					0
-				}) as AIndicatorLight).On = true;
-                property.SetValue(aVehicle, 2, null);
+            {
+                if ((requesterLock && requesterGuid == senderGuid) || !requesterLock)
+                {
+                    AVehicle aVehicle = TypeConverter.ConvertToAVehicle(veh);
+                    MethodInfo method = aVehicle.GetType().GetMethod("IndicatorLight");
+                    PropertyInfo property = aVehicle.GetType().GetProperty("IndicatorLightsMode");
+                    (method.Invoke(aVehicle, new object[]
+				    {
+					    3
+				    }) as AIndicatorLight).On = true;
+                    (method.Invoke(aVehicle, new object[]
+				    {
+					    1
+				    }) as AIndicatorLight).On = true;
+                    (method.Invoke(aVehicle, new object[]
+				    {
+					    2
+				    }) as AIndicatorLight).On = true;
+                    (method.Invoke(aVehicle, new object[]
+				    {
+					    0
+				    }) as AIndicatorLight).On = true;
+                    property.SetValue(aVehicle, 2, null);
 
-                SetMode(veh, 3);
+                    SetMode(veh, 3);
+
+                    // Set the GUID lock
+                    requesterLock = senderLock;
+                    requesterGuid = senderGuid;
+                }
 			}
 			catch (Exception ex)
 			{
@@ -319,64 +317,53 @@ namespace ultimate_indicator_script
         {
             try
             {
-                AVehicle aVehicle = TypeConverter.ConvertToAVehicle(Parameter.Convert<Vehicle>(0));
-                MethodInfo method = aVehicle.GetType().GetMethod("IndicatorLight");
-                PropertyInfo property = aVehicle.GetType().GetProperty("IndicatorLightsMode");
-                (method.Invoke(aVehicle, new object[]
-				{
-					3
-				}) as AIndicatorLight).On = true;
-                (method.Invoke(aVehicle, new object[]
-				{
-					1
-				}) as AIndicatorLight).On = true;
-                (method.Invoke(aVehicle, new object[]
-				{
-					2
-				}) as AIndicatorLight).On = true;
-                (method.Invoke(aVehicle, new object[]
-				{
-					0
-				}) as AIndicatorLight).On = true;
-                property.SetValue(aVehicle, 2, null);
+                Vehicle veh = Parameter.Convert<Vehicle>(0);
+                bool senderLock = (Parameter.Count == 2) ? Parameter.Convert<bool>(1) : false;
 
-                SetMode(Parameter.Convert<Vehicle>(0), 3);
+                HazardsOn(veh, sender.GUID, senderLock);
             }
-            catch (Exception ex)
+            catch (Exception E)
             {
-                mainScript.Log("HazardsOn", ex.Message, false);
+                Log("HazardsOn - external-call", E.Message);
             }
         }
         /// <summary>
         /// Places in flashing mode and disables right hand side lights
         /// </summary>
         /// <param name="veh"></param>
-        private void TurnLeft(Vehicle veh)
+        private void TurnLeft(Vehicle veh, Guid senderGuid, bool senderLock = false)
 		{
 			try
 			{
-				AVehicle aVehicle = TypeConverter.ConvertToAVehicle(veh);
-				MethodInfo method = aVehicle.GetType().GetMethod("IndicatorLight");
-				PropertyInfo property = aVehicle.GetType().GetProperty("IndicatorLightsMode");
-				(method.Invoke(aVehicle, new object[]
-				{
-					3
-				}) as AIndicatorLight).On = false;
-				(method.Invoke(aVehicle, new object[]
-				{
-					1
-				}) as AIndicatorLight).On = false;
-				(method.Invoke(aVehicle, new object[]
-				{
-					2
-				}) as AIndicatorLight).On = true;
-				(method.Invoke(aVehicle, new object[]
-				{
-					0
-				}) as AIndicatorLight).On = true;
-                property.SetValue(aVehicle, 2, null);
+                if ((requesterLock && requesterGuid == senderGuid) || !requesterLock)
+                {
+                    AVehicle aVehicle = TypeConverter.ConvertToAVehicle(veh);
+                    MethodInfo method = aVehicle.GetType().GetMethod("IndicatorLight");
+                    PropertyInfo property = aVehicle.GetType().GetProperty("IndicatorLightsMode");
+                    (method.Invoke(aVehicle, new object[]
+				    {
+					    3
+				    }) as AIndicatorLight).On = false;
+                    (method.Invoke(aVehicle, new object[]
+				    {
+					    1
+				    }) as AIndicatorLight).On = false;
+                    (method.Invoke(aVehicle, new object[]
+				    {
+					    2
+				    }) as AIndicatorLight).On = true;
+                    (method.Invoke(aVehicle, new object[]
+				    {
+					    0
+				    }) as AIndicatorLight).On = true;
+                    property.SetValue(aVehicle, 2, null);
 
-                SetMode(veh, 1);
+                    SetMode(veh, 1);
+
+                    // Set the GUID lock
+                    requesterLock = senderLock;
+                    requesterGuid = senderGuid;
+                }
 			}
 			catch (Exception ex)
 			{
@@ -391,64 +378,53 @@ namespace ultimate_indicator_script
         {
             try
             {
-                AVehicle aVehicle = TypeConverter.ConvertToAVehicle(Parameter.Convert<Vehicle>(0));
-                MethodInfo method = aVehicle.GetType().GetMethod("IndicatorLight");
-                PropertyInfo property = aVehicle.GetType().GetProperty("IndicatorLightsMode");
-                (method.Invoke(aVehicle, new object[]
-				{
-					3
-				}) as AIndicatorLight).On = false;
-                (method.Invoke(aVehicle, new object[]
-				{
-					1
-				}) as AIndicatorLight).On = false;
-                (method.Invoke(aVehicle, new object[]
-				{
-					2
-				}) as AIndicatorLight).On = true;
-                (method.Invoke(aVehicle, new object[]
-				{
-					0
-				}) as AIndicatorLight).On = true;
-                property.SetValue(aVehicle, 2, null);
+                Vehicle veh = Parameter.Convert<Vehicle>(0);
+                bool senderLock = (Parameter.Count == 2) ? Parameter.Convert<bool>(1) : false;
 
-                SetMode(Parameter.Convert<Vehicle>(0), 1);
+                TurnLeft(veh, sender.GUID, senderLock);
             }
-            catch (Exception ex)
+            catch (Exception E)
             {
-                mainScript.Log("TurnLeft", ex.Message, false);
+                Log("TurnLeft - external-call", E.Message);
             }
         }
         /// <summary>
         /// Places in flashing mode and disables left hand side lights
         /// </summary>
         /// <param name="veh"></param>
-        private void TurnRight(Vehicle veh)
+        private void TurnRight(Vehicle veh, Guid senderGuid, bool senderLock = false)
 		{
 			try
 			{
-				AVehicle aVehicle = TypeConverter.ConvertToAVehicle(veh);
-				MethodInfo method = aVehicle.GetType().GetMethod("IndicatorLight");
-				PropertyInfo property = aVehicle.GetType().GetProperty("IndicatorLightsMode");
-				(method.Invoke(aVehicle, new object[]
-				{
-					3
-				}) as AIndicatorLight).On = true;
-				(method.Invoke(aVehicle, new object[]
-				{
-					1
-				}) as AIndicatorLight).On = true;
-				(method.Invoke(aVehicle, new object[]
-				{
-					2
-				}) as AIndicatorLight).On = false;
-				(method.Invoke(aVehicle, new object[]
-				{
-					0
-				}) as AIndicatorLight).On = false;
-                property.SetValue(aVehicle, 2, null);
+                if ((requesterLock && requesterGuid == senderGuid) || !requesterLock)
+                {
+                    AVehicle aVehicle = TypeConverter.ConvertToAVehicle(veh);
+                    MethodInfo method = aVehicle.GetType().GetMethod("IndicatorLight");
+                    PropertyInfo property = aVehicle.GetType().GetProperty("IndicatorLightsMode");
+                    (method.Invoke(aVehicle, new object[]
+				    {
+					    3
+				    }) as AIndicatorLight).On = true;
+                    (method.Invoke(aVehicle, new object[]
+				    {
+					    1
+				    }) as AIndicatorLight).On = true;
+                    (method.Invoke(aVehicle, new object[]
+				    {
+					    2
+				    }) as AIndicatorLight).On = false;
+                    (method.Invoke(aVehicle, new object[]
+				    {
+					    0
+				    }) as AIndicatorLight).On = false;
+                    property.SetValue(aVehicle, 2, null);
 
-                SetMode(veh, 2);
+                    SetMode(veh, 2);
+
+                    // Set the GUID lock
+                    requesterLock = senderLock;
+                    requesterGuid = senderGuid;
+                }
 			}
 			catch (Exception ex)
 			{
@@ -463,32 +439,14 @@ namespace ultimate_indicator_script
         {
             try
             {
-                AVehicle aVehicle = TypeConverter.ConvertToAVehicle(Parameter.Convert<Vehicle>(0));
-                MethodInfo method = aVehicle.GetType().GetMethod("IndicatorLight");
-                PropertyInfo property = aVehicle.GetType().GetProperty("IndicatorLightsMode");
-                (method.Invoke(aVehicle, new object[]
-				{
-					3
-				}) as AIndicatorLight).On = true;
-                (method.Invoke(aVehicle, new object[]
-				{
-					1
-				}) as AIndicatorLight).On = true;
-                (method.Invoke(aVehicle, new object[]
-				{
-					2
-				}) as AIndicatorLight).On = false;
-                (method.Invoke(aVehicle, new object[]
-				{
-					0
-				}) as AIndicatorLight).On = false;
-                property.SetValue(aVehicle, 2, null);
+                Vehicle veh = Parameter.Convert<Vehicle>(0);
+                bool senderLock = (Parameter.Count == 2) ? Parameter.Convert<bool>(1) : false;
 
-                SetMode(Parameter.Convert<Vehicle>(0), 2);
+                TurnRight(veh, sender.GUID, senderLock);
             }
-            catch (Exception ex)
+            catch (Exception E)
             {
-                mainScript.Log("TurnRight", ex.Message, false);
+                Log("TurnRight - external-call", E.Message);
             }
         }
 
