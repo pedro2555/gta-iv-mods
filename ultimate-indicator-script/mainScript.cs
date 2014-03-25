@@ -12,7 +12,13 @@ namespace ultimate_indicator_script
     public class mainScript : Script
     {
         #region Properties
+        /// <summary>
+        /// GUID of the lock requester
+        /// </summary>
         internal Guid requesterGuid;
+        /// <summary>
+        /// Sets if a request should obey to requesterGuid
+        /// </summary>
         internal bool requesterLock;
         /// <summary>
         /// Defines if the help message should be displayed
