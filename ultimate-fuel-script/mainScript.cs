@@ -49,17 +49,18 @@ namespace ultimate_fuel_script
         /// <param name="e"></param>
         void mainScript_Tick(object sender, EventArgs e)
         {
-            ///
-            /// TODO:
-            ///
-
-            #region Check player location
+            #region proximity-detection
 
             try
             {
-                if (Player.Character.isInVehicle())
+                // Check if player is in a vehicle and driving it
+                if (Player.Character.isInVehicle() && Player.Character.CurrentVehicle.GetPedOnSeat(VehicleSeat.Driver) == Player.Character)
                 {
-                    currentFuelStation = FuelStation.IsAtStation(FuelStation.GetNearestStation(Player.Character.Position, FuelStation.GetStationTypeFromVehicle(Player.Character.CurrentVehicle)), Player.Character.Position);
+                    currentFuelStation = FuelStation.IsAtStation(
+                        FuelStation.GetNearestStation(
+                            Player.Character.Position, 
+                            FuelStation.GetStationTypeFromVehicle(Player.Character.CurrentVehicle)), 
+                        Player.Character.Position);
                     // Display an help message if necessary
                     if (currentFuelStation != null && displayHelpMessage)
                     {
@@ -68,7 +69,7 @@ namespace ultimate_fuel_script
                         {
                             // Normal station message
 
-                            DisplayHelp(String.Format("Welcome to ~y~{0}~w~. Hold ~ INPUT_VEH_HANDBRAKE ~ to refuel. ${1} per liter.",
+                            DisplayHelp(String.Format("Welcome to ~y~{0}~w~. Hold ~ INPUT_VEH_HANDBRAKE_ALT ~ to refuel. ${1} per liter.",
                                 currentFuelStation.Name,
                                 currentFuelStation.Price));
                         }
@@ -76,24 +77,25 @@ namespace ultimate_fuel_script
                         {
                             // Hidden station message
 
-                            DisplayHelp(String.Format("You found ~y~{0}~w~! Hold ~ INPUT_VEH_HANDBRAKE_ALT ~ to steal some fuel. ${1} per liter.",
-                                currentFuelStation.Name,
-                                currentFuelStation.Price));
+                            DisplayHelp(String.Format("You found ~y~{0}~w~! Hold ~ INPUT_VEH_HANDBRAKE_ALT ~ to steal some fuel.",
+                                currentFuelStation.Name));
                         }
-
+                        // Message was already displayed
                         displayHelpMessage = false;
                     }
                     else
+                        // Station changed, enable the help message again
                         displayHelpMessage = true;
                 }
             }
             catch (Exception E)
             {
-                Log("mainScript_Tick - check-player-location", E.Message);
+                Log("mainScript_Tick - proximity-detection", E.Message);
             }
 
-            #endregion Check player location
+            #endregion proximity-detection
 
+            #region fuel-actions-calculations
         }
 
         #region Methods

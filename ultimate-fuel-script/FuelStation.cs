@@ -6,11 +6,15 @@ using GTA;
 
 namespace ultimate_fuel_script
 {
+    /// <summary>
+    /// Enumerations of station types
+    /// </summary>
     public enum StationType
     {
         CarAndBike  = "",
         Boat = "BOAT",
-        Helicopter = "HELI"
+        Helicopter = "HELI",
+        Any = CarAndBike | Boat | Helicopter
     }
 
     public class FuelStation
@@ -139,11 +143,7 @@ namespace ultimate_fuel_script
         /// <returns></returns>
         public static FuelStation GetNearestStation(Vector3 origin)
         {
-            FuelStation res = null;
-            foreach (FuelStation fs in FuelStation.Items)
-                if (res == null || origin.DistanceTo(fs.Location) < origin.DistanceTo(res.Location))
-                    res = fs;
-            return res;
+            return GetNearestStation(origin, StationType.Any);
         }
         /// <summary>
         /// Gets the nearest station to a given origin of a given type
