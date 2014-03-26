@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using AdvancedHookManaged;
 using GTA;
@@ -12,7 +13,10 @@ namespace ultimate_fuel_script
     public class mainScript : Script
     {
         #region Properties
-
+        /// <summary>
+        /// Control refueling state
+        /// </summary>
+        internal bool refueling = false;
         /// <summary>
         /// Gamepad instance for fuel calculation based on key press
         /// </summary>
@@ -21,6 +25,8 @@ namespace ultimate_fuel_script
         /// Holds the fuel station the player is currently in, null if not at a fuel station or if any fuel station diferent than the vehicle type
         /// </summary>
         internal FuelStation currentFuelStation = null;
+
+        internal Gauge fuelGauge;
         /// <summary>
         /// Defines if an help message should be displayed upon entering a station
         /// </summary>
@@ -41,6 +47,9 @@ namespace ultimate_fuel_script
             this.Interval = 100;
             // Assign timer tick event
             this.Tick += new EventHandler(mainScript_Tick);
+            // Assign drawing frame event
+            this.PerFrameDrawing += new GraphicsEventHandler(mainScript_PerFrameDrawing);
+
             #region Log script start
             mainScript.Log(" - - - - - - - - - - - - - - - STARTUP - - - - - - - - - - - - - - - ", String.Format("GTA IV {0} under {1}", Game.Version.ToString(), mainScript.getOSInfo()));
             mainScript.Log("Started", String.Format("{0} v{1}", mainScript.scriptName, FileVersionInfo.GetVersionInfo(Game.InstallFolder + "\\scripts\\" + mainScript.scriptName + ".net.dll").ProductVersion, true));
@@ -50,13 +59,15 @@ namespace ultimate_fuel_script
             {
                 // Define the GamePad if needed
                 GamePad = (Settings.GetValueBool("GAMEPAD", "MISC", false)) ? null : new Controller(UserIndex.Any);
+                // Initialize the fuel gauge
+                fuelGauge = new Gauge(new PointF(Settings.GetValueFloat("X", "DASHBOARD", 0.0f), Settings.GetValueFloat("Y", "DASHBOARD", 0.0f)), Settings.GetValueFloat("W", "DASHBOARD", 0.11f));
+                // Load fuel stations
+                LoadStations();
             }
             catch (Exception E)
             {
-                Log("mainScript - define-gamepad", E.Message);
+                Log("mainScript - load", E.Message);
             }
-
-            LoadStations();
         }
 
         /// <summary>
@@ -66,6 +77,13 @@ namespace ultimate_fuel_script
         /// <param name="e"></param>
         void mainScript_Tick(object sender, EventArgs e)
         {
+            #region fuel-level-checking
+
+            if (Player.Character.isInVehicle() && Player.Character.CurrentVehicle.GetPedOnSeat(VehicleSeat.Driver) == Player.Character)
+                GetFuelLevel(Player.Character.CurrentVehicle);
+
+            #endregion fuel-level-checking
+
             #region proximity-detection
 
             try
@@ -111,12 +129,25 @@ namespace ultimate_fuel_script
             }
 
             #endregion proximity-detection
+        }
 
-            #region fuel-level-checking
-
-
-
-            #endregion fuel-level-checking
+        /// <summary>
+        /// run every frame, digitalMode
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void mainScript_PerFrameDrawing(object sender, GTA.GraphicsEventArgs e)
+        {
+            try
+            {
+                // If player is in a vehicle.
+                if (Player.Character.isInVehicle() && Player.Character.CurrentVehicle.GetPedOnSeat(VehicleSeat.Driver) == Player.Character)
+                    fuelGauge.Draw(e.Graphics, Player.Character.CurrentVehicle);
+            }
+            catch (Exception E)
+            {
+                Log("PerFrameDrawing", E.Message);
+            }
         }
 
         #region Methods
