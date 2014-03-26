@@ -186,7 +186,8 @@ namespace ultimate_indicator_script
                 mainScript.Log("GetLockerGuid", E.Message);
                 return Guid.Empty;
             }
-        }/// <summary>
+        }
+        /// <summary>
         /// Gets the vehicle metadata for the locker state or returns false
         /// </summary>
         /// <param name="veh"></param>
