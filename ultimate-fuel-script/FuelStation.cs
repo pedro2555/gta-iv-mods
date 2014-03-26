@@ -11,10 +11,9 @@ namespace ultimate_fuel_script
     /// </summary>
     public enum StationType
     {
-        CarAndBike  = "",
-        Boat = "BOAT",
-        Helicopter = "HELI",
-        Any = CarAndBike | Boat | Helicopter
+        CAR ,
+        BOAT,
+        HELI
     }
 
     public class FuelStation
@@ -100,14 +99,14 @@ namespace ultimate_fuel_script
             // Place the appropriate icon 79 for Cars, 56 for Helis and 48 for Boats
             switch (this.Type)
             {
-                case StationType.CarAndBike:
+                case StationType.CAR:
                 default:
                     StationBlip.Icon = (BlipIcon)79;
                     break;
-                case StationType.Helicopter:
+                case StationType.HELI:
                     StationBlip.Icon = (BlipIcon)56;
                     break;
-                case StationType.Boat:
+                case StationType.BOAT:
                     StationBlip.Icon = (BlipIcon)48;
                     break;
             }
@@ -134,7 +133,7 @@ namespace ultimate_fuel_script
         /// <returns></returns>
         public static StationType GetStationTypeFromVehicle(Vehicle veh)
         {
-            return (veh.Model.isHelicopter) ? StationType.Helicopter : (veh.Model.isBoat) ? StationType.Boat : StationType.CarAndBike;
+            return (veh.Model.isHelicopter) ? StationType.HELI : (veh.Model.isBoat) ? StationType.BOAT : StationType.CAR;
         }
         /// <summary>
         /// Gets the nearest station to a given origin
@@ -143,7 +142,11 @@ namespace ultimate_fuel_script
         /// <returns></returns>
         public static FuelStation GetNearestStation(Vector3 origin)
         {
-            return GetNearestStation(origin, StationType.Any);
+            FuelStation res = null;
+            foreach (FuelStation fs in FuelStation.Items)
+                if (res == null || origin.DistanceTo(fs.Location) < origin.DistanceTo(res.Location))
+                    res = fs;
+            return res;
         }
         /// <summary>
         /// Gets the nearest station to a given origin of a given type

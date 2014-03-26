@@ -5,6 +5,7 @@ using AdvancedHookManaged;
 using GTA;
 using GTA.Native;
 using System.Windows.Forms;
+using SlimDX.XInput;
 
 namespace ultimate_fuel_script
 {
@@ -12,6 +13,10 @@ namespace ultimate_fuel_script
     {
         #region Properties
 
+        /// <summary>
+        /// Gamepad instance for fuel calculation based on key press
+        /// </summary>
+        internal Controller GamePad;
         /// <summary>
         /// Holds the fuel station the player is currently in, null if not at a fuel station or if any fuel station diferent than the vehicle type
         /// </summary>
@@ -40,6 +45,16 @@ namespace ultimate_fuel_script
             mainScript.Log(" - - - - - - - - - - - - - - - STARTUP - - - - - - - - - - - - - - - ", String.Format("GTA IV {0} under {1}", Game.Version.ToString(), mainScript.getOSInfo()));
             mainScript.Log("Started", String.Format("{0} v{1}", mainScript.scriptName, FileVersionInfo.GetVersionInfo(Game.InstallFolder + "\\scripts\\" + mainScript.scriptName + ".net.dll").ProductVersion, true));
             #endregion Log script start
+
+            try
+            {
+                // Define the GamePad if needed
+                GamePad = (Settings.GetValueBool("GAMEPAD", "MISC", false)) ? null : new Controller(UserIndex.Any);
+            }
+            catch (Exception E)
+            {
+                Log("mainScript - define-gamepad", E.Message);
+            }
         }
 
         /// <summary>
@@ -95,15 +110,106 @@ namespace ultimate_fuel_script
 
             #endregion proximity-detection
 
-            #region fuel-actions-calculations
+            #region fuel-level-checking
+
+
+
+            #endregion fuel-level-checking
         }
 
         #region Methods
 
-        ///
-        /// TODO:
-        ///
+        private void DrainFuel(Vehicle veh)
+        {
+            // Draining enabled for cars and bikes?
+            if ((veh.Model.isCar || veh.Model.isBike) && veh.EngineRunning && Settings.GetValueBool("CARS", "MISC", true))
+            {
+                // Base calculation of drain value
+                float Drain = veh.Metadata.Drain * veh.CurrentRPM / 100;
+                // Drain value increase based on engine health
+                Drain = Drain * ((1000 - veh.EngineHealth) / 1000) + Drain;
+                // Deduct from vehicle fuel avoiding negative values
+                veh.Metadata.Fuel -= (Drain >= veh.Metadata.Fuel) ? veh.Metadata.Fuel : Drain;
+            }
+            // Draining enabled for helicopters?
+            else if (veh.Model.isHelicopter && veh.EngineRunning && Settings.GetValueBool("HELIS", "MISC", true))
+            {
+                // Note: 254.921568627451f
+                // Note: 0.2 + ((speed * 0.2) / 5)
+                // Only take in account speed when accelerate xor reverse key is pressed.
+                float Drain;
+                // GamePad disabled or unavailable? Use keyboard!
+                if (GamePad == null)
+                    if (Game.isGameKeyPressed(GameKey.MoveForward))
+                        Drain = (veh.Metadata.Drain * (.2f + ((veh.Speed * .2f) / 5.0f))) / 100.0f;
+                    else
+                        Drain = (veh.Metadata.Drain * .208f) / 100.0f;
+                // Use the GamePad if available.
+                else if (GamePad.GetState().Gamepad.RightTrigger > 0.0f)
+                    Drain = veh.Metadata.Drain * (((GamePad.GetState().Gamepad.RightTrigger * 100.0f) / 255.0f) / 10000.0f);
+                // Just go with it already.
+                else
+                    Drain = (veh.Metadata.Drain * .208f) / 100.0f;
 
+                // Calculate the draining speed also taking engine damage to an account.
+                Drain = Drain * ((1000 - veh.EngineHealth) / 1000.0f) + Drain;
+                veh.Metadata.Fuel -= Drain;
+                veh.Metadata.Fuel = (veh.Metadata.Fuel < .0f) ? .0f : veh.Metadata.Fuel;
+            }
+            // Draining enabled for boats?
+            else if (veh.Model.isBoat && veh.EngineRunning && Settings.GetValueBool("BOATS", "MISC", true))
+            {
+                // Note: 0.2 + ((speed * 0.2) / 5)
+                // Only take in account speed when accelerate xor reverse key is pressed.
+                float Drain;
+                // GamePad disabled or unavailable? Use keyboard!
+                if (GamePad == null)
+                    if (Game.isGameKeyPressed(GameKey.MoveForward) ^ Game.isGameKeyPressed(GameKey.MoveBackward))
+                        Drain = (veh.Metadata.Drain * (.2f + ((veh.Speed * .2f) / 5.0f))) / 100;
+                    else
+                        Drain = (veh.Metadata.Drain * .208f) / 100;
+                // Use the GamePad if available.
+                else
+                    if (GamePad.GetState().Gamepad.RightTrigger > 0 ^ GamePad.GetState().Gamepad.LeftTrigger > 0)
+                        Drain = (veh.Metadata.Drain * (.2f + ((veh.Speed * .2f) / 5.0f))) / 100;
+                    else
+                        Drain = (veh.Metadata.Drain * .208f) / 100;
+
+                // Calculate the draining speed also taking engine damage to an account.
+                Drain = Drain * ((1000 - veh.EngineHealth) / 1000) + Drain;
+                veh.Metadata.Fuel -= Drain;
+                veh.Metadata.Fuel = (veh.Metadata.Fuel < .0f) ? .0f : veh.Metadata.Fuel;
+            }
+        }
+
+        /// <summary>
+        /// Returns the current fuel level or randomizes a new one
+        /// </summary>
+        /// <param name="veh"></param>
+        /// <returns></returns>
+        private float GetFuelLevel(Vehicle veh)
+        {
+            try
+            {
+                // Try to return an already saved value
+                return veh.Metadata.Fuel;
+            }
+            catch (Exception)
+            {
+                // Fuel level is not set, check ini entries
+                // Set Tank entry
+                veh.Metadata.Tank = Settings.GetValueInteger("TANK", veh.GetHashCode().ToString(), // Get data by hash code
+                        Settings.GetValueInteger("TANK", veh.Name, 100)); // Get data by name or default to 100
+                // Set Drain entry
+                veh.Metadata.Drain = Settings.GetValueInteger("DRAIN", veh.GetHashCode().ToString(), // Get data by hash code
+                        Settings.GetValueInteger("DRAIN", veh.Name, 10)); // Get data by name or default to 10
+                // Set Reserve entry
+                veh.Metadata.Reserve = Settings.GetValueInteger("RESERVE", veh.GetHashCode().ToString(), // Get data by hash code
+                        Settings.GetValueInteger("RESERVE", veh.Name, 10)); // Get data by name or default to 10
+                // Generate a random value for the fuel level between Reserve + 1 and Tank
+                return veh.Metadata.Fuel = (int)new Random().Next(veh.Metadata.Reserve + 1, veh.Metadata.Tank);
+            }
+        }
         /// <summary>
         /// Loads all types of stations
         /// </summary>
