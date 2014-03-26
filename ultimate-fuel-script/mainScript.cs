@@ -29,11 +29,8 @@ namespace ultimate_fuel_script
         /// </summary>
         public mainScript()
         {
-            ///
-            /// TODO:
-            ///
-
-            // code goes here
+            // Defauld script GUID
+            GUID = new Guid("e027d24c-7db2-4ba7-924f-a4d72f5ae27e");
 
             // Set timer interval time
             this.Interval = 100;
