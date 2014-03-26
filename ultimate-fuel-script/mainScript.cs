@@ -55,6 +55,8 @@ namespace ultimate_fuel_script
             {
                 Log("mainScript - define-gamepad", E.Message);
             }
+
+            LoadStations();
         }
 
         /// <summary>
@@ -68,8 +70,8 @@ namespace ultimate_fuel_script
 
             try
             {
-                // Check if player is in a vehicle and driving it
-                if (Player.Character.isInVehicle() && Player.Character.CurrentVehicle.GetPedOnSeat(VehicleSeat.Driver) == Player.Character)
+                // Check if player is in a vehicle, driving it and at slow speed
+                if (Player.Character.isInVehicle() && Player.Character.CurrentVehicle.GetPedOnSeat(VehicleSeat.Driver) == Player.Character && Player.Character.CurrentVehicle.Speed < 1.5f)
                 {
                     currentFuelStation = FuelStation.IsAtStation(
                         FuelStation.GetNearestStation(
@@ -84,7 +86,7 @@ namespace ultimate_fuel_script
                         {
                             // Normal station message
 
-                            DisplayHelp(String.Format("Welcome to ~y~{0}~w~. Hold ~ INPUT_VEH_HANDBRAKE_ALT ~ to refuel. ${1} per liter.",
+                            DisplayHelp(String.Format("Welcome to ~y~{0}~w~. Hold ~INPUT_VEH_HANDBRAKE~ to refuel. ${1} per liter.",
                                 currentFuelStation.Name,
                                 currentFuelStation.Price));
                         }
@@ -92,7 +94,7 @@ namespace ultimate_fuel_script
                         {
                             // Hidden station message
 
-                            DisplayHelp(String.Format("You found ~y~{0}~w~! Hold ~ INPUT_VEH_HANDBRAKE_ALT ~ to steal some fuel.",
+                            DisplayHelp(String.Format("You found ~y~{0}~w~! Hold ~INPUT_VEH_HANDBRAKE~ to steal some fuel.",
                                 currentFuelStation.Name));
                         }
                         // Message was already displayed
@@ -245,8 +247,8 @@ namespace ultimate_fuel_script
                     {
                         FuelStation f = new FuelStation(
                             (Settings.GetValueString("NAME", type.ToString() + "STATION" + i, "Fuel Station").ToUpper().Trim().Length > 30) ?
-                                Settings.GetValueString("NAME", type.ToString() + "STATION" + i, "Fuel Station").ToUpper().Trim().Substring(0, 29) :
-                                Settings.GetValueString("NAME", type.ToString() + "STATION" + i, "Fuel Station").ToUpper().Trim(),
+                                Settings.GetValueString("NAME", type.ToString() + "STATION" + i, "Fuel Station").Trim().Substring(0, 29) :
+                                Settings.GetValueString("NAME", type.ToString() + "STATION" + i, "Fuel Station").Trim(),
                             Settings.GetValueFloat("RADIUS", type.ToString() + "STATION" + i, 10.0f),
                             stationLocation,
                             Settings.GetValueInteger("STARS", type.ToString() + "STATION" + i, 0),
