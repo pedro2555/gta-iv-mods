@@ -26,12 +26,6 @@ namespace ultimate_fuel_script
             this.Price = Price;
         }
 
-        #region Static Properties
-
-        public static List<FuelStation> Items = new List<FuelStation>();
-
-        #endregion Static Properties
-
         #region Properties
 
         /// <summary>
@@ -77,6 +71,12 @@ namespace ultimate_fuel_script
 
         #endregion Properties 
 
+        #region Static Properties
+
+        public static List<FuelStation> Items = new List<FuelStation>();
+
+        #endregion Static Properties
+
         #region Methods
 
         /// <summary>
@@ -121,5 +121,54 @@ namespace ultimate_fuel_script
 
         #endregion Methods
 
+        #region Static Methods
+
+        /// <summary>
+        /// Returns the appropriate StationType for a given vehicle
+        /// </summary>
+        /// <param name="veh"></param>
+        /// <returns></returns>
+        public static StationType GetStationTypeFromVehicle(Vehicle veh)
+        {
+            return (veh.Model.isHelicopter) ? StationType.Helicopter : (veh.Model.isBoat) ? StationType.Boat : StationType.CarAndBike;
+        }
+        /// <summary>
+        /// Gets the nearest station to a given origin
+        /// </summary>
+        /// <param name="origin"></param>
+        /// <returns></returns>
+        public static FuelStation GetNearestStation(Vector3 origin)
+        {
+            FuelStation res = null;
+            foreach (FuelStation fs in FuelStation.Items)
+                if (res == null || origin.DistanceTo(fs.Location) < origin.DistanceTo(res.Location))
+                    res = fs;
+            return res;
+        }
+        /// <summary>
+        /// Gets the nearest station to a given origin of a given type
+        /// </summary>
+        /// <param name="origin"></param>
+        /// <returns></returns>
+        public static FuelStation GetNearestStation(Vector3 origin, StationType type)
+        {
+            FuelStation res = null;
+            foreach (FuelStation fs in FuelStation.Items)
+                if (fs.Type == type && (res == null || origin.DistanceTo(fs.Location) < origin.DistanceTo(res.Location)))
+                    res = fs;
+            return res;
+        }
+        /// <summary>
+        /// Checks if a given location is located inside a given station, returns the given station if true, null if false
+        /// </summary>
+        /// <param name="station"></param>
+        /// <param name="location"></param>
+        /// <returns></returns>
+        public static FuelStation IsAtStation(FuelStation station, Vector3 location)
+        {
+            return (location.DistanceTo(station.Location) < station.Radius) ? station : null;
+        }
+
+        #endregion Static Methods
     }
 }

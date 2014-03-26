@@ -4,17 +4,22 @@ using System.IO;
 using AdvancedHookManaged;
 using GTA;
 using GTA.Native;
+using System.Windows.Forms;
 
 namespace ultimate_fuel_script
 {
     public class mainScript : Script
     {
         #region Properties
-        ///
-        /// TODO:
-        ///
 
-        // code goes here
+        /// <summary>
+        /// Holds the fuel station the player is currently in, null if not at a fuel station or if any fuel station diferent than the vehicle type
+        /// </summary>
+        internal FuelStation currentFuelStation = null;
+        /// <summary>
+        /// Defines if an help message should be displayed upon entering a station
+        /// </summary>
+        internal bool displayHelpMessage = true;
 
         internal static readonly string scriptName = "ultimate-fuel-script";
         #endregion Properties
@@ -51,7 +56,46 @@ namespace ultimate_fuel_script
             /// TODO:
             ///
 
-            // code goes here
+            #region Check player location
+
+            try
+            {
+                if (Player.Character.isInVehicle())
+                {
+                    currentFuelStation = FuelStation.IsAtStation(FuelStation.GetNearestStation(Player.Character.Position, FuelStation.GetStationTypeFromVehicle(Player.Character.CurrentVehicle)), Player.Character.Position);
+                    // Display an help message if necessary
+                    if (currentFuelStation != null && displayHelpMessage)
+                    {
+                        // Display help message
+                        if (currentFuelStation.DisplayBlip)
+                        {
+                            // Normal station message
+
+                            DisplayHelp(String.Format("Welcome to ~y~{0}~w~. Hold ~ INPUT_VEH_HANDBRAKE ~ to refuel. ${1} per liter.",
+                                currentFuelStation.Name,
+                                currentFuelStation.Price));
+                        }
+                        else
+                        {
+                            // Hidden station message
+
+                            DisplayHelp(String.Format("You found ~y~{0}~w~! Hold ~ INPUT_VEH_HANDBRAKE_ALT ~ to steal some fuel. ${1} per liter.",
+                                currentFuelStation.Name,
+                                currentFuelStation.Price));
+                        }
+
+                        displayHelpMessage = false;
+                    }
+                    else
+                        displayHelpMessage = true;
+                }
+            }
+            catch (Exception E)
+            {
+                Log("mainScript_Tick - check-player-location", E.Message);
+            }
+
+            #endregion Check player location
 
         }
 
