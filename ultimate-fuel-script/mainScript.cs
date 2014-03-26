@@ -77,24 +77,23 @@ namespace ultimate_fuel_script
         /// <param name="e"></param>
         void mainScript_Tick(object sender, EventArgs e)
         {
-            #region fuel-level-checking
-
+            // no sense calculating nothing if player isn't driving a vehicle
             if (Player.Character.isInVehicle() && Player.Character.CurrentVehicle.GetPedOnSeat(VehicleSeat.Driver) == Player.Character)
-                GetFuelLevel(Player.Character.CurrentVehicle);
-
-            #endregion fuel-level-checking
-
-            #region proximity-detection
-
-            try
             {
+                // Force fuel data
+                GetFuelLevel(Player.Character.CurrentVehicle);
+                // Update fuel data
+                DrainFuel(Player.Character.CurrentVehicle);
+
+                #region proximity-detection
+
                 // Check if player is in a vehicle, driving it and at slow speed
-                if (Player.Character.isInVehicle() && Player.Character.CurrentVehicle.GetPedOnSeat(VehicleSeat.Driver) == Player.Character && Player.Character.CurrentVehicle.Speed < 1.5f)
+                if (Player.Character.CurrentVehicle.Speed < 1.5f)
                 {
                     currentFuelStation = FuelStation.IsAtStation(
                         FuelStation.GetNearestStation(
-                            Player.Character.Position, 
-                            FuelStation.GetStationTypeFromVehicle(Player.Character.CurrentVehicle)), 
+                            Player.Character.Position,
+                            FuelStation.GetStationTypeFromVehicle(Player.Character.CurrentVehicle)),
                         Player.Character.Position);
                     // Display an help message if necessary
                     if (currentFuelStation != null && displayHelpMessage)
@@ -122,17 +121,12 @@ namespace ultimate_fuel_script
                         // Station changed, enable the help message again
                         displayHelpMessage = true;
                 }
+                #endregion proximity-detection
             }
-            catch (Exception E)
-            {
-                Log("mainScript_Tick - proximity-detection", E.Message);
-            }
-
-            #endregion proximity-detection
         }
 
         /// <summary>
-        /// run every frame, digitalMode
+        /// Frame painting
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -140,7 +134,7 @@ namespace ultimate_fuel_script
         {
             try
             {
-                // If player is in a vehicle.
+                // If player is in a vehicle and driving it, paint the gauge
                 if (Player.Character.isInVehicle() && Player.Character.CurrentVehicle.GetPedOnSeat(VehicleSeat.Driver) == Player.Character)
                     fuelGauge.Draw(e.Graphics, Player.Character.CurrentVehicle);
             }
@@ -154,64 +148,72 @@ namespace ultimate_fuel_script
 
         private void DrainFuel(Vehicle veh)
         {
-            // Draining enabled for cars and bikes?
-            if ((veh.Model.isCar || veh.Model.isBike) && veh.EngineRunning && Settings.GetValueBool("CARS", "MISC", true))
+            // Test if fuel tank is empty
+            if (veh.Metadata.Fuel == 0)
             {
-                // Base calculation of drain value
-                float Drain = veh.Metadata.Drain * veh.CurrentRPM / 100;
-                // Drain value increase based on engine health
-                Drain = Drain * ((1000 - veh.EngineHealth) / 1000) + Drain;
-                // Deduct from vehicle fuel avoiding negative values
-                veh.Metadata.Fuel -= (Drain >= veh.Metadata.Fuel) ? veh.Metadata.Fuel : Drain;
+                veh.EngineRunning = false;
             }
-            // Draining enabled for helicopters?
-            else if (veh.Model.isHelicopter && veh.EngineRunning && Settings.GetValueBool("HELIS", "MISC", true))
+            else
             {
-                // Note: 254.921568627451f
-                // Note: 0.2 + ((speed * 0.2) / 5)
-                // Only take in account speed when accelerate xor reverse key is pressed.
-                float Drain;
-                // GamePad disabled or unavailable? Use keyboard!
-                if (GamePad == null)
-                    if (Game.isGameKeyPressed(GameKey.MoveForward))
-                        Drain = (veh.Metadata.Drain * (.2f + ((veh.Speed * .2f) / 5.0f))) / 100.0f;
+                // Draining enabled for cars and bikes?
+                if ((veh.Model.isCar || veh.Model.isBike) && veh.EngineRunning && Settings.GetValueBool("CARS", "MISC", true))
+                {
+                    // Base calculation of drain value
+                    float Drain = veh.Metadata.Drain * veh.CurrentRPM / 100;
+                    // Drain value increase based on engine health
+                    Drain = Drain * ((1000 - veh.EngineHealth) / 1000) + Drain;
+                    // Deduct from vehicle fuel avoiding negative values
+                    veh.Metadata.Fuel -= (Drain >= veh.Metadata.Fuel) ? veh.Metadata.Fuel : Drain;
+                }
+                // Draining enabled for helicopters?
+                else if (veh.Model.isHelicopter && veh.EngineRunning && Settings.GetValueBool("HELIS", "MISC", true))
+                {
+                    // Note: 254.921568627451f
+                    // Note: 0.2 + ((speed * 0.2) / 5)
+                    // Only take in account speed when accelerate xor reverse key is pressed.
+                    float Drain;
+                    // GamePad disabled or unavailable? Use keyboard!
+                    if (GamePad == null)
+                        if (Game.isGameKeyPressed(GameKey.MoveForward))
+                            Drain = (veh.Metadata.Drain * (.2f + ((veh.Speed * .2f) / 5.0f))) / 100.0f;
+                        else
+                            Drain = (veh.Metadata.Drain * .208f) / 100.0f;
+                    // Use the GamePad if available.
+                    else if (GamePad.GetState().Gamepad.RightTrigger > 0.0f)
+                        Drain = veh.Metadata.Drain * (((GamePad.GetState().Gamepad.RightTrigger * 100.0f) / 255.0f) / 10000.0f);
+                    // Just go with it already.
                     else
                         Drain = (veh.Metadata.Drain * .208f) / 100.0f;
-                // Use the GamePad if available.
-                else if (GamePad.GetState().Gamepad.RightTrigger > 0.0f)
-                    Drain = veh.Metadata.Drain * (((GamePad.GetState().Gamepad.RightTrigger * 100.0f) / 255.0f) / 10000.0f);
-                // Just go with it already.
-                else
-                    Drain = (veh.Metadata.Drain * .208f) / 100.0f;
 
-                // Calculate the draining speed also taking engine damage to an account.
-                Drain = Drain * ((1000 - veh.EngineHealth) / 1000.0f) + Drain;
-                veh.Metadata.Fuel -= Drain;
-                veh.Metadata.Fuel = (veh.Metadata.Fuel < .0f) ? .0f : veh.Metadata.Fuel;
-            }
-            // Draining enabled for boats?
-            else if (veh.Model.isBoat && veh.EngineRunning && Settings.GetValueBool("BOATS", "MISC", true))
-            {
-                // Note: 0.2 + ((speed * 0.2) / 5)
-                // Only take in account speed when accelerate xor reverse key is pressed.
-                float Drain;
-                // GamePad disabled or unavailable? Use keyboard!
-                if (GamePad == null)
-                    if (Game.isGameKeyPressed(GameKey.MoveForward) ^ Game.isGameKeyPressed(GameKey.MoveBackward))
-                        Drain = (veh.Metadata.Drain * (.2f + ((veh.Speed * .2f) / 5.0f))) / 100;
+                    // Calculate the draining speed also taking engine damage to an account.
+                    Drain = Drain * ((1000 - veh.EngineHealth) / 1000.0f) + Drain;
+                    veh.Metadata.Fuel -= Drain;
+                    veh.Metadata.Fuel = (veh.Metadata.Fuel < .0f) ? .0f : veh.Metadata.Fuel;
+                }
+                // Draining enabled for boats?
+                else if (veh.Model.isBoat && veh.EngineRunning && Settings.GetValueBool("BOATS", "MISC", true))
+                {
+                    // Note: 0.2 + ((speed * 0.2) / 5)
+                    // Only take in account speed when accelerate xor reverse key is pressed.
+                    float Drain;
+                    // GamePad disabled or unavailable? Use keyboard!
+                    if (GamePad == null)
+                        if (Game.isGameKeyPressed(GameKey.MoveForward) ^ Game.isGameKeyPressed(GameKey.MoveBackward))
+                            Drain = (veh.Metadata.Drain * (.2f + ((veh.Speed * .2f) / 5.0f))) / 100;
+                        else
+                            Drain = (veh.Metadata.Drain * .208f) / 100;
+                    // Use the GamePad if available.
                     else
-                        Drain = (veh.Metadata.Drain * .208f) / 100;
-                // Use the GamePad if available.
-                else
-                    if (GamePad.GetState().Gamepad.RightTrigger > 0 ^ GamePad.GetState().Gamepad.LeftTrigger > 0)
-                        Drain = (veh.Metadata.Drain * (.2f + ((veh.Speed * .2f) / 5.0f))) / 100;
-                    else
-                        Drain = (veh.Metadata.Drain * .208f) / 100;
+                        if (GamePad.GetState().Gamepad.RightTrigger > 0 ^ GamePad.GetState().Gamepad.LeftTrigger > 0)
+                            Drain = (veh.Metadata.Drain * (.2f + ((veh.Speed * .2f) / 5.0f))) / 100;
+                        else
+                            Drain = (veh.Metadata.Drain * .208f) / 100;
 
-                // Calculate the draining speed also taking engine damage to an account.
-                Drain = Drain * ((1000 - veh.EngineHealth) / 1000) + Drain;
-                veh.Metadata.Fuel -= Drain;
-                veh.Metadata.Fuel = (veh.Metadata.Fuel < .0f) ? .0f : veh.Metadata.Fuel;
+                    // Calculate the draining speed also taking engine damage to an account.
+                    Drain = Drain * ((1000 - veh.EngineHealth) / 1000) + Drain;
+                    veh.Metadata.Fuel -= Drain;
+                    veh.Metadata.Fuel = (veh.Metadata.Fuel < .0f) ? .0f : veh.Metadata.Fuel;
+                }
             }
         }
 
