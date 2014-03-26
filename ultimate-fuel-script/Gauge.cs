@@ -15,6 +15,22 @@ namespace ultimate_fuel_script
             this.Width = Width;
 
             this.Flashing = 0;
+
+            Background = new RectangleF(
+                        Location.X - 0.0025f,
+                        Location.Y - 0.003f,
+                        Width, 
+                        0.0125f);
+            Foreground = new RectangleF(
+                        Location.X,
+                        Location.Y,
+                        (1 * (Width - 0.007f)) / 1,
+                        0.006f);
+            Display = new RectangleF(
+                        Location.X,
+                        Location.Y,
+                        0,
+                        0.006f);
         }
 
         /// <summary>
@@ -33,6 +49,8 @@ namespace ultimate_fuel_script
         public float Width
         { get; private set; }
 
+        private RectangleF Background, Foreground, Display;
+
         /// <summary>
         /// Draws the gauge to a given GTA.Graphics object
         /// </summary>
@@ -44,39 +62,22 @@ namespace ultimate_fuel_script
             {
                 graphics.Scaling = FontScaling.ScreenUnits;
 
-                // Calculate fuel availablity...
-                float FuelAvailability = (veh.Metadata.Fuel * 100) / veh.Metadata.Tank;
-
                 // Draw fuel level meter's black background.
-                graphics.DrawRectangle(
-                    new RectangleF(
-                        Location.X - 0.0035f,
-                        Location.Y - 0.004f,
-                        Width, 0.0125f),
-                    GTA.ColorIndex.Black);
+                graphics.DrawRectangle(Background, GTA.ColorIndex.Black);
 
                 // Draw fuel level meter's dark grey foreground.
-                graphics.DrawRectangle(
-                    new RectangleF(
-                        Location.X,
-                        Location.Y,
-                        (1 * (Width - 0.007f)) / 1, 0.006f),
-                    (GTA.ColorIndex)1);
+                graphics.DrawRectangle(Foreground, (GTA.ColorIndex)1);
 
                 // Draw the front rectange widening how much fuel vehicle has.
                 // Green as normal, and red when running on reserved.
-                graphics.DrawRectangle(
-                    new RectangleF(
-                        Location.X,
-                        Location.Y,
-                        (veh.Metadata.Fuel * (Width - 0.008f)) / veh.Metadata.Tank,
-                        0.006f),
-                    (veh.Metadata.Fuel <= veh.Metadata.Reserve)
-                        ? ((Flashing < 5)
-                            ? (GTA.ColorIndex)1
-                            : (GTA.ColorIndex)35
-                        )
-                    : (GTA.ColorIndex)50); // at this point, if we have issues about performance the color can very well be select when any of the 3 conditions change in the first place
+                Display.Width = (veh.Metadata.Fuel * (Width - 0.008f)) / veh.Metadata.Tank;
+                graphics.DrawRectangle(Display,
+                        (veh.Metadata.Fuel <= veh.Metadata.Reserve)
+                            ? ((Flashing < 5)
+                                ? (GTA.ColorIndex)1
+                                : (GTA.ColorIndex)35
+                            )
+                        : (GTA.ColorIndex)50); // at this point, if we have issues about performance the color can very well be select when any of the 3 conditions change in the first place
 
                 // Controls the Flashinging when on reserved fuel.
                 // Strange, but it won't flash if we used Flashing++;
