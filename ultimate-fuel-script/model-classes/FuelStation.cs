@@ -11,7 +11,7 @@ namespace ultimate_fuel_script
     /// </summary>
     public enum StationType
     {
-        CAR ,
+        CAR,
         BOAT,
         HELI
     }
@@ -72,7 +72,7 @@ namespace ultimate_fuel_script
         public float Price
         { get; private set; }
 
-        #endregion Properties 
+        #endregion Properties
 
         #region Static Properties
 

@@ -5,7 +5,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{9E061C45-D3FB-4900-8C68-614F050173F0}</ProjectGuid>
+    <ProjectGuid>{316D7F79-12FB-46B5-BE61-0EEB8D497976}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>ultimate_fuel_script</RootNamespace>
@@ -46,7 +46,6 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
-    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -55,11 +54,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="controller.cs" />
-    <Compile Include="FuelData.cs" />
-    <Compile Include="FuelStation.cs" />
-    <Compile Include="Gauge.cs" />
+    <Compile Include="model-classes\FuelData.cs" />
+    <Compile Include="model-classes\FuelStation.cs" />
     <Compile Include="model.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="view-classes\Gauge.cs" />
     <Compile Include="view.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -78,19 +77,11 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <UseHostCompilerIfAvailable>False</UseHostCompilerIfAvailable>
-    <PostBuildEvent>cd "$(ProjectDir)"
-git log --pretty=format:%25%25H -1 &gt; version
-set /p hash= &lt; version
-del version
-cd "$(TargetDir)"
-"C:\Program Files\7-Zip\7z.exe" a -tzip -i!*.dll -i!*.ini -i!README.txt -i!LICENSE.txt ultimate-fuel-script-%25hash%25.zip
-
-cd "D:\Program Files\Rockstar Games\Grand Theft Auto IV Modded\scripts\"
-xcopy "$(TargetDir)*.*" /Y</PostBuildEvent>
+    <PostBuildEvent>xcopy "$(ProjectDir)$(OutDir)*.*" "D:\Program Files\Rockstar Games\Grand Theft Auto IV\scripts\*.*" /Y</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PreBuildEvent>
-    </PreBuildEvent>
+    <PreBuildEvent>cd C:\Program Files\TortoiseSVN\bin\
+SubWCRev "$(SolutionDir)\" "$(ProjectDir)Development data\AssemblyInfo.tmpl" "$(ProjectDir)Properties\AssemblyInfo.cs"</PreBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

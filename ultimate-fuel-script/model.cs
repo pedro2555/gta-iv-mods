@@ -1,34 +1,26 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Drawing;
 using System.IO;
 using AdvancedHookManaged;
 using GTA;
 using GTA.Native;
-using System.Windows.Forms;
-using SlimDX.XInput;
 
 namespace ultimate_fuel_script
 {
+    /// <summary>
+    /// Handles core script functions and actions
+    /// 
+    /// Every action runs a on a per-tick notion, tick spacing is 250ms
+    /// </summary>
     public class model : Script
     {
         #region Properties
+
         /// <summary>
-        /// Control refueling state
+        /// Defines which actions should the model perform
         /// </summary>
-        internal bool refueling = false;
-        /// <summary>
-        /// Gamepad instance for fuel calculation based on key press
-        /// </summary>
-        internal Controller GamePad;
-        /// <summary>
-        /// Holds the fuel station the player is currently in, null if not at a fuel station or if any fuel station diferent than the vehicle type
-        /// </summary>
-        internal FuelStation currentFuelStation = null;
-        /// <summary>
-        /// Defines if an help message should be displayed upon entering a station
-        /// </summary>
-        internal bool displayHelpMessage = true;
+        public string action
+        { get; set; }
 
         internal static readonly string scriptName = "ultimate-fuel-script";
         #endregion Properties
@@ -38,165 +30,51 @@ namespace ultimate_fuel_script
         /// </summary>
         public model()
         {
-            // Defauld script GUID
-            GUID = new Guid("e027d24c-7db2-4ba7-924f-a4d72f5ae27e");
-
-            // Set timer interval time
-            this.Interval = 10;
-            // Assign timer tick event
+            // Tick spacing
+            this.Interval = 250;
+            // Tick handler
             this.Tick += new EventHandler(model_Tick);
-            // Assign drawing frame event
-            this.PerFrameDrawing += new GraphicsEventHandler(model_PerFrameDrawing);
+
+
+            // Load all stations into map
+            LoadStations();
 
             #region Log script start
             model.Log(" - - - - - - - - - - - - - - - STARTUP - - - - - - - - - - - - - - - ", String.Format("GTA IV {0} under {1}", Game.Version.ToString(), model.getOSInfo()));
             model.Log("Started", String.Format("{0} v{1}", model.scriptName, FileVersionInfo.GetVersionInfo(Game.InstallFolder + "\\scripts\\" + model.scriptName + ".net.dll").ProductVersion, true));
             #endregion Log script start
-
-            try
-            {
-                // Define the GamePad if needed
-                GamePad = (Settings.GetValueBool("GAMEPAD", "MISC", false)) ? new Controller(UserIndex.One) : null;
-                
-                // Load fuel stations
-                LoadStations();
-            }
-            catch (Exception E)
-            {
-                Log("model - load", E.Message);
-            }
         }
 
-        /// <summary>
-        /// Main tick event
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         void model_Tick(object sender, EventArgs e)
         {
-            // no sense calculating nothing if player isn't driving a vehicle
-            if (Player.Character.isInVehicle() && Player.Character.CurrentVehicle.GetPedOnSeat(VehicleSeat.Driver) == Player.Character && Player.Character.CurrentVehicle.EngineRunning)
+            switch (action)
             {
-                // Force fuel data
-                GetFuelLevel(Player.Character.CurrentVehicle);
-                // Update fuel data
-                DrainFuel(Player.Character.CurrentVehicle);
+                case "none":
+                    break;
+                case "drain":
+                    // Check if stored data is present
+
+                    // Drain fuel
+
+                    break;
+                case "refuel":
+
+                    break;
             }
-        }
-
-        /// <summary>
-        /// Frame painting
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void model_PerFrameDrawing(object sender, GTA.GraphicsEventArgs e)
-        {
-
         }
 
         #region Methods
 
-        private void DrainFuel(Vehicle veh)
-        {
-            // Test if fuel tank is empty
-            if (veh.Metadata.Fuel == 0)
-            {
-                veh.EngineRunning = false;
-            }
-            else
-            {
-                float Drain = 0.0f;
-                // Draining enabled for cars and bikes?
-                if ((veh.Model.isCar || veh.Model.isBike) && veh.EngineRunning && Settings.GetValueBool("CARS", "MISC", true))
-                {
-                    // Base calculation of drain value
-                    Drain = veh.Metadata.Drain * veh.CurrentRPM / 100;
-                    // Drain value increase based on engine health
-                    Drain += Drain * ((1000 - veh.EngineHealth) / 1000);
-                    // Deduct from vehicle fuel avoiding negative values
-                    veh.Metadata.Fuel -= (Drain >= veh.Metadata.Fuel) ? veh.Metadata.Fuel : Drain / 100;
-                    FuelData.Update(veh);
-                }
-                // Draining enabled for helicopters?
-                else if (veh.Model.isHelicopter && Settings.GetValueBool("HELIS", "MISC", true))
-                {
-                    // Note: 254.921568627451f
-                    // Note: 0.2 + ((speed * 0.2) / 5)
-                    // Only take in account speed when accelerate xor reverse key is pressed.
-                    // Check which input to use
-                    if (GamePad == null)
-                        if (Game.isGameKeyPressed(GameKey.MoveForward))
-                            Drain = (veh.Metadata.Drain * (.2f + ((veh.Speed * .2f) / 5.0f))) / 100.0f;
-                        else
-                            Drain = (veh.Metadata.Drain * .208f) / 100.0f;
-                    // Use the GamePad if available.
-                    else if (GamePad.GetState().Gamepad.RightTrigger > 0.0f)
-                        Drain = veh.Metadata.Drain * (((GamePad.GetState().Gamepad.RightTrigger * 100.0f) / 255.0f) / 10000.0f);
-                    else
-                        // Idle drain
-                        Drain = (veh.Metadata.Drain * .208f) / 100.0f;
-
-                    // Drain value increase based on engine health
-                    Drain = Drain * ((1000 - veh.EngineHealth) / 1000.0f) + Drain;
-                    // Deduct from vehicle fuel avoiding negative values
-                    veh.Metadata.Fuel -= (Drain >= veh.Metadata.Fuel) ? veh.Metadata.Fuel : Drain / 100;
-                    FuelData.Update(veh);
-                }
-                // Draining enabled for boats?
-                else if (veh.Model.isBoat && Settings.GetValueBool("BOATS", "MISC", true))
-                {
-                    // Note: 0.2 + ((speed * 0.2) / 5)
-                    // Only take in account speed when accelerate xor reverse key is pressed.
-                    // GamePad disabled or unavailable? Use keyboard!
-                    if (GamePad == null)
-                        if (Game.isGameKeyPressed(GameKey.MoveForward) ^ Game.isGameKeyPressed(GameKey.MoveBackward))
-                            Drain = (veh.Metadata.Drain * (.2f + ((veh.Speed * .2f) / 5.0f))) / 100;
-                        else
-                            Drain = (veh.Metadata.Drain * .208f) / 100;
-                    // Use the GamePad if available.
-                    else
-                        if (GamePad.GetState().Gamepad.RightTrigger > 0f ^ GamePad.GetState().Gamepad.LeftTrigger > 0f)
-                            Drain = (veh.Metadata.Drain * (.2f + ((veh.Speed * .2f) / 5.0f))) / 100;
-                        else
-                            Drain = (veh.Metadata.Drain * .208f) / 100;
-
-                    // Calculate the draining speed also taking engine damage to an account.
-                    Drain = Drain * ((1000 - veh.EngineHealth) / 1000) + Drain;
-                    // Deduct from vehicle fuel avoiding negative values
-                    veh.Metadata.Fuel -= (Drain >= veh.Metadata.Fuel) ? veh.Metadata.Fuel : Drain / 100;
-                    FuelData.Update(veh);
-                }
-            }
-        }
-
         /// <summary>
-        /// Returns the current fuel level or randomizes a new one
+        /// Returns ini file entry
         /// </summary>
-        /// <param name="veh"></param>
+        /// <param name="Option"></param>
+        /// <param name="Category"></param>
+        /// <param name="Default"></param>
         /// <returns></returns>
-        private void GetFuelLevel(Vehicle veh)
+        public float GetValueFloat(string Option, string Category, float Default)
         {
-            try
-            {
-                // Try to return an already saved value
-                FuelData.Fuel = veh.Metadata.Fuel;
-            }
-            catch (Exception)
-            {
-                // Fuel level is not set, check ini entries
-                // Set Tank entry
-                veh.Metadata.Tank = Settings.GetValueInteger("TANK", veh.GetHashCode().ToString(), // Get data by hash code
-                        Settings.GetValueInteger("TANK", veh.Name, 100)); // Get data by name or default to 100
-                // Set Drain entry
-                veh.Metadata.Drain = Settings.GetValueInteger("DRAIN", veh.GetHashCode().ToString(), // Get data by hash code
-                        Settings.GetValueInteger("DRAIN", veh.Name, 10)); // Get data by name or default to 10
-                // Set Reserve entry
-                veh.Metadata.Reserve = Settings.GetValueInteger("RESERVE", veh.GetHashCode().ToString(), // Get data by hash code
-                        Settings.GetValueInteger("RESERVE", veh.Name, 10)); // Get data by name or default to 10
-                // Generate a random value for the fuel level between Reserve + 1 and Tank
-                veh.Metadata.Fuel = (int)new Random().Next(veh.Metadata.Reserve + 1, veh.Metadata.Tank);
-                FuelData.Update(veh);
-            }
+            return Settings.GetValueFloat(Option, Category, Default);
         }
         /// <summary>
         /// Loads all types of stations
@@ -254,7 +132,6 @@ namespace ultimate_fuel_script
             }
         }
 
-        
         #region Logging and Updating
         /// <summary>
         /// Append a new line to the log file
@@ -379,12 +256,7 @@ namespace ultimate_fuel_script
             return ((String.IsNullOrEmpty(pa) || String.Compare(pa, 0, "x86", 0, 3, true) == 0) ? 32 : 64);
         }
         #endregion Logging and Updating
+
         #endregion Methods
-
-        #region Actions
-
-        // 
-
-        #endregion
     }
 }
