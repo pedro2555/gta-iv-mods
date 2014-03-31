@@ -54,6 +54,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="controller.cs" />
     <Compile Include="FuelData.cs" />
     <Compile Include="FuelStation.cs" />
     <Compile Include="Gauge.cs" />
