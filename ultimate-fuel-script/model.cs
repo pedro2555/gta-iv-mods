@@ -10,7 +10,7 @@ using SlimDX.XInput;
 
 namespace ultimate_fuel_script
 {
-    public class mainScript : Script
+    public class model : Script
     {
         #region Properties
         /// <summary>
@@ -25,8 +25,6 @@ namespace ultimate_fuel_script
         /// Holds the fuel station the player is currently in, null if not at a fuel station or if any fuel station diferent than the vehicle type
         /// </summary>
         internal FuelStation currentFuelStation = null;
-
-        internal Gauge fuelGauge;
         /// <summary>
         /// Defines if an help message should be displayed upon entering a station
         /// </summary>
@@ -38,35 +36,34 @@ namespace ultimate_fuel_script
         /// <summary>
         /// The script entry point
         /// </summary>
-        public mainScript()
+        public model()
         {
             // Defauld script GUID
             GUID = new Guid("e027d24c-7db2-4ba7-924f-a4d72f5ae27e");
 
             // Set timer interval time
-            this.Interval = 1000;
+            this.Interval = 10;
             // Assign timer tick event
-            this.Tick += new EventHandler(mainScript_Tick);
+            this.Tick += new EventHandler(model_Tick);
             // Assign drawing frame event
-            this.PerFrameDrawing += new GraphicsEventHandler(mainScript_PerFrameDrawing);
+            this.PerFrameDrawing += new GraphicsEventHandler(model_PerFrameDrawing);
 
             #region Log script start
-            mainScript.Log(" - - - - - - - - - - - - - - - STARTUP - - - - - - - - - - - - - - - ", String.Format("GTA IV {0} under {1}", Game.Version.ToString(), mainScript.getOSInfo()));
-            mainScript.Log("Started", String.Format("{0} v{1}", mainScript.scriptName, FileVersionInfo.GetVersionInfo(Game.InstallFolder + "\\scripts\\" + mainScript.scriptName + ".net.dll").ProductVersion, true));
+            model.Log(" - - - - - - - - - - - - - - - STARTUP - - - - - - - - - - - - - - - ", String.Format("GTA IV {0} under {1}", Game.Version.ToString(), model.getOSInfo()));
+            model.Log("Started", String.Format("{0} v{1}", model.scriptName, FileVersionInfo.GetVersionInfo(Game.InstallFolder + "\\scripts\\" + model.scriptName + ".net.dll").ProductVersion, true));
             #endregion Log script start
 
             try
             {
                 // Define the GamePad if needed
                 GamePad = (Settings.GetValueBool("GAMEPAD", "MISC", false)) ? new Controller(UserIndex.One) : null;
-                // Initialize the fuel gauge
-                fuelGauge = new Gauge(new PointF(Settings.GetValueFloat("X", "DASHBOARD", 0.0f), Settings.GetValueFloat("Y", "DASHBOARD", 0.0f)), Settings.GetValueFloat("W", "DASHBOARD", 0.11f));
+                
                 // Load fuel stations
                 LoadStations();
             }
             catch (Exception E)
             {
-                Log("mainScript - load", E.Message);
+                Log("model - load", E.Message);
             }
         }
 
@@ -75,53 +72,15 @@ namespace ultimate_fuel_script
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        void mainScript_Tick(object sender, EventArgs e)
+        void model_Tick(object sender, EventArgs e)
         {
             // no sense calculating nothing if player isn't driving a vehicle
-            if (Player.Character.isInVehicle() && Player.Character.CurrentVehicle.GetPedOnSeat(VehicleSeat.Driver) == Player.Character)
+            if (Player.Character.isInVehicle() && Player.Character.CurrentVehicle.GetPedOnSeat(VehicleSeat.Driver) == Player.Character && Player.Character.CurrentVehicle.EngineRunning)
             {
                 // Force fuel data
                 GetFuelLevel(Player.Character.CurrentVehicle);
                 // Update fuel data
                 DrainFuel(Player.Character.CurrentVehicle);
-
-                #region proximity-detection
-
-                // Check if player is in a vehicle, driving it and at slow speed
-                if (Player.Character.CurrentVehicle.Speed < 1.5f)
-                {
-                    currentFuelStation = FuelStation.IsAtStation(
-                        FuelStation.GetNearestStation(
-                            Player.Character.Position,
-                            FuelStation.GetStationTypeFromVehicle(Player.Character.CurrentVehicle)),
-                        Player.Character.Position);
-                    // Display an help message if necessary
-                    if (currentFuelStation != null && displayHelpMessage)
-                    {
-                        // Display help message
-                        if (currentFuelStation.DisplayBlip)
-                        {
-                            // Normal station message
-
-                            DisplayHelp(String.Format("Welcome to ~y~{0}~w~. Hold ~INPUT_VEH_HANDBRAKE~ to refuel. ${1} per liter.",
-                                currentFuelStation.Name,
-                                currentFuelStation.Price));
-                        }
-                        else
-                        {
-                            // Hidden station message
-
-                            DisplayHelp(String.Format("You found ~y~{0}~w~! Hold ~INPUT_VEH_HANDBRAKE~ to steal some fuel.",
-                                currentFuelStation.Name));
-                        }
-                        // Message was already displayed
-                        displayHelpMessage = false;
-                    }
-                    else
-                        // Station changed, enable the help message again
-                        displayHelpMessage = true;
-                }
-                #endregion proximity-detection
             }
         }
 
@@ -130,18 +89,9 @@ namespace ultimate_fuel_script
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void mainScript_PerFrameDrawing(object sender, GTA.GraphicsEventArgs e)
+        private void model_PerFrameDrawing(object sender, GTA.GraphicsEventArgs e)
         {
-            try
-            {
-                // If player is in a vehicle and driving it, paint the gauge
-                if (Player.Character.isInVehicle() && Player.Character.CurrentVehicle.GetPedOnSeat(VehicleSeat.Driver) == Player.Character)
-                    fuelGauge.Draw(e.Graphics, Player.Character.CurrentVehicle);
-            }
-            catch (Exception E)
-            {
-                Log("PerFrameDrawing", E.Message);
-            }
+
         }
 
         #region Methods
@@ -162,9 +112,10 @@ namespace ultimate_fuel_script
                     // Base calculation of drain value
                     Drain = veh.Metadata.Drain * veh.CurrentRPM / 100;
                     // Drain value increase based on engine health
-                    Drain = Drain * ((1000 - veh.EngineHealth) / 1000) + Drain;
+                    Drain += Drain * ((1000 - veh.EngineHealth) / 1000);
                     // Deduct from vehicle fuel avoiding negative values
-                    veh.Metadata.Fuel -= (Drain >= veh.Metadata.Fuel) ? veh.Metadata.Fuel : Drain;
+                    veh.Metadata.Fuel -= (Drain >= veh.Metadata.Fuel) ? veh.Metadata.Fuel : Drain / 100;
+                    FuelData.Update(veh);
                 }
                 // Draining enabled for helicopters?
                 else if (veh.Model.isHelicopter && Settings.GetValueBool("HELIS", "MISC", true))
@@ -187,8 +138,9 @@ namespace ultimate_fuel_script
 
                     // Drain value increase based on engine health
                     Drain = Drain * ((1000 - veh.EngineHealth) / 1000.0f) + Drain;
-                    veh.Metadata.Fuel -= Drain;
-                    veh.Metadata.Fuel = (veh.Metadata.Fuel < .0f) ? .0f : veh.Metadata.Fuel;
+                    // Deduct from vehicle fuel avoiding negative values
+                    veh.Metadata.Fuel -= (Drain >= veh.Metadata.Fuel) ? veh.Metadata.Fuel : Drain / 100;
+                    FuelData.Update(veh);
                 }
                 // Draining enabled for boats?
                 else if (veh.Model.isBoat && Settings.GetValueBool("BOATS", "MISC", true))
@@ -210,11 +162,10 @@ namespace ultimate_fuel_script
 
                     // Calculate the draining speed also taking engine damage to an account.
                     Drain = Drain * ((1000 - veh.EngineHealth) / 1000) + Drain;
-                    veh.Metadata.Fuel -= Drain;
-                    veh.Metadata.Fuel = (veh.Metadata.Fuel < .0f) ? .0f : veh.Metadata.Fuel;
+                    // Deduct from vehicle fuel avoiding negative values
+                    veh.Metadata.Fuel -= (Drain >= veh.Metadata.Fuel) ? veh.Metadata.Fuel : Drain / 100;
+                    FuelData.Update(veh);
                 }
-                // formula simplification tests
-                Game.DisplayText((veh.Metadata.Drain * (.2f + ((veh.Speed * .2f) / 5.0f))) / 100 + " " + ((.2f * veh.Speed / 5.0f) * veh.Metadata.Drain) / 100, 1500);
             }
         }
 
@@ -223,12 +174,12 @@ namespace ultimate_fuel_script
         /// </summary>
         /// <param name="veh"></param>
         /// <returns></returns>
-        private float GetFuelLevel(Vehicle veh)
+        private void GetFuelLevel(Vehicle veh)
         {
             try
             {
                 // Try to return an already saved value
-                return veh.Metadata.Fuel;
+                FuelData.Fuel = veh.Metadata.Fuel;
             }
             catch (Exception)
             {
@@ -243,7 +194,8 @@ namespace ultimate_fuel_script
                 veh.Metadata.Reserve = Settings.GetValueInteger("RESERVE", veh.GetHashCode().ToString(), // Get data by hash code
                         Settings.GetValueInteger("RESERVE", veh.Name, 10)); // Get data by name or default to 10
                 // Generate a random value for the fuel level between Reserve + 1 and Tank
-                return veh.Metadata.Fuel = (int)new Random().Next(veh.Metadata.Reserve + 1, veh.Metadata.Tank);
+                veh.Metadata.Fuel = (int)new Random().Next(veh.Metadata.Reserve + 1, veh.Metadata.Tank);
+                FuelData.Update(veh);
             }
         }
         /// <summary>
@@ -302,34 +254,7 @@ namespace ultimate_fuel_script
             }
         }
 
-        /// <summary>
-        /// Displays a message at the bottom of the screen
-        /// </summary>
-        /// <param name="message">The message to display</param>
-        /// <param name="time">Time in milliseconds</param>
-        internal static void DisplayInfo(string message, int time)
-        {
-            Function.Call("PRINT_STRING_WITH_LITERAL_STRING_NOW", "STRING", message, time, true);
-        }
-        /// <summary>
-        /// Displays a help message at the top left corner of the screen
-        /// </summary>
-        /// <param name="message">The message to display</param>
-        /// <param name="keep">Keep the message untill a new one</param>
-        internal static void DisplayHelp(string message, bool keep = false)
-        {
-            if (keep)
-                AGame.PrintText(message);
-            else
-                AGame.PrintTextForever(message);
-        }
-        /// <summary>
-        /// Clears the latest help message
-        /// </summary>
-        internal static void ClearHelp()
-        {
-            Function.Call("CLEAR_HELP");
-        }
+        
         #region Logging and Updating
         /// <summary>
         /// Append a new line to the log file
@@ -342,7 +267,7 @@ namespace ultimate_fuel_script
             {
                 if (!string.IsNullOrEmpty(message))
                 {
-                    using (StreamWriter streamWriter = File.AppendText(Game.InstallFolder + "\\scripts\\" + mainScript.scriptName + ".log"))
+                    using (StreamWriter streamWriter = File.AppendText(Game.InstallFolder + "\\scripts\\" + model.scriptName + ".log"))
                     {
                         streamWriter.WriteLine("[{0}] @ {1}: {2}", DateTime.Now.ToString("hh:mm:ss.fff"), methodName, message);
                         streamWriter.Flush();

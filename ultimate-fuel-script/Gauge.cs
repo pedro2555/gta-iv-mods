@@ -17,18 +17,18 @@ namespace ultimate_fuel_script
             this.Flashing = 0;
 
             Background = new RectangleF(
-                        Location.X - 0.0025f,
-                        Location.Y - 0.003f,
+                        Location.X,
+                        Location.Y,
                         Width, 
                         0.0125f);
             Foreground = new RectangleF(
-                        Location.X,
-                        Location.Y,
-                        (1 * (Width - 0.007f)) / 1,
+                        Location.X + 0.005f,
+                        Location.Y + 0.00325f,
+                        Width - 0.01f,
                         0.006f);
             Display = new RectangleF(
-                        Location.X,
-                        Location.Y,
+                        Location.X + 0.005f,
+                        Location.Y + 0.00325f,
                         0,
                         0.006f);
         }
@@ -71,9 +71,9 @@ namespace ultimate_fuel_script
 
                 // Draw the front rectange widening how much fuel vehicle has.
                 // Green as normal, and red when running on reserved.
-                Display.Width = (veh.Metadata.Fuel * (Width - 0.008f)) / veh.Metadata.Tank;
+                Display.Width = (FuelData.Fuel * (Width - 0.008f)) / FuelData.Tank;
                 graphics.DrawRectangle(Display,
-                        (veh.Metadata.Fuel <= veh.Metadata.Reserve)
+                        (FuelData.Fuel <= FuelData.Reserve)
                             ? ((Flashing < 5)
                                 ? (GTA.ColorIndex)1
                                 : (GTA.ColorIndex)35
@@ -91,18 +91,10 @@ namespace ultimate_fuel_script
 
                 // Draw vehicle speed.
                 graphics.DrawText("SPEED".PadRight(15) + "\t" + veh.Speed * 3.6f, Background.X, Background.Y - .12f);
-
-                // Draw vehicle engine health (0-1000 float).
-                graphics.DrawText("FUEL".PadRight(15) + "\t" + veh.Metadata.Fuel, Background.X, Background.Y - .04f);
-
-                // Draw vehicle RPM (how hard the player push the engine).
+                graphics.DrawText("FUEL".PadRight(15) + "\t" + FuelData.Fuel, Background.X, Background.Y - .04f);
                 graphics.DrawText("RPM".PadRight(15) + "\t" + veh.CurrentRPM, Background.X, Background.Y - .06f);
-
-                // Draw vehicle hash code.
-                graphics.DrawText("HASH".PadRight(15) + "\t" + veh.Model.Hash, Background.X, Background.Y - .08f);
-
-                // Draw vehicle's human friendly name.
-                graphics.DrawText("NAME".PadRight(15) + "\t" + veh.Model, Background.X, Background.Y - .1f);
+                graphics.DrawText("HEALTH".PadRight(15) + "\t" + (1 - (veh.EngineHealth / 1000)), Background.X, Background.Y - .08f);
+                graphics.DrawText("DRAIN".PadRight(15) + "\t" + FuelData.Drain, Background.X, Background.Y - .1f);
             }
             catch (Exception E)
             {

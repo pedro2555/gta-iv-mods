@@ -54,10 +54,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FuelData.cs" />
     <Compile Include="FuelStation.cs" />
     <Compile Include="Gauge.cs" />
-    <Compile Include="mainScript.cs" />
+    <Compile Include="model.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="view.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="LICENSE.txt">
