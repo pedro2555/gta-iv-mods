@@ -24,6 +24,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ultimate-overtaking-fix", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ultimate-indicator-script", "ultimate-indicator-script\ultimate-indicator-script.csproj", "{BD9B127D-FA29-4203-BC76-CF2615198C4A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ultimate-undercover-car-script", "ultimate-undercover-car-script\ultimate-undercover-car-script.csproj", "{A7E5ED40-16CA-4487-BF6E-6673EBC8671E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -38,6 +40,10 @@ Global
 		{BD9B127D-FA29-4203-BC76-CF2615198C4A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BD9B127D-FA29-4203-BC76-CF2615198C4A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BD9B127D-FA29-4203-BC76-CF2615198C4A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A7E5ED40-16CA-4487-BF6E-6673EBC8671E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A7E5ED40-16CA-4487-BF6E-6673EBC8671E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A7E5ED40-16CA-4487-BF6E-6673EBC8671E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A7E5ED40-16CA-4487-BF6E-6673EBC8671E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
