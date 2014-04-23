@@ -62,7 +62,10 @@ namespace ultimate_fuel_script
             switch (model.CurrentAction)
             {
                 case Actions.Driving:
-
+                    // Drain fuel
+                    break;
+                case Actions.Refueling:
+                    // Refuel tank
                     break;
             }
         }

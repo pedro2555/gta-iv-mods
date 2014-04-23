@@ -49,26 +49,28 @@ namespace ultimate_fuel_script
 
         void view_Tick(object sender, EventArgs e)
         {
-            #region handle fuel station help message display
-
-            if (model.CurrentFuelStation != null)
-                if (model.CurrentFuelStation.DisplayBlip)
-                {
-                    // Normal station message
-
-                    DisplayHelp(String.Format("Welcome to ~y~{0}~w~. Hold ~INPUT_VEH_HANDBRAKE~ to refuel. ${1} per liter.",
-                        model.CurrentFuelStation.Name,
-                        model.CurrentFuelStation.Price));
-                }
-                else
-                {
-                    // Hidden station message
-
-                    DisplayHelp(String.Format("You found ~y~{0}~w~! Hold ~INPUT_VEH_HANDBRAKE~ to steal some fuel.",
-                        model.CurrentFuelStation.Name));
-                }
-
-            #endregion handle fuel station help message display
+            switch (model.CurrentAction)
+            {
+                case Actions.Driving:
+                    if (model.LastAction == Actions.Refueling)
+                    {
+                        // Display refuel cost message
+                    }
+                    else
+                        // Display station welcome message
+                        if (model.CurrentFuelStation != null)
+                            if (model.CurrentFuelStation.DisplayBlip)
+                                DisplayHelp(String.Format("Welcome to ~y~{0}~w~. Hold ~INPUT_VEH_HANDBRAKE~ to refuel. ${1} per liter.",
+                                    model.CurrentFuelStation.Name,
+                                    model.CurrentFuelStation.Price));
+                            else
+                                DisplayHelp(String.Format("You found ~y~{0}~w~! Hold ~INPUT_VEH_HANDBRAKE~ to steal some fuel.",
+                                    model.CurrentFuelStation.Name));
+                    break;
+                case Actions.Refueling:
+                    // Display refuel message
+                    break;
+            }
         }
 
 
