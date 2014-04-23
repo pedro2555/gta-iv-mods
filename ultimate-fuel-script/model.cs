@@ -47,20 +47,6 @@ namespace ultimate_fuel_script
 
         void model_Tick(object sender, EventArgs e)
         {
-            switch (action)
-            {
-                case "none":
-                    break;
-                case "drain":
-                    // Check if stored data is present
-
-                    // Drain fuel
-
-                    break;
-                case "refuel":
-
-                    break;
-            }
         }
 
         #region Methods

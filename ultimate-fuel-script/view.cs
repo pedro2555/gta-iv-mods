@@ -23,7 +23,8 @@ namespace ultimate_fuel_script
         /// </summary>
         public view()
         {
-
+            // Populate fuel stations on map
+            FuelStation.LoadStations(Settings);
         }
 
 

@@ -127,6 +127,61 @@ namespace ultimate_fuel_script
         #region Static Methods
 
         /// <summary>
+        /// Loads all types of stations
+        /// </summary>
+        public static void LoadStations(SettingsFile settingsFile)
+        {
+            try
+            {
+                // Clear any existing records
+                FuelStation.Items.Clear();
+                // Load all types
+                foreach (StationType type in (StationType[])Enum.GetValues(typeof(StationType)))
+                    LoadStations(type, settingsFile);
+            }
+            catch (Exception E)
+            {
+                model.Log("LoadStations", E.Message);
+            }
+        }
+        /// <summary>
+        /// Loads a specific type of station
+        /// </summary>
+        /// <param name="type"></param>
+        public static void LoadStations(StationType type, SettingsFile settingsFile)
+        {
+            try
+            {
+                for (byte i = 1; i <= Byte.MaxValue; i++)
+                {
+                    // Get the station's location.
+                    Vector3 stationLocation = settingsFile.GetValueVector3("LOCATION", type.ToString() + "STATION" + i,
+                        new Vector3(-123456789.0987654321f, -123456789.0987654321f, -123456789.0987654321f));
+                    if (stationLocation.X != -123456789.0987654321f && stationLocation.Y != -123456789.0987654321f && stationLocation.Z != -123456789.0987654321f)
+                    {
+                        FuelStation f = new FuelStation(
+                            (settingsFile.GetValueString("NAME", type.ToString() + "STATION" + i, "Fuel Station").ToUpper().Trim().Length > 30) ?
+                                settingsFile.GetValueString("NAME", type.ToString() + "STATION" + i, "Fuel Station").Trim().Substring(0, 29) :
+                                settingsFile.GetValueString("NAME", type.ToString() + "STATION" + i, "Fuel Station").Trim(),
+                            settingsFile.GetValueFloat("RADIUS", type.ToString() + "STATION" + i, 10.0f),
+                            stationLocation,
+                            settingsFile.GetValueInteger("STARS", type.ToString() + "STATION" + i, 0),
+                            type,
+                            settingsFile.GetValueBool("DISPLAY", type.ToString() + "STATION" + i, true),
+                            settingsFile.GetValueFloat("PRICE", type.ToString() + "STATION" + i, 0.0f));
+                        f.PlaceOnMap();
+                        FuelStation.Items.Add(f);
+                    }
+                    else
+                        break;
+                }
+            }
+            catch (Exception E)
+            {
+                model.Log("LoadStations(Type)", E.Message);
+            }
+        }
+        /// <summary>
         /// Returns the appropriate StationType for a given vehicle
         /// </summary>
         /// <param name="veh"></param>
