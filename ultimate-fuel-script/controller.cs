@@ -50,6 +50,7 @@ namespace ultimate_fuel_script
 
         public controller()
         {
+
             RefuelButton = Buttons.BUTTON_A; // this is for test purposes only, this should selectable by the user
             RefuelKey = Keys.R;
 

@@ -50,7 +50,7 @@ namespace ultimate_fuel_script
             // Evertime player is driving a vehicle fuel data should be displayed.
             if (model.CurrentAction != Actions.None)
                 // Display heads up stuff
-                gauge.Draw(e.Graphics, Player.Character.CurrentVehicle);
+                gauge.Draw(e.Graphics, model.CurrentFuelData);
         }
 
         void view_Tick(object sender, EventArgs e)
@@ -94,8 +94,6 @@ namespace ultimate_fuel_script
                     ClearHelp();
                     break;
             }
-
-            Game.DisplayText(model.CurrentAction.ToString());
         }
 
 

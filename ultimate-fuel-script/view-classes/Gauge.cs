@@ -56,11 +56,11 @@ namespace ultimate_fuel_script
         /// </summary>
         /// <param name="graphics"></param>
         /// <param name="veh"></param>
-        public void Draw(GTA.Graphics graphics, Vehicle veh)
+        public void Draw(GTA.Graphics graphics, FuelData fuelData)
         {
             try
             {
-
+                // Define drawing scale
                 graphics.Scaling = FontScaling.ScreenUnits;
 
                 // Draw fuel level meter's black background.
@@ -71,9 +71,9 @@ namespace ultimate_fuel_script
 
                 // Draw the front rectange widening how much fuel vehicle has.
                 // Green as normal, and red when running on reserved.
-                Display.Width = (veh.Metadata.Fuel * (Width - 0.008f)) / veh.Metadata.Tank;
+                Display.Width = (fuelData.Fuel * (Width - 0.008f)) / fuelData.Tank;
                 graphics.DrawRectangle(Display,
-                        (veh.Metadata.Fuel <= veh.Metadata.Reserve)
+                        (fuelData.Fuel <= fuelData.Reserve)
                             ? ((Flashing < 5)
                                 ? (GTA.ColorIndex)1
                                 : (GTA.ColorIndex)35
@@ -84,25 +84,6 @@ namespace ultimate_fuel_script
                 // Strange, but it won't flash if we used Flashing++;
                 // It's not strange it is expected behaviour: Flashing++ uses the variable Flashing and updates it with 1. ++Flashing updates the variable with 1 and then uses it.
                 Flashing = (Flashing == 20) ? 0 : ++Flashing;
-
-
-
-
-
-                // Draw vehicle speed.
-                graphics.DrawText("SPEED".PadRight(15) + "\t" + veh.Speed * 3.6f, Background.X, Background.Y - .12f);
-
-                // Draw vehicle engine health (0-1000 float).
-                graphics.DrawText("FUEL".PadRight(15) + "\t" + veh.Metadata.Fuel, Background.X, Background.Y - .04f);
-
-                // Draw vehicle RPM (how hard the player push the engine).
-                graphics.DrawText("RPM".PadRight(15) + "\t" + veh.CurrentRPM, Background.X, Background.Y - .06f);
-
-                // Draw vehicle hash code.
-                graphics.DrawText("HASH".PadRight(15) + "\t" + veh.Model.Hash, Background.X, Background.Y - .08f);
-
-                // Draw vehicle's human friendly name.
-                graphics.DrawText("NAME".PadRight(15) + "\t" + veh.Model, Background.X, Background.Y - .1f);
             }
             catch (Exception E)
             {
