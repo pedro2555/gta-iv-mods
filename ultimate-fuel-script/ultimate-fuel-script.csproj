@@ -78,7 +78,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <UseHostCompilerIfAvailable>False</UseHostCompilerIfAvailable>
-    <PostBuildEvent>xcopy "$(ProjectDir)$(OutDir)*.*" "D:\Program Files\Rockstar Games\Grand Theft Auto IV\scripts\*.*" /Y</PostBuildEvent>
+    <PostBuildEvent>xcopy "$(ProjectDir)$(OutDir)*.*" "D:\Program Files\Rockstar Games\Grand Theft Auto IV Modded\scripts\*.*" /Y</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PreBuildEvent>

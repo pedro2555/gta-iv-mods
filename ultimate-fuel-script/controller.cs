@@ -9,7 +9,7 @@ using System.Windows.Forms;
 
 namespace ultimate_fuel_script
 {
-    private enum ControllerButtons
+    enum Buttons
     {
         BUTTON_BACK = 13,
         BUTTON_START = 12,
@@ -39,7 +39,7 @@ namespace ultimate_fuel_script
         /// <summary>
         /// XBox360 controller action buttons
         /// </summary>
-        ControllerButtons RefuelButton;
+        Buttons RefuelButton;
 
         /// <summary>
         /// Keyboard action keys
@@ -50,7 +50,7 @@ namespace ultimate_fuel_script
 
         public controller()
         {
-            RefuelButton = ControllerButtons.BUTTON_A; // this is for test purposes only, this should selectable by the user
+            RefuelButton = Buttons.BUTTON_A; // this is for test purposes only, this should selectable by the user
             RefuelKey = Keys.R;
 
             this.Interval = 250; // Run updates 4 times per second
@@ -60,24 +60,22 @@ namespace ultimate_fuel_script
         void controller_Tick(object sender, EventArgs e)
         {
             // Update current location
-            model.CurrentFuelStation = FuelStation.IsAtStation(
+            model.CurrentFuelStation = (Player.Character.isInVehicle()) ?
+                FuelStation.IsAtStation(
                 FuelStation.GetNearestStation(
                     Player.Character.Position,
                     FuelStation.GetStationTypeFromVehicle(Player.Character.CurrentVehicle)),
-                Player.Character.Position);
+                    Player.Character.Position) :
+                    null;
 
             Actions tempAction = Actions.None;
-
+            
             #region Enviroment based actions
 
             if (Player.Character.isInVehicle() && Player.Character.CurrentVehicle.GetPedOnSeat(VehicleSeat.Driver) == Player.Character)
             {
                 // Player is driving a vehicle
                 tempAction = Actions.Driving;
-                
-                // Check if player is requesting a refuel process
-                if (model.CurrentFuelStation != null && GTA.Native.Function.Call<bool>("IS_BUTTON_PRESSED", 0, (int)RefuelButton))
-                    tempAction = Actions.Refueling;
             }
 
             #endregion Location based actions
@@ -86,14 +84,12 @@ namespace ultimate_fuel_script
 
             if (model.CurrentFuelStation != null)
             {
-                if (GTA.Native.Function.Call<bool>("IS_BUTTON_PRESSED", 0, (int)RefuelButton) || GTA.Native.Function.Call<bool>("IS_KEYBOARD_KEY_PRESSED", (int)RefuelKey))
-                    model.UpdateCurrentAction(Actions.Refueling);
-                else
-                    model.UpdateCurrentAction(Actions.Driving);
+                if (GTA.Native.Function.Call<bool>("IS_BUTTON_PRESSED", 0, (int)RefuelButton) || Game.isKeyPressed(RefuelKey))
+                    tempAction = Actions.Refueling;
             }
 
             #endregion Input based actions
-
+            
             model.UpdateCurrentAction(tempAction);
         }
     }

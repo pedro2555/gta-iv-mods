@@ -17,6 +17,12 @@ namespace ultimate_fuel_script
         private Gauge gauge
         { get; set; }
 
+        /// <summary>
+        /// Gets or sets if a welcome message has been displayed for the model.CurrentFuelStation
+        /// </summary>
+        public static bool StationWelcomeMessageHasBeenDisplayed
+        { get; set; }
+
         #endregion Properties
 
         /// <summary>
@@ -55,10 +61,20 @@ namespace ultimate_fuel_script
                     if (model.LastAction == Actions.Refueling)
                     {
                         // Display refuel cost message
+                        if (model.CurrentFuelStation.DisplayBlip)
+                        {
+                            DisplayHelp(string.Format("Thank you for refueling at ~y~{0}~w~, we loved your ${1:0.00}!", model.CurrentFuelStation.Name, 0f));
+                            GTA.Native.Function.Call("DISPLAY_CASH");
+                        }
+                        else
+                            DisplayHelp("Be on the look out for the ~b~cops~w~!");
                     }
                     else
-                        // Display station welcome message
-                        if (model.CurrentFuelStation != null)
+                    {
+                        if (model.CurrentFuelStation == null)
+                            view.StationWelcomeMessageHasBeenDisplayed = false;
+                        else if (!view.StationWelcomeMessageHasBeenDisplayed)
+                        {
                             if (model.CurrentFuelStation.DisplayBlip)
                                 DisplayHelp(String.Format("Welcome to ~y~{0}~w~. Hold ~INPUT_VEH_HANDBRAKE~ to refuel. ${1} per liter.",
                                     model.CurrentFuelStation.Name,
@@ -66,11 +82,20 @@ namespace ultimate_fuel_script
                             else
                                 DisplayHelp(String.Format("You found ~y~{0}~w~! Hold ~INPUT_VEH_HANDBRAKE~ to steal some fuel.",
                                     model.CurrentFuelStation.Name));
+                            view.StationWelcomeMessageHasBeenDisplayed = true;
+                        }
+                    }
                     break;
                 case Actions.Refueling:
+                    GTA.Native.Function.Call("PRINT_STRING_WITH_LITERAL_STRING_NOW", "STRING", "Refueling...", 500, 1);
                     // Display refuel message
                     break;
+                default:
+                    ClearHelp();
+                    break;
             }
+
+            Game.DisplayText(model.CurrentAction.ToString());
         }
 
 

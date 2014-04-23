@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using GTA;
 
 namespace ultimate_fuel_script.model_classes
 {
@@ -33,6 +34,9 @@ namespace ultimate_fuel_script.model_classes
         public static float Fuel
         { get; set; }
 
+        public static Vehicle AttachedVehicle
+        { get; set;  }
+
         #endregion Properties
 
         #region Methods
@@ -41,7 +45,7 @@ namespace ultimate_fuel_script.model_classes
         /// Update FuelData objects with data from vehicle metada
         /// </summary>
         /// <param name="Metadata"></param>
-        public void Update(ref GTA.Vehicle veh)
+        public static void Update(ref GTA.Vehicle veh)
         {
 
         }
