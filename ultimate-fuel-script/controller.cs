@@ -56,9 +56,10 @@ namespace ultimate_fuel_script
                     FuelStation.GetStationTypeFromVehicle(Player.Character.CurrentVehicle)),
                 Player.Character.Position);
 
-            // Update action
-            // Default action is none
             Actions tempAction = Actions.None;
+
+            #region Enviroment based actions
+
             if (Player.Character.isInVehicle() && Player.Character.CurrentVehicle.GetPedOnSeat(VehicleSeat.Driver) == Player.Character)
             {
                 // Player is driving a vehicle
@@ -68,11 +69,11 @@ namespace ultimate_fuel_script
                 if (model.CurrentFuelStation != null && GTA.Native.Function.Call<bool>("IS_BUTTON_PRESSED", 0, (int)RefuelButton))
                     tempAction = Actions.Refueling;
             }
-            model.UpdateCurrentAction(tempAction);
 
+            #endregion Location based actions
 
+            #region Input based actions
 
-            // Controller actions
             if (model.CurrentFuelStation != null)
             {
                 if (GTA.Native.Function.Call<bool>("IS_BUTTON_PRESSED", 0, (int)RefuelButton))
@@ -80,6 +81,10 @@ namespace ultimate_fuel_script
                 else
                     model.UpdateCurrentAction(Actions.Driving);
             }
+
+            #endregion Input based actions
+
+            model.UpdateCurrentAction(tempAction);
         }
     }
 }
