@@ -14,7 +14,8 @@ namespace ultimate_fuel_script
     {
         #region Properties
 
-
+        private Gauge gauge
+        { get; set; }
 
         #endregion Properties
 
@@ -23,10 +24,27 @@ namespace ultimate_fuel_script
         /// </summary>
         public view()
         {
+            // Load Gauge data
+            gauge = new Gauge(
+                new System.Drawing.PointF(Settings.GetValueFloat("X", "GAUGE", .09f), Settings.GetValueFloat("Y", "GAUGE", .96f)),
+                Settings.GetValueFloat("W", "GAUGE", .11f));
+
             // Populate fuel stations on map
             FuelStation.LoadStations(Settings);
 
+            this.Interval = 250; // Run updates 4 times a second
             this.Tick += view_Tick;
+
+            // Handle graphis display
+            this.PerFrameDrawing += view_PerFrameDrawing;
+        }
+
+        void view_PerFrameDrawing(object sender, GraphicsEventArgs e)
+        {
+            // Evertime player is driving a vehicle fuel data should be displayed.
+            if (Player.Character.isInVehicle() && Player.Character.CurrentVehicle.GetPedOnSeat(VehicleSeat.Driver) == Player)
+                // Display heads up stuff
+                gauge.Draw(e.Graphics, Player.Character.CurrentVehicle);
         }
 
         void view_Tick(object sender, EventArgs e)

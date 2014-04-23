@@ -21,6 +21,7 @@ namespace ultimate_fuel_script
 
         public controller()
         {
+            this.Interval = 250; // Run updates 4 times per second
             this.Tick += controller_Tick;
         }
 
