@@ -5,6 +5,7 @@ using AdvancedHookManaged;
 using GTA;
 using GTA.Native;
 using SlimDX.XInput;
+using System.Windows.Forms;
 
 namespace ultimate_fuel_script
 {
@@ -35,13 +36,22 @@ namespace ultimate_fuel_script
     {
         #region Properties
 
+        /// <summary>
+        /// XBox360 controller action buttons
+        /// </summary>
         ControllerButtons RefuelButton;
+
+        /// <summary>
+        /// Keyboard action keys
+        /// </summary>
+        Keys RefuelKey;
 
         #endregion Properties
 
         public controller()
         {
             RefuelButton = ControllerButtons.BUTTON_A; // this is for test purposes only, this should selectable by the user
+            RefuelKey = Keys.R;
 
             this.Interval = 250; // Run updates 4 times per second
             this.Tick += controller_Tick;
@@ -76,7 +86,7 @@ namespace ultimate_fuel_script
 
             if (model.CurrentFuelStation != null)
             {
-                if (GTA.Native.Function.Call<bool>("IS_BUTTON_PRESSED", 0, (int)RefuelButton))
+                if (GTA.Native.Function.Call<bool>("IS_BUTTON_PRESSED", 0, (int)RefuelButton) || GTA.Native.Function.Call<bool>("IS_KEYBOARD_KEY_PRESSED", (int)RefuelKey))
                     model.UpdateCurrentAction(Actions.Refueling);
                 else
                     model.UpdateCurrentAction(Actions.Driving);
