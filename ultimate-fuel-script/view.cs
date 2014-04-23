@@ -42,7 +42,7 @@ namespace ultimate_fuel_script
         void view_PerFrameDrawing(object sender, GraphicsEventArgs e)
         {
             // Evertime player is driving a vehicle fuel data should be displayed.
-            if (Player.Character.isInVehicle() && Player.Character.CurrentVehicle.GetPedOnSeat(VehicleSeat.Driver) == Player)
+            if (model.CurrentAction != Actions.None)
                 // Display heads up stuff
                 gauge.Draw(e.Graphics, Player.Character.CurrentVehicle);
         }

@@ -59,6 +59,12 @@ namespace ultimate_fuel_script
 
         void model_Tick(object sender, EventArgs e)
         {
+            switch (model.CurrentAction)
+            {
+                case Actions.Driving:
+
+                    break;
+            }
         }
 
         #region Methods

@@ -49,19 +49,21 @@ namespace ultimate_fuel_script
 
         void controller_Tick(object sender, EventArgs e)
         {
+            // Update current location
+            model.CurrentFuelStation = FuelStation.IsAtStation(
+                FuelStation.GetNearestStation(
+                    Player.Character.Position,
+                    FuelStation.GetStationTypeFromVehicle(Player.Character.CurrentVehicle)),
+                Player.Character.Position);
+
+            // Update action
             // Default action is none
             Actions tempAction = Actions.None;
-            if (Player.Character.isInVehicle() && Player.Character.CurrentVehicle.GetPedOnSeat(VehicleSeat.Driver) == Player.Character && Player.Character.CurrentVehicle.Speed < 1.5f)
+            if (Player.Character.isInVehicle() && Player.Character.CurrentVehicle.GetPedOnSeat(VehicleSeat.Driver) == Player.Character)
             {
                 // Player is driving a vehicle
                 tempAction = Actions.Driving;
-                // This basically tests if the player is at the closest station found.
-                model.CurrentFuelStation = FuelStation.IsAtStation(
-                    FuelStation.GetNearestStation(
-                        Player.Character.Position,
-                        FuelStation.GetStationTypeFromVehicle(Player.Character.CurrentVehicle)),
-                    Player.Character.Position);
-
+                
                 // Check if player is requesting a refuel process
                 if (model.CurrentFuelStation != null && GTA.Native.Function.Call<bool>("IS_BUTTON_PRESSED", 0, (int)RefuelButton))
                     tempAction = Actions.Refueling;
