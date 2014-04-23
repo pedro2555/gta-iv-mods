@@ -67,17 +67,10 @@ namespace ultimate_fuel_script
             // Ensure fuelData is always loaded
             if (Player.Character.isInVehicle())
             {
-                try
-                {
-                    model.CurrentFuelData = (FuelData)Player.Character.CurrentVehicle.Metadata.Fuel;
-                }
-                catch (Exception)
-                {
-                    model.CurrentFuelData = Player.Character.CurrentVehicle.Metadata.Fuel = FuelData.Generate(Player.Character.CurrentVehicle);
-                }
+                if ((FuelData)Player.Character.CurrentVehicle.Metadata.Fuel == null)
+                    Player.Character.CurrentVehicle.Metadata.Fuel = FuelData.Generate(Player.Character.CurrentVehicle, Settings);
+                model.CurrentFuelData = (FuelData)Player.Character.CurrentVehicle.Metadata.Fuel;
             }
-            if (model.CurrentFuelData == null)
-                Game.DisplayText("is null!", 500);
 
             switch (model.CurrentAction)
             {

@@ -52,10 +52,8 @@ namespace ultimate_fuel_script
         /// <param name="veh"></param>
         /// <param name="settings"></param>
         /// <returns></returns>
-        public static FuelData Generate( GTA.Vehicle veh)
+        public static FuelData Generate(GTA.Vehicle veh, SettingsFile settings)
         {
-            // Open settings file
-            SettingsFile settings = SettingsFile.Open("ultimate-fuel-script.ini");
             // Initialize FuelData object
             FuelData fuelData = new FuelData();
             // Defaults to 100
@@ -66,6 +64,9 @@ namespace ultimate_fuel_script
             fuelData.Drain = settings.GetValueFloat("DRAIN", veh.GetHashCode().ToString(), settings.GetValueFloat("DRAIN", veh.Name, 100));
             // Randomize fuel level
             fuelData.Fuel = new Random().Next((int)fuelData.Reserve + 1, (int)fuelData.Tank);
+
+            model.Log("FuelData.Generate()", fuelData.Tank.ToString());
+
             // Return the attached data
             return fuelData;
         }
