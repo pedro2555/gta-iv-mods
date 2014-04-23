@@ -25,6 +25,32 @@ namespace ultimate_fuel_script
         {
             // Populate fuel stations on map
             FuelStation.LoadStations(Settings);
+
+            this.Tick += view_Tick;
+        }
+
+        void view_Tick(object sender, EventArgs e)
+        {
+            #region handle fuel station help message display
+
+            if (model.CurrentFuelStation != null)
+                if (model.CurrentFuelStation.DisplayBlip)
+                {
+                    // Normal station message
+
+                    DisplayHelp(String.Format("Welcome to ~y~{0}~w~. Hold ~INPUT_VEH_HANDBRAKE~ to refuel. ${1} per liter.",
+                        model.CurrentFuelStation.Name,
+                        model.CurrentFuelStation.Price));
+                }
+                else
+                {
+                    // Hidden station message
+
+                    DisplayHelp(String.Format("You found ~y~{0}~w~! Hold ~INPUT_VEH_HANDBRAKE~ to steal some fuel.",
+                        model.CurrentFuelStation.Name));
+                }
+
+            #endregion handle fuel station help message display
         }
 
 

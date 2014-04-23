@@ -17,9 +17,9 @@ namespace ultimate_fuel_script
         #region Properties
 
         /// <summary>
-        /// Defines which actions should the model perform
+        /// Fuel station that player is currently at, null if at any or not in a vehicle.
         /// </summary>
-        public string action
+        public static FuelStation CurrentFuelStation
         { get; set; }
 
         internal static readonly string scriptName = "ultimate-fuel-script";
