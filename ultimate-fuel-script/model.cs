@@ -7,6 +7,13 @@ using GTA.Native;
 
 namespace ultimate_fuel_script
 {
+    public enum Actions
+    {
+        None,
+        Driving,
+        Refueling
+    }
+
     /// <summary>
     /// Handles core script functions and actions
     /// 
@@ -21,6 +28,11 @@ namespace ultimate_fuel_script
         /// </summary>
         public static FuelStation CurrentFuelStation
         { get; set; }
+
+        public static Actions LastAction
+        { get; private set; }
+        public static Actions CurrentAction
+        { get; private set; }
 
         internal static readonly string scriptName = "ultimate-fuel-script";
         #endregion Properties
@@ -47,19 +59,19 @@ namespace ultimate_fuel_script
 
         void model_Tick(object sender, EventArgs e)
         {
-            // Change CurrentFuelStation according to player location and moving method
-            if (Player.Character.isInVehicle() && Player.Character.CurrentVehicle.GetPedOnSeat(VehicleSeat.Driver) == Player.Character && Player.Character.CurrentVehicle.Speed < 1.5f)
-            {
-                // This basically tests if the player is at the closest station found.
-                model.CurrentFuelStation = FuelStation.IsAtStation(
-                    FuelStation.GetNearestStation(
-                        Player.Character.Position,
-                        FuelStation.GetStationTypeFromVehicle(Player.Character.CurrentVehicle)),
-                    Player.Character.Position);
-            }
         }
 
         #region Methods
+
+        /// <summary>
+        /// Sets LastAction as CurrentAction and updates CurrentAction with the specified action
+        /// </summary>
+        /// <param name="action"></param>
+        public static void UpdateCurrentAction(Actions action)
+        {
+            model.LastAction = model.CurrentAction;
+            model.CurrentAction = action;
+        }
 
         /// <summary>
         /// Returns ini file entry
