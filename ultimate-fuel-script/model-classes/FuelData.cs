@@ -51,16 +51,7 @@ namespace ultimate_fuel_script
         {
             get
             {
-                switch (this.Type)
-                {
-                    default:
-                    case StationType.CAR:
-                        return this.Fuel + 2 >= this.Tank;
-                    case StationType.BOAT:
-                    case StationType.HELI:
-                        return this.Fuel + 10 >= this.Tank;
-                }
-                
+                return this.Fuel + FuelStation.GetRefuelTick(this.Type) >= this.Tank;
             }
         }
 

@@ -64,7 +64,7 @@ namespace ultimate_fuel_script
                             // Display refuel cost message
                             if (model.CurrentFuelStation.DisplayBlip)
                             {
-                                DisplayHelp(string.Format("Thank you for refueling at ~y~{0}~w~, we loved your ${1:0}!", model.CurrentFuelStation.Name, Math.Truncate(model.LastRefuelCost)));
+                                DisplayHelp(string.Format("Thank you for refueling at ~y~{0}~w~, we loved your ~g~${1:0}~w~!", model.CurrentFuelStation.Name, Math.Truncate(model.LastRefuelCost)));
                                 Player.Money -= (int)model.LastRefuelCost;
                                 GTA.Native.Function.Call("DISPLAY_CASH");
                             }
@@ -80,7 +80,7 @@ namespace ultimate_fuel_script
                             else if (!view.StationWelcomeMessageHasBeenDisplayed)
                             {
                                 if (model.CurrentFuelStation.DisplayBlip)
-                                    DisplayHelp(String.Format("Welcome to ~y~{0}~w~. Hold ~INPUT_VEH_HANDBRAKE~ to refuel. ${1} per liter.",
+                                    DisplayHelp(String.Format("Welcome to ~y~{0}~w~. Hold ~INPUT_VEH_HANDBRAKE~ to refuel. ~g~${1}~w~ per liter.",
                                         model.CurrentFuelStation.Name,
                                         model.CurrentFuelStation.Price));
                                 else
@@ -91,7 +91,7 @@ namespace ultimate_fuel_script
                         }
                         break;
                     case Actions.Refueling:
-                        GTA.Native.Function.Call("PRINT_STRING_WITH_LITERAL_STRING_NOW", "STRING", String.Format("Refueling {0:0.00} liters for ${1:0}.", model.LastRefuelAmount, Math.Truncate(model.LastRefuelCost), 500, 1));
+                        GTA.Native.Function.Call("PRINT_STRING_WITH_LITERAL_STRING_NOW", "STRING", String.Format("Refueling ~b~{0:0.00} liters~w~ for ~g~${1:0}~w~.", model.LastRefuelAmount, Math.Truncate(model.LastRefuelCost), 500, 1000));
                         // Display refuel message
                         break;
                     default:
