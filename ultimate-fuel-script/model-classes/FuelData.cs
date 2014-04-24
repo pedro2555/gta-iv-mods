@@ -70,11 +70,11 @@ namespace ultimate_fuel_script
             // Initialize FuelData object
             FuelData fuelData = new FuelData();
             // Defaults to 100
-            fuelData.Tank = settings.GetValueFloat("TANK", veh.GetHashCode().ToString(), settings.GetValueFloat("TANK", veh.Name, 100));
+            fuelData.Tank = settings.GetValueFloat("TANK", veh.GetHashCode().ToString(), settings.GetValueFloat("TANK", veh.Name, 55));
             // Defaults to 10% of Tank
             fuelData.Reserve = settings.GetValueFloat("RESERVE", veh.GetHashCode().ToString(), settings.GetValueFloat("RESERVE", veh.Name, fuelData.Tank * .1f));
             // Defaults to ?somehing?
-            fuelData.Drain = settings.GetValueFloat("DRAIN", veh.GetHashCode().ToString(), settings.GetValueFloat("DRAIN", veh.Name, 10));
+            fuelData.Drain = settings.GetValueFloat("DRAIN", veh.GetHashCode().ToString(), settings.GetValueFloat("DRAIN", veh.Name, 1.1f));
             // Randomize fuel level
             fuelData.Fuel = new Random().Next((int)fuelData.Reserve + 1, (int)fuelData.Tank);
             // Assign type
