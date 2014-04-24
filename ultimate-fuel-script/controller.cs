@@ -72,7 +72,7 @@ namespace ultimate_fuel_script
             else
                 controller.Gamepad = null;
 
-            this.Interval = 250; // Run updates 4 times per second
+            this.Interval = 100; // Run updates 4 times per second
             this.Tick += controller_Tick;
         }
 
@@ -101,10 +101,10 @@ namespace ultimate_fuel_script
 
             #region Input based actions
 
-            if (model.CurrentFuelStation != null)
+            if (model.CurrentFuelStation != null && Player.Character.isInVehicle())
             {
                 // Handle a refuel request
-                if (Player.Character.CurrentVehicle.Speed < 1.5f && (!model.CurrentFuelData.isFull && model.CurrentFuelStation.CanRefuel(Player.Money)) && (GTA.Native.Function.Call<bool>("IS_BUTTON_PRESSED", 0, (int)RefuelButton) || Game.isKeyPressed(RefuelKey)))
+                if (Player.Character.CurrentVehicle.Speed < 1.5f && !model.CurrentFuelData.isFull && model.CurrentFuelStation.CanRefuel(Player.Money) && (GTA.Native.Function.Call<bool>("IS_BUTTON_PRESSED", 0, (int)RefuelButton) || Game.isKeyPressed(RefuelKey)))
                     tempAction = Actions.Refueling;
             }
 

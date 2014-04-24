@@ -142,11 +142,11 @@ namespace ultimate_fuel_script
             switch (this.Type)
             {
                 case StationType.CAR:
-                    return (this.Price * FuelStation.CarRefuelTick) + model.LastRefuelCost > Money;
+                    return (this.Price * FuelStation.CarRefuelTick) + model.LastRefuelCost <= Money;
                 case StationType.BOAT:
-                    return (this.Price * FuelStation.BoatRefuelTick) + model.LastRefuelCost > Money;
+                    return (this.Price * FuelStation.BoatRefuelTick) + model.LastRefuelCost <= Money;
                 case StationType.HELI:
-                    return (this.Price * FuelStation.HeliRefuelTick) + model.LastRefuelCost > Money;
+                    return (this.Price * FuelStation.HeliRefuelTick) + model.LastRefuelCost <= Money;
                 default:
                     return false;
             }

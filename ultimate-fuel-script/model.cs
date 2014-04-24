@@ -61,7 +61,7 @@ namespace ultimate_fuel_script
         public model()
         {
             // Tick spacing
-            this.Interval = 250;
+            this.Interval = 100;
             // Tick handler
             this.Tick += new EventHandler(model_Tick);
 
@@ -88,24 +88,34 @@ namespace ultimate_fuel_script
             switch (model.CurrentAction)
             {
                 case Actions.Driving:
-                    // Drain fuel
-                    Player.Character.CurrentVehicle.Metadata.Fuel.DrainFuel(true, true, true, Player.Character.CurrentVehicle);
-                    // Update cross script data
-                    model.CurrentFuelData = (FuelData)Player.Character.CurrentVehicle.Metadata.Fuel;
-                    // Force vehicle to stop when without fuel
-                    if (Player.Character.CurrentVehicle.Metadata.Fuel.Fuel <= 0.0f)
-                        Player.Character.CurrentVehicle.EngineRunning = false;
+                    if (Player.Character.isInVehicle())
+                    {
+                        // Drain fuel
+                        Player.Character.CurrentVehicle.Metadata.Fuel.DrainFuel(true, true, true, Player.Character.CurrentVehicle);
+                        // Update cross script data
+                        model.CurrentFuelData = (FuelData)Player.Character.CurrentVehicle.Metadata.Fuel;
+                        // Force vehicle to stop when without fuel
+                        if (Player.Character.CurrentVehicle.Metadata.Fuel.Fuel <= 0.0f)
+                            Player.Character.CurrentVehicle.EngineRunning = false;
+                        else
+                            Player.Character.CurrentVehicle.EngineRunning = true;
+                    }
                     break;
                 case Actions.Refueling:
+                    if (model.LastAction == Actions.Driving)
+                    {
+                        model.LastRefuelCost = 0.0f;
+                        model.LastRefuelAmount = 0.0f;
+                    }
                     // Stop the car
                     Player.Character.CurrentVehicle.EngineRunning = false;
 
                     // Actually refuel
-                    model.LastRefuelAmount += Player.Character.CurrentVehicle.Metadata.Fuel.Add(FuelStation.GetRefuelTick(FuelStation.GetStationTypeFromVehicle(Player.Character.CurrentVehicle)));
-                    model.LastRefuelCost += model.LastRefuelAmount * model.CurrentFuelStation.Price;
+                    model.LastRefuelAmount += Player.Character.CurrentVehicle.Metadata.Fuel.AddFuel(FuelStation.GetRefuelTick(FuelStation.GetStationTypeFromVehicle(Player.Character.CurrentVehicle)));
+                    model.LastRefuelCost = model.LastRefuelAmount * model.CurrentFuelStation.Price;
 
                     // Make sure to finish refueling when tank is full
-                    if (Player.Character.CurrentVehicle.Metadata.Fuel.isFull())
+                    if (Player.Character.CurrentVehicle.Metadata.Fuel.isFull)
                         model.UpdateCurrentAction(Actions.Driving);
                     // Update cross script data
                     model.CurrentFuelData = (FuelData)Player.Character.CurrentVehicle.Metadata.Fuel;

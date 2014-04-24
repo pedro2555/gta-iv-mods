@@ -38,7 +38,7 @@ namespace ultimate_fuel_script
             // Populate fuel stations on map
             FuelStation.LoadStations(Settings);
 
-            this.Interval = 250; // Run updates 4 times a second
+            this.Interval = 50; // Run updates 4 times a second
             this.Tick += view_Tick;
 
             // Handle graphis display
@@ -55,47 +55,54 @@ namespace ultimate_fuel_script
 
         void view_Tick(object sender, EventArgs e)
         {
-            switch (model.CurrentAction)
-            {
-                case Actions.Driving:
-                    if (model.LastAction == Actions.Refueling)
-                    {
-                        // Display refuel cost message
-                        if (model.CurrentFuelStation.DisplayBlip)
+            try {
+                switch (model.CurrentAction)
+                {
+                    case Actions.Driving:
+                        if (model.LastAction == Actions.Refueling)
                         {
-                            DisplayHelp(string.Format("Thank you for refueling at ~y~{0}~w~, we loved your ${1:0.00}!", model.CurrentFuelStation.Name, model.LastRefuelCost));
-                            Player.Money -= (int)model.LastRefuelCost;
-                            GTA.Native.Function.Call("DISPLAY_CASH");
-                            model.LastRefuelCost = 0.0f;
-                            model.LastRefuelAmount = 0.0f;
+                            // Display refuel cost message
+                            if (model.CurrentFuelStation.DisplayBlip)
+                            {
+                                DisplayHelp(string.Format("Thank you for refueling at ~y~{0}~w~, we loved your ${1:0.00}!", model.CurrentFuelStation.Name, model.LastRefuelCost));
+                                Player.Money -= (int)model.LastRefuelCost;
+                                GTA.Native.Function.Call("DISPLAY_CASH");
+                            }
+                            else
+                            {
+                                DisplayHelp("Be on the look out for the ~b~cops~w~!");
+                            }
                         }
                         else
-                            DisplayHelp("Be on the look out for the ~b~cops~w~!");
-                    }
-                    else
-                    {
-                        if (model.CurrentFuelStation == null && view.StationWelcomeMessageHasBeenDisplayed)
-                            view.StationWelcomeMessageHasBeenDisplayed = false;
-                        else if (!view.StationWelcomeMessageHasBeenDisplayed)
                         {
-                            if (model.CurrentFuelStation.DisplayBlip)
-                                DisplayHelp(String.Format("Welcome to ~y~{0}~w~. Hold ~INPUT_VEH_HANDBRAKE~ to refuel. ${1} per liter.",
-                                    model.CurrentFuelStation.Name,
-                                    model.CurrentFuelStation.Price));
-                            else
-                                DisplayHelp(String.Format("You found ~y~{0}~w~! Hold ~INPUT_VEH_HANDBRAKE~ to steal some fuel.",
-                                    model.CurrentFuelStation.Name));
-                            view.StationWelcomeMessageHasBeenDisplayed = true;
+                            if (model.CurrentFuelStation == null && view.StationWelcomeMessageHasBeenDisplayed)
+                                view.StationWelcomeMessageHasBeenDisplayed = false;
+                            else if (!view.StationWelcomeMessageHasBeenDisplayed)
+                            {
+                                if (model.CurrentFuelStation.DisplayBlip)
+                                    DisplayHelp(String.Format("Welcome to ~y~{0}~w~. Hold ~INPUT_VEH_HANDBRAKE~ to refuel. ${1} per liter.",
+                                        model.CurrentFuelStation.Name,
+                                        model.CurrentFuelStation.Price));
+                                else
+                                    DisplayHelp(String.Format("You found ~y~{0}~w~! Hold ~INPUT_VEH_HANDBRAKE~ to steal some fuel.",
+                                        model.CurrentFuelStation.Name));
+                                view.StationWelcomeMessageHasBeenDisplayed = true;
+                            }
                         }
-                    }
-                    break;
-                case Actions.Refueling:
-                    GTA.Native.Function.Call("PRINT_STRING_WITH_LITERAL_STRING_NOW", "STRING", String.Format("Refueling {0:0.00} liters for ${1:0.00}.", model.LastRefuelAmount, model.LastRefuelCost), 500, 1);
-                    // Display refuel message
-                    break;
-                default:
-                    ClearHelp();
-                    break;
+                        break;
+                    case Actions.Refueling:
+                        GTA.Native.Function.Call("PRINT_STRING_WITH_LITERAL_STRING_NOW", "STRING", String.Format("Refueling {0:0.00} liters for ${1:0.00}.", model.LastRefuelAmount, model.LastRefuelCost), 500, 1);
+                        // Display refuel message
+                        break;
+                    default:
+                        ClearHelp();
+                        break;
+                }
+            
+            }
+            catch (Exception E)
+            {
+
             }
         }
 
