@@ -69,16 +69,22 @@ namespace ultimate_fuel_script
             {
                 if ((FuelData)Player.Character.CurrentVehicle.Metadata.Fuel == null)
                     Player.Character.CurrentVehicle.Metadata.Fuel = FuelData.Generate(Player.Character.CurrentVehicle, Settings);
-                model.CurrentFuelData = (FuelData)Player.Character.CurrentVehicle.Metadata.Fuel;
             }
 
             switch (model.CurrentAction)
             {
                 case Actions.Driving:
-                    Player.Character.CurrentVehicle.Metadata.Fuel = FuelData.DrainFuel();
                     // Drain fuel
+                    Player.Character.CurrentVehicle.Metadata.Fuel.Drain(true, true, true, Player.Character.CurrentVehicle);
+                    // Update cross script data
+                    model.CurrentFuelData = (FuelData)Player.Character.CurrentVehicle.Metadata.Fuel;
+                    // Force vehicle to stop when without fuel
+                    if (Player.Character.CurrentVehicle.Metadata.Fuel.Fuel <= 0.0f)
+                        Player.Character.CurrentVehicle.EngineRunning = false;
                     break;
                 case Actions.Refueling:
+                    // Stop the car
+                    Player.Character.CurrentVehicle.EngineRunning = false;
                     // Refuel tank
                     break;
             }
