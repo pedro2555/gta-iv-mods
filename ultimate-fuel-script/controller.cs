@@ -39,12 +39,15 @@ namespace ultimate_fuel_script
         /// <summary>
         /// XBox360 controller action buttons
         /// </summary>
-        Buttons RefuelButton;
+        private Buttons RefuelButton;
 
         /// <summary>
         /// Keyboard action keys
         /// </summary>
-        Keys RefuelKey;
+        private Keys RefuelKey;
+
+        public static SlimDX.XInput.Controller Gamepad
+        { get; private set; }
 
         #endregion Properties
 
@@ -53,6 +56,21 @@ namespace ultimate_fuel_script
 
             RefuelButton = Buttons.BUTTON_A; // this is for test purposes only, this should selectable by the user
             RefuelKey = Keys.R;
+
+            // Initiate gamepad
+            if (Settings.GetValueBool("USEGAMEPAD", "CONTROLS", false))
+            {
+                try
+                {
+                    controller.Gamepad = new SlimDX.XInput.Controller(UserIndex.One);
+                }
+                catch (Exception E)
+                {
+                    controller.Gamepad = null;
+                }
+            }
+            else
+                controller.Gamepad = null;
 
             this.Interval = 250; // Run updates 4 times per second
             this.Tick += controller_Tick;

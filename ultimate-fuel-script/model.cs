@@ -75,6 +75,7 @@ namespace ultimate_fuel_script
             switch (model.CurrentAction)
             {
                 case Actions.Driving:
+                    Player.Character.CurrentVehicle.Metadata.Fuel = FuelData.DrainFuel();
                     // Drain fuel
                     break;
                 case Actions.Refueling:

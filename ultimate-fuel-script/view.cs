@@ -71,7 +71,7 @@ namespace ultimate_fuel_script
                     }
                     else
                     {
-                        if (model.CurrentFuelStation == null)
+                        if (model.CurrentFuelStation == null && view.StationWelcomeMessageHasBeenDisplayed)
                             view.StationWelcomeMessageHasBeenDisplayed = false;
                         else if (!view.StationWelcomeMessageHasBeenDisplayed)
                         {
