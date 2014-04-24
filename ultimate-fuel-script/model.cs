@@ -89,7 +89,7 @@ namespace ultimate_fuel_script
             {
                 case Actions.Driving:
                     // Drain fuel
-                    Player.Character.CurrentVehicle.Metadata.Fuel.Drain(true, true, true, Player.Character.CurrentVehicle);
+                    Player.Character.CurrentVehicle.Metadata.Fuel.DrainFuel(true, true, true, Player.Character.CurrentVehicle);
                     // Update cross script data
                     model.CurrentFuelData = (FuelData)Player.Character.CurrentVehicle.Metadata.Fuel;
                     // Force vehicle to stop when without fuel
