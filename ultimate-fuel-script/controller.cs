@@ -103,7 +103,8 @@ namespace ultimate_fuel_script
 
             if (model.CurrentFuelStation != null)
             {
-                if (Player.Character.CurrentVehicle.Speed < 1.5f && (!model.CurrentFuelData.isFull() && model.CurrentFuelStation.CanRefuel(Player.Money)) && (GTA.Native.Function.Call<bool>("IS_BUTTON_PRESSED", 0, (int)RefuelButton) || Game.isKeyPressed(RefuelKey)))
+                // Handle a refuel request
+                if (Player.Character.CurrentVehicle.Speed < 1.5f && (!model.CurrentFuelData.isFull && model.CurrentFuelStation.CanRefuel(Player.Money)) && (GTA.Native.Function.Call<bool>("IS_BUTTON_PRESSED", 0, (int)RefuelButton) || Game.isKeyPressed(RefuelKey)))
                     tempAction = Actions.Refueling;
             }
 

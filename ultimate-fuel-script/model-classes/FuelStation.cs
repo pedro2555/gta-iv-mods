@@ -142,11 +142,11 @@ namespace ultimate_fuel_script
             switch (this.Type)
             {
                 case StationType.CAR:
-                    return (this.Price * FuelStation.CarRefuelTick) > Money;
+                    return (this.Price * FuelStation.CarRefuelTick) + model.LastRefuelCost > Money;
                 case StationType.BOAT:
-                    return (this.Price * FuelStation.BoatRefuelTick) > Money;
+                    return (this.Price * FuelStation.BoatRefuelTick) + model.LastRefuelCost > Money;
                 case StationType.HELI:
-                    return (this.Price * FuelStation.HeliRefuelTick) > Money;
+                    return (this.Price * FuelStation.HeliRefuelTick) + model.LastRefuelCost > Money;
                 default:
                     return false;
             }
@@ -269,6 +269,20 @@ namespace ultimate_fuel_script
         public static FuelStation IsAtStation(FuelStation station, Vector3 location)
         {
             return (location.DistanceTo(station.Location) < station.Radius) ? station : null;
+        }
+
+        public static float GetRefuelTick(StationType type)
+        {
+            switch (type)
+            {
+                default:
+                case StationType.CAR:
+                    return FuelStation.CarRefuelTick;
+                case StationType.BOAT:
+                    return FuelStation.BoatRefuelTick;
+                case StationType.HELI:
+                    return FuelStation.HeliRefuelTick;
+            }
         }
 
         #endregion Static Methods

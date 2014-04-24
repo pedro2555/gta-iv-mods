@@ -31,7 +31,16 @@ namespace ultimate_fuel_script
 
         public static FuelData CurrentFuelData
         { get; private set; }
-
+        /// <summary>
+        /// Holds the last or current refuel amount in liters
+        /// </summary>
+        public static float LastRefuelAmount
+        { get; set; }
+        /// <summary>
+        /// Holds the last or current refuel total cost
+        /// </summary>
+        public static float LastRefuelCost
+        { get; set; }
         /// <summary>
         /// Keeps a record of the very last action
         /// </summary>
@@ -71,8 +80,7 @@ namespace ultimate_fuel_script
                     Player.Character.CurrentVehicle.Metadata.Fuel = FuelData.Generate(Player.Character.CurrentVehicle, Settings);
                 model.CurrentFuelData = (FuelData)Player.Character.CurrentVehicle.Metadata.Fuel;
 
-                // 
-                RefuelingData.LiterCost = (model.CurrentFuelStation != null) ? model.CurrentFuelStation.Price : 0.0f;
+
             }
             else
                 model.CurrentFuelData = null;
@@ -92,8 +100,9 @@ namespace ultimate_fuel_script
                     // Stop the car
                     Player.Character.CurrentVehicle.EngineRunning = false;
 
-                    // Check if player has money to continue refuling
-                    // Refuel if yes
+                    // Actually refuel
+                    model.LastRefuelAmount += Player.Character.CurrentVehicle.Metadata.Fuel.Add(FuelStation.GetRefuelTick(FuelStation.GetStationTypeFromVehicle(Player.Character.CurrentVehicle)));
+                    model.LastRefuelCost += model.LastRefuelAmount * model.CurrentFuelStation.Price;
 
                     // Make sure to finish refueling when tank is full
                     if (Player.Character.CurrentVehicle.Metadata.Fuel.isFull())

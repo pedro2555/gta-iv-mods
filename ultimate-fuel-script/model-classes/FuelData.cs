@@ -47,6 +47,14 @@ namespace ultimate_fuel_script
         public StationType Type
         { get; private set; }
 
+        public bool isFull
+        {
+            get
+            {
+                return this.Fuel >= this.Tank;
+            }
+        }
+
         #endregion Properties
 
         #region Methods
@@ -126,14 +134,16 @@ namespace ultimate_fuel_script
                     break;
             }
         }
-
         /// <summary>
-        /// Tests if the Fuel level is at Tank max level
+        /// Adds a specified amount of fuel to the vehicle's fuel property until full
         /// </summary>
-        /// <returns></returns>
-        public bool isFull()
+        /// <param name="amount"></param>
+        public float AddFuel(float amount)
         {
-            return this.Fuel >= this.Tank;
+            this.Fuel += amount;
+            if (this.Fuel > this.Tank)
+                this.Fuel = this.Tank;
+            return amount;
         }
         #endregion
 
