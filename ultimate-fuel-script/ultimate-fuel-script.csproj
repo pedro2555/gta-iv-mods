@@ -57,6 +57,7 @@
     <Compile Include="controller.cs" />
     <Compile Include="model-classes\FuelData.cs" />
     <Compile Include="model-classes\FuelStation.cs" />
+    <Compile Include="model-classes\RefuelingData.cs" />
     <Compile Include="model.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="view-classes\Gauge.cs" />

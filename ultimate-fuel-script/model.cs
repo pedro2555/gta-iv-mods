@@ -69,7 +69,13 @@ namespace ultimate_fuel_script
             {
                 if ((FuelData)Player.Character.CurrentVehicle.Metadata.Fuel == null)
                     Player.Character.CurrentVehicle.Metadata.Fuel = FuelData.Generate(Player.Character.CurrentVehicle, Settings);
+                model.CurrentFuelData = (FuelData)Player.Character.CurrentVehicle.Metadata.Fuel;
+
+                // 
+                RefuelingData.LiterCost = (model.CurrentFuelStation != null) ? model.CurrentFuelStation.Price : 0.0f;
             }
+            else
+                model.CurrentFuelData = null;
 
             switch (model.CurrentAction)
             {
@@ -85,7 +91,15 @@ namespace ultimate_fuel_script
                 case Actions.Refueling:
                     // Stop the car
                     Player.Character.CurrentVehicle.EngineRunning = false;
-                    // Refuel tank
+
+                    // Check if player has money to continue refuling
+                    // Refuel if yes
+
+                    // Make sure to finish refueling when tank is full
+                    if (Player.Character.CurrentVehicle.Metadata.Fuel.isFull())
+                        model.UpdateCurrentAction(Actions.Driving);
+                    // Update cross script data
+                    model.CurrentFuelData = (FuelData)Player.Character.CurrentVehicle.Metadata.Fuel;
                     break;
             }
         }

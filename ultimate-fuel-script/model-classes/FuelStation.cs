@@ -75,8 +75,19 @@ namespace ultimate_fuel_script
         #endregion Properties
 
         #region Static Properties
-
+        /// <summary>
+        /// Holds a list of all fuel stations
+        /// </summary>
         public static List<FuelStation> Items = new List<FuelStation>();
+
+        public static float CarRefuelTick
+        { get; private set; }
+
+        public static float BoatRefuelTick
+        { get; private set; }
+
+        public static float HeliRefuelTick
+        { get; private set; }
 
         #endregion Static Properties
 
@@ -121,6 +132,26 @@ namespace ultimate_fuel_script
 
             return StationBlip;
         }
+        /// <summary>
+        /// Returns true if player has enought money to continue refueling, false if it doesn't
+        /// </summary>
+        /// <param name="Money"></param>
+        /// <returns></returns>
+        public bool CanRefuel(float Money)
+        {
+            switch (this.Type)
+            {
+                case StationType.CAR:
+                    return (this.Price * FuelStation.CarRefuelTick) > Money;
+                case StationType.BOAT:
+                    return (this.Price * FuelStation.BoatRefuelTick) > Money;
+                case StationType.HELI:
+                    return (this.Price * FuelStation.HeliRefuelTick) > Money;
+                default:
+                    return false;
+            }
+            
+        }
 
         #endregion Methods
 
@@ -152,6 +183,19 @@ namespace ultimate_fuel_script
         {
             try
             {
+                // Refuel tick
+                switch (type)
+                {
+                    case StationType.CAR:
+                        FuelStation.CarRefuelTick = settingsFile.GetValueFloat("CARREFUELTICK", .25f);
+                        break;
+                    case StationType.BOAT:
+                        FuelStation.BoatRefuelTick = settingsFile.GetValueFloat("BOATREFUELTICK", .5f);
+                        break;
+                    case StationType.HELI:
+                        FuelStation.HeliRefuelTick = settingsFile.GetValueFloat("HELIREFUELTICK", 1.0f);
+                        break;
+                }
                 for (byte i = 1; i <= Byte.MaxValue; i++)
                 {
                     // Get the station's location.

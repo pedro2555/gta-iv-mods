@@ -126,6 +126,15 @@ namespace ultimate_fuel_script
                     break;
             }
         }
+
+        /// <summary>
+        /// Tests if the Fuel level is at Tank max level
+        /// </summary>
+        /// <returns></returns>
+        public bool isFull()
+        {
+            return this.Fuel >= this.Tank;
+        }
         #endregion
 
     }
