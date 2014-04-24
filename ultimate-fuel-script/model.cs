@@ -114,9 +114,6 @@ namespace ultimate_fuel_script
                     model.LastRefuelAmount += Player.Character.CurrentVehicle.Metadata.Fuel.AddFuel(FuelStation.GetRefuelTick(FuelStation.GetStationTypeFromVehicle(Player.Character.CurrentVehicle)));
                     model.LastRefuelCost = model.LastRefuelAmount * model.CurrentFuelStation.Price;
 
-                    // Make sure to finish refueling when tank is full
-                    if (Player.Character.CurrentVehicle.Metadata.Fuel.isFull)
-                        model.UpdateCurrentAction(Actions.Driving);
                     // Update cross script data
                     model.CurrentFuelData = (FuelData)Player.Character.CurrentVehicle.Metadata.Fuel;
                     break;

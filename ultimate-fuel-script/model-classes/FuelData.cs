@@ -53,6 +53,7 @@ namespace ultimate_fuel_script
             {
                 switch (this.Type)
                 {
+                    default:
                     case StationType.CAR:
                         return this.Fuel + 2 >= this.Tank;
                     case StationType.BOAT:
