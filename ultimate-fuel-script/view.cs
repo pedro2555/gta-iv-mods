@@ -64,7 +64,7 @@ namespace ultimate_fuel_script
                             // Display refuel cost message
                             if (model.CurrentFuelStation.DisplayBlip)
                             {
-                                DisplayHelp(string.Format("Thank you for refueling at ~y~{0}~w~, we loved your ${1:0.00}!", model.CurrentFuelStation.Name, model.LastRefuelCost));
+                                DisplayHelp(string.Format("Thank you for refueling at ~y~{0}~w~, we loved your ${1:0}!", model.CurrentFuelStation.Name, Math.Truncate(model.LastRefuelCost)));
                                 Player.Money -= (int)model.LastRefuelCost;
                                 GTA.Native.Function.Call("DISPLAY_CASH");
                             }
@@ -91,7 +91,7 @@ namespace ultimate_fuel_script
                         }
                         break;
                     case Actions.Refueling:
-                        GTA.Native.Function.Call("PRINT_STRING_WITH_LITERAL_STRING_NOW", "STRING", String.Format("Refueling {0:0.00} liters for ${1:0.00}.", model.LastRefuelAmount, model.LastRefuelCost), 500, 1);
+                        GTA.Native.Function.Call("PRINT_STRING_WITH_LITERAL_STRING_NOW", "STRING", String.Format("Refueling {0:0.00} liters for ${1:0}.", model.LastRefuelAmount, Math.Truncate(model.LastRefuelCost), 500, 1));
                         // Display refuel message
                         break;
                     default:

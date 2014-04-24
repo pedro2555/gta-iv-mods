@@ -60,14 +60,8 @@ namespace ultimate_fuel_script
             // Initiate gamepad
             if (Settings.GetValueBool("USEGAMEPAD", "CONTROLS", false))
             {
-                try
-                {
-                    controller.Gamepad = new SlimDX.XInput.Controller(UserIndex.One);
-                }
-                catch (Exception E)
-                {
-                    controller.Gamepad = null;
-                }
+                controller.Gamepad = new SlimDX.XInput.Controller(UserIndex.One);
+                if (!controller.Gamepad.IsConnected) controller.Gamepad = null;
             }
             else
                 controller.Gamepad = null;
