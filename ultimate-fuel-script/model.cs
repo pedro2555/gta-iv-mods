@@ -97,7 +97,7 @@ namespace ultimate_fuel_script
                         // Force vehicle to stop when without fuel
                         if (Player.Character.CurrentVehicle.Metadata.Fuel.Fuel <= 0.0f)
                             Player.Character.CurrentVehicle.EngineRunning = false;
-                        else
+                        else if (model.LastAction == Actions.Refueling)
                             Player.Character.CurrentVehicle.EngineRunning = true;
                     }
                     break;
