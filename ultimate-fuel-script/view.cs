@@ -22,6 +22,11 @@ namespace ultimate_fuel_script
         /// </summary>
         public static bool StationWelcomeMessageHasBeenDisplayed
         { get; set; }
+        /// <summary>
+        /// Gets or sets if the reserve level beep indicator has already played
+        /// </summary>
+        public static bool ReserveBeepHasBeenPlayed
+        { get; set; }
 
         #endregion Properties
 
@@ -30,6 +35,10 @@ namespace ultimate_fuel_script
         /// </summary>
         public view()
         {
+            // Initiate working propeties
+            view.StationWelcomeMessageHasBeenDisplayed = false;
+            view.ReserveBeepHasBeenPlayed = false;
+
             // Load Gauge data
             gauge = new Gauge(
                 new System.Drawing.PointF(Settings.GetValueFloat("X", "GAUGE", .09f), Settings.GetValueFloat("Y", "GAUGE", .96f)),
@@ -75,6 +84,7 @@ namespace ultimate_fuel_script
                         }
                         else
                         {
+                            // Handle stations specific messages
                             if (model.CurrentFuelStation == null && view.StationWelcomeMessageHasBeenDisplayed)
                                 view.StationWelcomeMessageHasBeenDisplayed = false;
                             else if (!view.StationWelcomeMessageHasBeenDisplayed)
@@ -88,13 +98,18 @@ namespace ultimate_fuel_script
                                         model.CurrentFuelStation.Name));
                                 view.StationWelcomeMessageHasBeenDisplayed = true;
                             }
+                            
+                            // Handle reserve sound
+                            if (model.CurrentFuelData.isOnReserve && !view.ReserveBeepHasBeenPlayed)
+                            {
+                                // play the beep
+                                Game.DisplayText("Play it", 1000);
+                                view.ReserveBeepHasBeenPlayed = true;
+                            }
                         }
                         break;
                     case Actions.Refueling:
-
-
                         GTA.Native.Function.Call("PRINT_STRING_WITH_LITERAL_STRING_NOW", "STRING", String.Format("Refueling . . . ~n~~b~{0} liters ~w~for ~g~${1}~w~", model.LastRefuelAmount.ToString("F2"), model.LastRefuelCost.ToString("F0")), 500, 1000);
-                        // Display refuel message
                         break;
                     default:
                         ClearHelp();

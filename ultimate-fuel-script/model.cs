@@ -117,6 +117,9 @@ namespace ultimate_fuel_script
                     // Update cross script data
                     model.CurrentFuelData = (FuelData)Player.Character.CurrentVehicle.Metadata.Fuel;
                     break;
+                case Actions.None:
+                    view.ReserveBeepHasBeenPlayed = false;
+                    break;
             }
         }
 

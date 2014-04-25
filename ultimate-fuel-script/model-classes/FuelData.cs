@@ -46,12 +46,24 @@ namespace ultimate_fuel_script
         /// </summary>
         public StationType Type
         { get; private set; }
-
+        /// <summary>
+        /// Gets a value indicating if the current fuel level can be increased
+        /// </summary>
         public bool isFull
         {
             get
             {
                 return this.Fuel + FuelStation.GetRefuelTick(this.Type) >= this.Tank;
+            }
+        }
+        /// <summary>
+        /// Gets a value indicating if the current fuel level is bellow the specified reserve level
+        /// </summary>
+        public bool isOnReserve
+        {
+            get
+            {
+                return this.Fuel <= this.Reserve;
             }
         }
 
