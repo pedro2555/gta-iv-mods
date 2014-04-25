@@ -93,7 +93,7 @@ namespace ultimate_fuel_script
                     case Actions.Refueling:
 
 
-                        GTA.Native.Function.Call("PRINT_STRING_WITH_LITERAL_STRING_NOW", "STRING", "Refueling . . . ~n~~b~" + model.LastRefuelAmount.ToString("F2") + " liters ~w~for ~g~$" + Math.Truncate(model.LastRefuelCost) + "~w~", 500, 1000);
+                        GTA.Native.Function.Call("PRINT_STRING_WITH_LITERAL_STRING_NOW", "STRING", String.Format("Refueling . . . ~n~~b~{0} liters ~w~for ~g~${1}~w~", model.LastRefuelAmount.ToString("F2"), model.LastRefuelCost.ToString("F0")), 500, 1000);
                         // Display refuel message
                         break;
                     default:
