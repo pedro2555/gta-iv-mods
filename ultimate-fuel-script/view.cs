@@ -70,10 +70,9 @@ namespace ultimate_fuel_script
                 {
                     case Actions.Driving:
                         // Handle reserve sound
-                        if (model.CurrentFuelData.isOnReserve && !view.ReserveBeepHasBeenPlayed)
+                        if (model.CurrentFuelData.isOnReserve && !view.ReserveBeepHasBeenPlayed && Player.Character.CurrentVehicle.Speed > 5f)
                         {
                             view.Play("reserve");
-                            GTA.Native.Function.Call("PRINT_STRING_WITH_LITERAL_STRING_NOW", "STRING", "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855", 1000, 1);
                             view.ReserveBeepHasBeenPlayed = true;
                         }
                         if (model.LastAction == Actions.Refueling)
@@ -122,7 +121,6 @@ namespace ultimate_fuel_script
                 model.Log("view_tick", E.Message, true);
             }
         }
-
 
         #region Methods
 

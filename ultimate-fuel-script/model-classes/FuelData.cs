@@ -86,7 +86,7 @@ namespace ultimate_fuel_script
             // Defaults to 10% of Tank
             fuelData.Reserve = settings.GetValueFloat("RESERVE", veh.GetHashCode().ToString(), settings.GetValueFloat("RESERVE", veh.Name, fuelData.Tank * .1f));
             // Defaults to ?somehing?
-            fuelData.Drain = settings.GetValueFloat("DRAIN", veh.GetHashCode().ToString(), settings.GetValueFloat("DRAIN", veh.Name, 1.1f));
+            fuelData.Drain = settings.GetValueFloat("DRAIN", veh.GetHashCode().ToString(), settings.GetValueFloat("DRAIN", veh.Name, 10.1f));
             // Randomize fuel level
             fuelData.Fuel = new Random().Next((int)fuelData.Reserve + 1, (int)fuelData.Tank);
             // Assign type
@@ -94,7 +94,6 @@ namespace ultimate_fuel_script
             // Return the attached data
             return fuelData;
         }
-
 
         public void DrainFuel(bool enableCars, bool enableHelicopters, bool enableBoats, Vehicle veh)
         {
