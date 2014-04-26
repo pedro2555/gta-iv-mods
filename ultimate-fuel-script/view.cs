@@ -100,12 +100,14 @@ namespace ultimate_fuel_script
                                 else if (!view.StationWelcomeMessageHasBeenDisplayed && model.CurrentFuelStation != null)
                                 {
                                     if (model.CurrentFuelStation.DisplayBlip)
-                                        DisplayHelp(String.Format("Welcome to ~y~{0}~w~. Hold ~INPUT_VEH_HANDBRAKE~ to refuel. ~g~${1}~w~ per liter.",
+                                        DisplayHelp(String.Format("Welcome to ~y~{0}~w~. Hold ~{1}~ to refuel. ~g~${2}~w~ per liter.",
                                             model.CurrentFuelStation.Name,
+                                            controller.RefuelInputSet.InputSetName,
                                             model.CurrentFuelStation.Price));
                                     else
-                                        DisplayHelp(String.Format("You found ~y~{0}~w~! Hold ~INPUT_VEH_HANDBRAKE~ to steal some fuel.",
-                                            model.CurrentFuelStation.Name));
+                                        DisplayHelp(String.Format("You found ~y~{0}~w~! Hold ~{1}~ to steal some fuel.",
+                                            model.CurrentFuelStation.Name,
+                                            controller.RefuelInputSet.InputSetName));
                                     view.StationWelcomeMessageHasBeenDisplayed = true;
                                 }
                             }
@@ -136,17 +138,8 @@ namespace ultimate_fuel_script
         {
             try
             {
-                // Get the executing assembly.
-                System.Reflection.Assembly a = System.Reflection.Assembly.GetExecutingAssembly();
-
-                // Open the stream requested.
-                System.IO.Stream s = a.GetManifestResourceStream("ultimate_fuel_script.resources." + sound + ".wav");
-
-                // Load the sound player and add the stream.
-                SoundPlayer player = new SoundPlayer(s);
-
-                // Play the stream.
-                player.Play();
+                // Play the requested sound
+                new SoundPlayer(System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream("ultimate_fuel_script.resources." + sound + ".wav")).Play();
             }
             catch (Exception crap) { model.Log("Play", crap.Message); }
         }

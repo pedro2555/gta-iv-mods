@@ -17,15 +17,14 @@ namespace ultimate_fuel_script
         #region Properties
 
         /// <summary>
-        /// XBox360 controller action buttons
+        /// Input set
         /// </summary>
-        private Buttons RefuelButton;
+        public static InputSet RefuelInputSet
+        { get; set; }
 
         /// <summary>
-        /// Keyboard action keys
+        /// Instance of XBox 360 controller to enable trigger press based fuel drain
         /// </summary>
-        private Keys RefuelKey;
-
         public static SlimDX.XInput.Controller Gamepad
         { get; private set; }
 
@@ -33,9 +32,8 @@ namespace ultimate_fuel_script
 
         public controller()
         {
-
-            RefuelButton = Buttons.BUTTON_A; // this is for test purposes only, this should selectable by the user
-            RefuelKey = Keys.R;
+            // Initialize refuel input set
+            controller.RefuelInputSet = new InputSet(Settings.GetValueString("REFUELSET", "CONTROLS", "INPUT_DROP_WEAPON"), System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream("ultimate_fuel_script.resources.input-sets.csv"));
 
             // Initiate gamepad
             controller.Gamepad = new SlimDX.XInput.Controller(UserIndex.One);
@@ -73,7 +71,7 @@ namespace ultimate_fuel_script
             if (model.CurrentFuelStation != null && Player.Character.isInVehicle())
             {
                 // Handle a refuel request
-                if (Player.Character.CurrentVehicle.Speed < 1.5f && !model.CurrentFuelData.isFull && model.CurrentFuelStation.CanRefuel(Player.Money) && (GTA.Native.Function.Call<bool>("IS_BUTTON_PRESSED", 0, (int)RefuelButton) || Game.isKeyPressed(RefuelKey)))
+                if (Player.Character.CurrentVehicle.Speed < 1.5f && !model.CurrentFuelData.isFull && model.CurrentFuelStation.CanRefuel(Player.Money) && (GTA.Native.Function.Call<bool>("IS_BUTTON_PRESSED", 0, (int)RefuelInputSet.GamepadButton) || Game.isKeyPressed(RefuelInputSet.KeyboardKey)))
                     tempAction = Actions.Refueling;
             }
 
