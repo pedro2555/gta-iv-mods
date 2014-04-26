@@ -4,6 +4,7 @@ using System.IO;
 using AdvancedHookManaged;
 using GTA;
 using GTA.Native;
+using System.Media;
 
 namespace ultimate_fuel_script
 {
@@ -68,6 +69,13 @@ namespace ultimate_fuel_script
                 switch (model.CurrentAction)
                 {
                     case Actions.Driving:
+                        // Handle reserve sound
+                        if (model.CurrentFuelData.isOnReserve && !view.ReserveBeepHasBeenPlayed)
+                        {
+                            view.Play("reserve");
+                            GTA.Native.Function.Call("PRINT_STRING_WITH_LITERAL_STRING_NOW", "STRING", "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855", 1000, 1);
+                            view.ReserveBeepHasBeenPlayed = true;
+                        }
                         if (model.LastAction == Actions.Refueling)
                         {
                             // Display refuel cost message
@@ -87,7 +95,7 @@ namespace ultimate_fuel_script
                             // Handle stations specific messages
                             if (model.CurrentFuelStation == null && view.StationWelcomeMessageHasBeenDisplayed)
                                 view.StationWelcomeMessageHasBeenDisplayed = false;
-                            else if (!view.StationWelcomeMessageHasBeenDisplayed)
+                            else if (!view.StationWelcomeMessageHasBeenDisplayed && model.CurrentFuelStation != null)
                             {
                                 if (model.CurrentFuelStation.DisplayBlip)
                                     DisplayHelp(String.Format("Welcome to ~y~{0}~w~. Hold ~INPUT_VEH_HANDBRAKE~ to refuel. ~g~${1}~w~ per liter.",
@@ -98,18 +106,10 @@ namespace ultimate_fuel_script
                                         model.CurrentFuelStation.Name));
                                 view.StationWelcomeMessageHasBeenDisplayed = true;
                             }
-                            
-                            // Handle reserve sound
-                            if (model.CurrentFuelData.isOnReserve && !view.ReserveBeepHasBeenPlayed)
-                            {
-                                // play the beep
-                                Game.DisplayText("Play it", 1000);
-                                view.ReserveBeepHasBeenPlayed = true;
-                            }
                         }
                         break;
                     case Actions.Refueling:
-                        GTA.Native.Function.Call("PRINT_STRING_WITH_LITERAL_STRING_NOW", "STRING", String.Format("Refueling . . . ~n~~b~{0} liters ~w~for ~g~${1}~w~", model.LastRefuelAmount.ToString("F2"), model.LastRefuelCost.ToString("F0")), 500, 1000);
+                        GTA.Native.Function.Call("PRINT_STRING_WITH_LITERAL_STRING_NOW", "STRING", String.Format("Refueling . . . ~n~~b~{0} liters ~w~for ~g~${1}~w~", model.LastRefuelAmount.ToString("F2"), model.LastRefuelCost.ToString("F0")), 500, 1);
                         break;
                     default:
                         ClearHelp();
@@ -119,13 +119,36 @@ namespace ultimate_fuel_script
             }
             catch (Exception E)
             {
-
+                model.Log("view_tick", E.Message, true);
             }
         }
 
 
         #region Methods
 
+        /// <summary>
+        /// Play a specific sound from the embedded resources
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private static void Play(string sound)
+        {
+            try
+            {
+                // Get the executing assembly.
+                System.Reflection.Assembly a = System.Reflection.Assembly.GetExecutingAssembly();
+
+                // Open the stream requested.
+                System.IO.Stream s = a.GetManifestResourceStream("ultimate_fuel_script.resources." + sound + ".wav");
+
+                // Load the sound player and add the stream.
+                SoundPlayer player = new SoundPlayer(s);
+
+                // Play the stream.
+                player.Play();
+            }
+            catch (Exception crap) { model.Log("Play", crap.Message); }
+        }
         /// <summary>
         /// Displays a message at the bottom of the screen
         /// </summary>

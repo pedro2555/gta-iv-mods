@@ -73,7 +73,7 @@ namespace ultimate_fuel_script
                 // Green as normal, and red when running on reserved.
                 Display.Width = (fuelData.Fuel * (Width - 0.008f)) / fuelData.Tank;
                 graphics.DrawRectangle(Display,
-                        (fuelData.Fuel <= fuelData.Reserve)
+                        (fuelData.isOnReserve)
                             ? ((Flashing < 5)
                                 ? (GTA.ColorIndex)1
                                 : (GTA.ColorIndex)35

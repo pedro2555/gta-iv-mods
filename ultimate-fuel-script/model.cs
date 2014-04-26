@@ -177,7 +177,7 @@ namespace ultimate_fuel_script
             finally
             {
                 if (printToConsole)
-                    Game.Console.Print(String.Format("{1}: {2}", methodName, message));
+                    Game.Console.Print(String.Format("{0}: {1}", methodName, message));
             }
 
         }
