@@ -9,26 +9,6 @@ using System.Windows.Forms;
 
 namespace ultimate_fuel_script
 {
-    enum Buttons
-    {
-        BUTTON_BACK = 13,
-        BUTTON_START = 12,
-        BUTTON_X = 14,
-        BUTTON_Y = 15,
-        BUTTON_A = 16,
-        BUTTON_B = 17,
-        BUTTON_DPAD_UP = 8,
-        BUTTON_DPAD_DOWN = 9,
-        BUTTON_DPAD_LEFT = 10,
-        BUTTON_DPAD_RIGHT = 11,
-        BUTTON_TRIGGER_LEFT = 5,
-        BUTTON_TRIGGER_RIGHT = 7,
-        BUTTON_BUMPER_LEFT = 4,
-        BUTTON_BUMPER_RIGHT = 6,
-        BUTTON_STICK_LEFT = 18,
-        BUTTON_STICK_RIGHT = 19
-    }
-
     /// <summary>
     /// Handles user input to action translations
     /// </summary>
@@ -58,15 +38,10 @@ namespace ultimate_fuel_script
             RefuelKey = Keys.R;
 
             // Initiate gamepad
-            if (Settings.GetValueBool("USEGAMEPAD", "CONTROLS", false))
-            {
-                controller.Gamepad = new SlimDX.XInput.Controller(UserIndex.One);
-                if (!controller.Gamepad.IsConnected) controller.Gamepad = null;
-            }
-            else
-                controller.Gamepad = null;
+            controller.Gamepad = new SlimDX.XInput.Controller(UserIndex.One);
+            if (!controller.Gamepad.IsConnected) controller.Gamepad = null;
 
-            this.Interval = 100; // Run updates 4 times per second
+            this.Interval = 100;
             this.Tick += controller_Tick;
         }
 
