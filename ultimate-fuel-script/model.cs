@@ -76,13 +76,15 @@ namespace ultimate_fuel_script
             // Ensure fuelData is always loaded
             if (Player.Character.isInVehicle())
             {
+                // Check for existing fuel data
                 if ((FuelData)Player.Character.CurrentVehicle.Metadata.Fuel == null)
+                    // Populate random fuel if none has been found
                     Player.Character.CurrentVehicle.Metadata.Fuel = FuelData.Generate(Player.Character.CurrentVehicle, Settings);
+                // Update cross script fuel data
                 model.CurrentFuelData = (FuelData)Player.Character.CurrentVehicle.Metadata.Fuel;
-
-
             }
             else
+                // Player is not in vehicle set cross script fuel data to null
                 model.CurrentFuelData = null;
 
             switch (model.CurrentAction)
@@ -97,11 +99,13 @@ namespace ultimate_fuel_script
                         // Force vehicle to stop when without fuel
                         if (Player.Character.CurrentVehicle.Metadata.Fuel.Fuel <= 0.0f)
                             Player.Character.CurrentVehicle.EngineRunning = false;
+                        // Only force engine on when the last action was a refuel action
                         else if (model.LastAction == Actions.Refueling)
                             Player.Character.CurrentVehicle.EngineRunning = true;
                     }
                     break;
                 case Actions.Refueling:
+                    // if just started refueling set LastRefuel data to 0.0f
                     if (model.LastAction == Actions.Driving)
                     {
                         model.LastRefuelCost = 0.0f;
