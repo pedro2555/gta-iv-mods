@@ -57,7 +57,7 @@ namespace ultimate_fuel_script
 
         void view_PerFrameDrawing(object sender, GraphicsEventArgs e)
         {
-            // Evertime player is driving a vehicle fuel data should be displayed.
+            // Evertime player is driving a vehicle, fuel data should be displayed.
             if (model.CurrentAction != Actions.None)
                 // Display heads up stuff
                 gauge.Draw(e.Graphics, model.CurrentFuelData);
@@ -66,54 +66,57 @@ namespace ultimate_fuel_script
         void view_Tick(object sender, EventArgs e)
         {
             try {
-                switch (model.CurrentAction)
-                {
-                    case Actions.Driving:
-                        // Handle reserve sound
-                        if (model.CurrentFuelData.isOnReserve && !view.ReserveBeepHasBeenPlayed && Player.Character.CurrentVehicle.Speed > 5f)
-                        {
-                            view.Play("reserve");
-                            view.ReserveBeepHasBeenPlayed = true;
-                        }
-                        if (model.LastAction == Actions.Refueling)
-                        {
-                            // Display refuel cost message
-                            if (model.CurrentFuelStation.DisplayBlip)
+                if (model.CurrentFuelData != null)
+                    switch (model.CurrentAction)
+                    {
+                        case Actions.Driving:
+                            // Handle reserve sound
+                            if (model.CurrentFuelData.isOnReserve && !view.ReserveBeepHasBeenPlayed && Player.Character.CurrentVehicle.Speed > 5f)
                             {
-                                DisplayHelp(string.Format("Thank you for refueling at ~y~{0}~w~, we loved your ~g~${1:0}~w~!", model.CurrentFuelStation.Name, Math.Truncate(model.LastRefuelCost)));
-                                Player.Money -= (int)model.LastRefuelCost;
-                                GTA.Native.Function.Call("DISPLAY_CASH");
+                                view.Play("reserve");
+                                view.ReserveBeepHasBeenPlayed = true;
+                            }
+                            if (model.LastAction == Actions.Refueling)
+                            {
+                                // Display refuel cost message
+                                if (model.CurrentFuelStation.DisplayBlip)
+                                {
+                                    DisplayHelp(string.Format("Thank you for refueling at ~y~{0}~w~, we loved your ~g~${1:0}~w~!", model.CurrentFuelStation.Name, Math.Truncate(model.LastRefuelCost)));
+                                    Player.Money -= (int)model.LastRefuelCost;
+                                    GTA.Native.Function.Call("DISPLAY_CASH");
+                                }
+                                else
+                                {
+                                    DisplayHelp("Be on the look out for the ~b~cops~w~!");
+                                    // Give the specified amount of stars to the player
+                                    Player.WantedLevel = (Player.WantedLevel < model.CurrentFuelStation.WantedStars) ? model.CurrentFuelStation.WantedStars : Player.WantedLevel;
+                                }
                             }
                             else
                             {
-                                DisplayHelp("Be on the look out for the ~b~cops~w~!");
+                                // Handle stations specific messages
+                                if (model.CurrentFuelStation == null && view.StationWelcomeMessageHasBeenDisplayed)
+                                    view.StationWelcomeMessageHasBeenDisplayed = false;
+                                else if (!view.StationWelcomeMessageHasBeenDisplayed && model.CurrentFuelStation != null)
+                                {
+                                    if (model.CurrentFuelStation.DisplayBlip)
+                                        DisplayHelp(String.Format("Welcome to ~y~{0}~w~. Hold ~INPUT_VEH_HANDBRAKE~ to refuel. ~g~${1}~w~ per liter.",
+                                            model.CurrentFuelStation.Name,
+                                            model.CurrentFuelStation.Price));
+                                    else
+                                        DisplayHelp(String.Format("You found ~y~{0}~w~! Hold ~INPUT_VEH_HANDBRAKE~ to steal some fuel.",
+                                            model.CurrentFuelStation.Name));
+                                    view.StationWelcomeMessageHasBeenDisplayed = true;
+                                }
                             }
-                        }
-                        else
-                        {
-                            // Handle stations specific messages
-                            if (model.CurrentFuelStation == null && view.StationWelcomeMessageHasBeenDisplayed)
-                                view.StationWelcomeMessageHasBeenDisplayed = false;
-                            else if (!view.StationWelcomeMessageHasBeenDisplayed && model.CurrentFuelStation != null)
-                            {
-                                if (model.CurrentFuelStation.DisplayBlip)
-                                    DisplayHelp(String.Format("Welcome to ~y~{0}~w~. Hold ~INPUT_VEH_HANDBRAKE~ to refuel. ~g~${1}~w~ per liter.",
-                                        model.CurrentFuelStation.Name,
-                                        model.CurrentFuelStation.Price));
-                                else
-                                    DisplayHelp(String.Format("You found ~y~{0}~w~! Hold ~INPUT_VEH_HANDBRAKE~ to steal some fuel.",
-                                        model.CurrentFuelStation.Name));
-                                view.StationWelcomeMessageHasBeenDisplayed = true;
-                            }
-                        }
-                        break;
-                    case Actions.Refueling:
-                        GTA.Native.Function.Call("PRINT_STRING_WITH_LITERAL_STRING_NOW", "STRING", String.Format("Refueling . . . ~n~~b~{0} liters ~w~for ~g~${1}~w~", model.LastRefuelAmount.ToString("F2"), model.LastRefuelCost.ToString("F0")), 500, 1);
-                        break;
-                    default:
-                        ClearHelp();
-                        break;
-                }
+                            break;
+                        case Actions.Refueling:
+                            GTA.Native.Function.Call("PRINT_STRING_WITH_LITERAL_STRING_NOW", "STRING", String.Format("Refueling . . . ~n~~b~{0} liters ~w~for ~g~${1}~w~", model.LastRefuelAmount.ToString("F2"), model.LastRefuelCost.ToString("F0")), 500, 1);
+                            break;
+                        default:
+                            ClearHelp();
+                            break;
+                    }
             
             }
             catch (Exception E)
