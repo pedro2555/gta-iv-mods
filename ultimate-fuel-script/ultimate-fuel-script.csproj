@@ -54,7 +54,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="controller-classes\input.cs" />
+    <Compile Include="controller-classes\inputSet.cs" />
     <Compile Include="controller.cs" />
     <Compile Include="model-classes\FuelData.cs" />
     <Compile Include="model-classes\FuelStation.cs" />
