@@ -1,6 +1,8 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.21005.1
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "scripthook-net", "scripthook-net", "{FFE772BE-11B0-4023-85B6-717815B80FE3}"
 	ProjectSection(SolutionItems) = preProject
 		scripthook-net\dependency-scripthook.txt = scripthook-net\dependency-scripthook.txt
@@ -24,6 +26,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ultimate-overtaking-fix", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ultimate-indicator-script", "ultimate-indicator-script\ultimate-indicator-script.csproj", "{BD9B127D-FA29-4203-BC76-CF2615198C4A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ultimate-transporter", "ultimate-transporter\ultimate-transporter.csproj", "{36CEAF28-C378-4C9A-8C82-319014477DF3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -38,6 +42,10 @@ Global
 		{BD9B127D-FA29-4203-BC76-CF2615198C4A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BD9B127D-FA29-4203-BC76-CF2615198C4A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BD9B127D-FA29-4203-BC76-CF2615198C4A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{36CEAF28-C378-4C9A-8C82-319014477DF3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{36CEAF28-C378-4C9A-8C82-319014477DF3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{36CEAF28-C378-4C9A-8C82-319014477DF3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{36CEAF28-C378-4C9A-8C82-319014477DF3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
