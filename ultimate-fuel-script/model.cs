@@ -4,6 +4,7 @@ using System.IO;
 using AdvancedHookManaged;
 using GTA;
 using GTA.Native;
+using System.Collections.Generic;
 
 namespace ultimate_fuel_script
 {
@@ -23,12 +24,21 @@ namespace ultimate_fuel_script
     {
         #region Properties
 
+        public static Script script
+        { get; private set; }
+        /// <summary>
+        /// List of script GUIDs subscribed to FuelData changes
+        /// </summary>
+        public static List<Guid> FuelDataSubscribers
+        { get; set; }
         /// <summary>
         /// Fuel station that player is currently at, null if at any or not in a vehicle.
         /// </summary>
         public static FuelStation CurrentFuelStation
         { get; set; }
-
+        /// <summary>
+        /// Returns the latest used FuelData object
+        /// </summary>
         public static FuelData CurrentFuelData
         { get; private set; }
         /// <summary>
@@ -60,6 +70,11 @@ namespace ultimate_fuel_script
         /// </summary>
         public model()
         {
+            // Sends a one time fuel data object
+            BindScriptCommand("FuelDataRequest", new ScriptCommandDelegate(FuelDataRequest_handler));
+            // Subscribes the sender to continuos notification of fuel data changes
+            BindScriptCommand("FuelDataSubscription", new ScriptCommandDelegate(FuelDataSubscription_handler));
+
             // Tick spacing
             this.Interval = 100;
             // Tick handler
@@ -81,11 +96,11 @@ namespace ultimate_fuel_script
                     // Populate random fuel if none has been found
                     Player.Character.CurrentVehicle.Metadata.Fuel = FuelData.Generate(Player.Character.CurrentVehicle, Settings);
                 // Update cross script fuel data
-                model.CurrentFuelData = (FuelData)Player.Character.CurrentVehicle.Metadata.Fuel;
+                UpdateFuelData((FuelData)Player.Character.CurrentVehicle.Metadata.Fuel);
             }
             else
                 // Player is not in vehicle set cross script fuel data to null
-                model.CurrentFuelData = null;
+                UpdateFuelData(null);
 
             switch (model.CurrentAction)
             {
@@ -95,7 +110,7 @@ namespace ultimate_fuel_script
                         // Drain fuel
                         Player.Character.CurrentVehicle.Metadata.Fuel.DrainFuel(true, true, true, Player.Character.CurrentVehicle);
                         // Update cross script data
-                        model.CurrentFuelData = (FuelData)Player.Character.CurrentVehicle.Metadata.Fuel;
+                        UpdateFuelData((FuelData)Player.Character.CurrentVehicle.Metadata.Fuel);
                         // Force vehicle to stop when without fuel
                         if (Player.Character.CurrentVehicle.Metadata.Fuel.Fuel <= 0.0f)
                             Player.Character.CurrentVehicle.EngineRunning = false;
@@ -119,7 +134,7 @@ namespace ultimate_fuel_script
                     model.LastRefuelCost = model.LastRefuelAmount * model.CurrentFuelStation.Price;
 
                     // Update cross script data
-                    model.CurrentFuelData = (FuelData)Player.Character.CurrentVehicle.Metadata.Fuel;
+                    UpdateFuelData((FuelData)Player.Character.CurrentVehicle.Metadata.Fuel);
                     break;
                 case Actions.None:
                     view.ReserveBeepHasBeenPlayed = false;
@@ -129,6 +144,66 @@ namespace ultimate_fuel_script
 
         #region Methods
 
+        #region Script Commands
+
+        /// <summary>
+        /// Handler for the FuelDataRequest Script Command
+        /// 
+        /// This command returns the current instance of the FuelData class from the vehicle the player is driving
+        /// 
+        /// Bind to FuelDataResponse to obtain a response to this request
+        /// Returns null if the player is not in a vehicle or if the fuel data hasn't yet been loaded
+        /// 
+        /// To get continuos notification of fuel data changes request a subscription instead
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="Parameter"></param>
+        private void FuelDataRequest_handler(GTA.Script sender, GTA.ObjectCollection Parameter)
+        {
+            if (sender.GUID != null)
+            {
+                SendScriptCommand(sender.GUID, "FuelDataResponse", (Player.Character.isInVehicle() && Player.Character.CurrentVehicle.Metadata.Fuel != null) ? Player.Character.CurrentVehicle.Metadata.Fuel : null);
+            }
+        }
+        /// <summary>
+        /// Handler for the FuelDataSubscription Script Command
+        /// 
+        /// This commands subscribes the sender for continuos updates on CurrentFuelData changes
+        /// 
+        /// Bind to fuel data FuelDataSubscription_update command to obtain notifications from this subscription
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="Parameter"></param>
+        private void FuelDataSubscription_handler(GTA.Script sender, GTA.ObjectCollection Parameter)
+        {
+            if (sender.GUID != null)
+            {
+                // Check if the requesting script is already subscribed
+                foreach (Guid guid in FuelDataSubscribers)
+                    if (guid == sender.GUID)
+                        // Return if the sender is already subscribed
+                        return;
+                // Subscribe the sender
+                FuelDataSubscribers.Add(sender.GUID);
+            }
+        }
+
+        #endregion Script Commands
+
+        /// <summary>
+        /// Updates model.CurrentFuelData and notifies subscribers of the latest changes
+        /// </summary>
+        /// <param name="newFuelData"></param>
+        private void UpdateFuelData(FuelData newFuelData)
+        {
+            model.CurrentFuelData = newFuelData;
+            
+            // Notify subscribers
+            foreach (Guid guid in model.FuelDataSubscribers)
+                if (isScriptRunning(guid))
+                    SendScriptCommand(guid, "FuelDataSubscription_update", newFuelData);
+
+        }
         /// <summary>
         /// Sets LastAction as CurrentAction and updates CurrentAction with the specified action
         /// </summary>
@@ -138,7 +213,6 @@ namespace ultimate_fuel_script
             model.LastAction = model.CurrentAction;
             model.CurrentAction = action;
         }
-
         /// <summary>
         /// Returns ini file entry
         /// </summary>

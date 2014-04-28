@@ -9,6 +9,16 @@ FEATURES
 	31 fuel stations, counting fuel stealing points, and up to 765 fuel stations you can have.
 	Integration with ultimate-indicator-script and cross-script fuel data updates for a better gameplay experience.
 
+	CROSS SCRIPT COMMUNICATION
+		This script implements commands that can be called by external scripts to control the script behaviour and/or request data from the script
+
+		Bellow is a list of available script commands a brief explanation of their usage and purpose
+
+			FuelDataRequest
+
+			FuelDataSubscription
+
+
 REQUIREMENTS
 	A running, unmodded copy of GTA IV 1.0.7.0
 	HazardX .NET Scripthook v1.7.1.7 (available at http://hazardx.com)
@@ -16,7 +26,8 @@ REQUIREMENTS
 	SlimDX.dll (available at http://slimdx.org)
 
 CONTRIBUTIONS
-	Pedro Rodrigues - source code development
+	Pedro Rodrigues <prodrigues1990@gmail.com> - source code development
+	LMS <lms@lcpdfr.com> - AdvancedHook.dll
 	Yoshiko - fuel stealing locations
 
 SOURCE CODE
