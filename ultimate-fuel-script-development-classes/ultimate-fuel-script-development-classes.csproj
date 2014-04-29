@@ -1,16 +1,15 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{316D7F79-12FB-46B5-BE61-0EEB8D497976}</ProjectGuid>
+    <ProjectGuid>{D495D2E9-9F7C-4599-AFFB-BEAD0ADA7AB0}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>ultimate_fuel_script</RootNamespace>
-    <AssemblyName>ultimate-fuel-script.net</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <AssemblyName>ultimate-fuel-script-development-classes</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -31,22 +30,11 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AdvancedHook">
-      <HintPath>..\advanced-hook\AdvancedHook.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="ScriptHookDotNet">
       <HintPath>..\scripthook-net\ScriptHookDotNet.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="SlimDX">
-      <HintPath>..\slim-dx\SlimDX.dll</HintPath>
-      <Private>False</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -54,43 +42,23 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="controller-classes\inputSet.cs" />
-    <Compile Include="controller.cs" />
-    <Compile Include="model-classes\FuelData.cs" />
-    <Compile Include="model-classes\FuelStation.cs" />
-    <Compile Include="model.cs" />
+    <Content Include="cross-script-samples\FuelDataRequest.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="cross-script-samples\FuelDataSubscription.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Compile Include="FuelData.cs" />
+    <Compile Include="FuelStation.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="view-classes\Gauge.cs" />
-    <Compile Include="view.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="LICENSE.txt">
+    <Content Include="cross-script-samples\FuelDataResquest.vb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="README.txt">
+    </Content>
+    <Content Include="cross-script-samples\FuelDataSubscription.vb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="ultimate-fuel-script.ini">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="resources\reserve.wav" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="resources\input-sets.csv" />
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <UseHostCompilerIfAvailable>False</UseHostCompilerIfAvailable>
-    <PostBuildEvent>xcopy "$(ProjectDir)$(OutDir)*.*" "D:\Program Files\Rockstar Games\Grand Theft Auto IV Modded\scripts\*.*" /Y</PostBuildEvent>
-  </PropertyGroup>
-  <PropertyGroup>
-    <PreBuildEvent>
-    </PreBuildEvent>
-  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
