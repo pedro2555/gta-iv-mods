@@ -21,6 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -56,6 +57,12 @@
   <ItemGroup>
     <Compile Include="controller-classes\inputSet.cs" />
     <Compile Include="controller.cs" />
+    <Content Include="cross-script-samples\FuelDataRequest.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="cross-script-samples\FuelDataSubscription.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Compile Include="model-classes\FuelData.cs" />
     <Compile Include="model-classes\FuelStation.cs" />
     <Compile Include="model.cs" />
@@ -81,6 +88,14 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="resources\input-sets.csv" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="cross-script-samples\FuelDataResquest.vb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="cross-script-samples\FuelDataSubscription.vb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
