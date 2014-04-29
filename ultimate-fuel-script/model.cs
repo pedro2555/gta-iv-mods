@@ -70,6 +70,7 @@ namespace ultimate_fuel_script
         /// </summary>
         public model()
         {
+            this.GUID = new Guid("775df3cb-41c0-45f7-bd8f-d989853c838b");
             // Sends a one time fuel data object
             BindScriptCommand("FuelDataRequest", new ScriptCommandDelegate(FuelDataRequest_handler));
             // Subscribes the sender to continuos notification of fuel data changes
