@@ -122,26 +122,6 @@ namespace ultimate_fuel_script
 
             return StationBlip;
         }
-        /// <summary>
-        /// Returns true if player has enought money to continue refueling, false if it doesn't
-        /// </summary>
-        /// <param name="Money"></param>
-        /// <returns></returns>
-        public bool CanRefuel(float Money)
-        {
-            switch (this.Type)
-            {
-                case VehicleTypes.CAR:
-                    return (this.Price * FuelStation.CarRefuelTick) + model.LastRefuelCost <= Money;
-                case VehicleTypes.BOAT:
-                    return (this.Price * FuelStation.BoatRefuelTick) + model.LastRefuelCost <= Money;
-                case VehicleTypes.HELI:
-                    return (this.Price * FuelStation.HeliRefuelTick) + model.LastRefuelCost <= Money;
-                default:
-                    return false;
-            }
-            
-        }
 
         #endregion Methods
 

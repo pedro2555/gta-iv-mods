@@ -44,12 +44,7 @@ namespace ultimate_fuel_script
         /// <summary>
         /// Holds the last or current refuel amount in liters
         /// </summary>
-        public static float LastRefuelAmount
-        { get; set; }
-        /// <summary>
-        /// Holds the last or current refuel total cost
-        /// </summary>
-        public static float LastRefuelCost
+        public static RefuelData CurrentRefuelData
         { get; set; }
         /// <summary>
         /// Keeps a record of the very last action
@@ -120,22 +115,23 @@ namespace ultimate_fuel_script
                             Player.Character.CurrentVehicle.EngineRunning = false;
                         // Only force engine on when the last action was a refuel action
                         else if (model.LastAction == Actions.Refueling)
+                        {
                             Player.Character.CurrentVehicle.EngineRunning = true;
+
+                            Player.Money -= (int)model.CurrentRefuelData.TotalCostRounded;
+                            model.CurrentRefuelData.UnitCount = 0;
+                        }
                     }
                     break;
                 case Actions.Refueling:
                     // if just started refueling set LastRefuel data to 0.0f
                     if (model.LastAction == Actions.Driving)
-                    {
-                        model.LastRefuelCost = 0.0f;
-                        model.LastRefuelAmount = 0.0f;
-                    }
+                        model.CurrentRefuelData = new RefuelData(model.CurrentFuelStation);
                     // Stop the car
                     Player.Character.CurrentVehicle.EngineRunning = false;
 
                     // Actually refuel
-                    model.LastRefuelAmount += Player.Character.CurrentVehicle.Metadata.Fuel.AddFuel(FuelStation.GetRefuelTick(VehicleType.GetVehicleTypeFromVehicle(Player.Character.CurrentVehicle)));
-                    model.LastRefuelCost = model.LastRefuelAmount * model.CurrentFuelStation.Price;
+                    model.CurrentRefuelData.UpdateUnitCount(Player.Character.CurrentVehicle.Metadata.Fuel.AddFuel(FuelStation.GetRefuelTick(VehicleType.GetVehicleTypeFromVehicle(Player.Character.CurrentVehicle))));
 
                     // Update cross script data
                     UpdateFuelData((FuelData)Player.Character.CurrentVehicle.Metadata.Fuel);

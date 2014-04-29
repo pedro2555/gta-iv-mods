@@ -74,6 +74,26 @@ namespace ultimate_fuel_script
         {
             this.UnitCount += amountToAdd;
         }
+        /// <summary>
+        /// Returns true if player has enought money to continue refueling, false if it doesn't
+        /// </summary>
+        /// <param name="Money"></param>
+        /// <returns></returns>
+        public bool CanRefuel(float Money, Vehicle veh, FuelStation station)
+        {
+            switch (VehicleType.GetVehicleTypeFromVehicle(veh))
+            {
+                case VehicleTypes.CAR:
+                    return (station.Price * FuelStation.CarRefuelTick) + this.TotalCost <= Money;
+                case VehicleTypes.BOAT:
+                    return (station.Price * FuelStation.BoatRefuelTick) + this.TotalCost <= Money;
+                case VehicleTypes.HELI:
+                    return (station.Price * FuelStation.HeliRefuelTick) + this.TotalCost <= Money;
+                default:
+                    return false;
+            }
+
+        }
 
         /// <summary>
         /// Reads refuel tick data from ini file
