@@ -44,7 +44,7 @@ namespace ultimate_fuel_script
         /// <summary>
         /// Method of drain to use
         /// </summary>
-        public StationType Type
+        public VehicleTypes Type
         { get; private set; }
         /// <summary>
         /// Gets a value indicating if the current fuel level can be increased
@@ -90,7 +90,7 @@ namespace ultimate_fuel_script
             // Randomize fuel level
             fuelData.Fuel = new Random().Next((int)fuelData.Reserve + 1, (int)fuelData.Tank);
             // Assign type
-            fuelData.Type = FuelStation.GetStationTypeFromVehicle(veh);
+            fuelData.Type = VehicleType.GetVehicleTypeFromVehicle(veh);
             // Return the attached data
             return fuelData;
         }
@@ -100,7 +100,7 @@ namespace ultimate_fuel_script
             float Drain = 0.0f;
             switch (this.Type)
             {
-                case StationType.CAR:
+                case VehicleTypes.CAR:
                     if (enableCars)
                     {
                         Drain = this.Drain * veh.CurrentRPM / 100;
@@ -108,7 +108,7 @@ namespace ultimate_fuel_script
                         this.Fuel -= (Drain >= this.Fuel) ? this.Fuel : Drain;
                     }
                     break;
-                case StationType.BOAT:
+                case VehicleTypes.BOAT:
                     if (enableBoats)
                     {
                         if (controller.Gamepad == null)
@@ -126,7 +126,7 @@ namespace ultimate_fuel_script
                         this.Fuel -= (Drain >= this.Fuel) ? this.Fuel : Drain;
                     }
                     break;
-                case StationType.HELI:
+                case VehicleTypes.HELI:
                     if (enableHelicopters)
                     {
                         if (controller.Gamepad == null)

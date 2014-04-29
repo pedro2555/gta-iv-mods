@@ -6,19 +6,9 @@ using GTA;
 
 namespace ultimate_fuel_script
 {
-    /// <summary>
-    /// Enumerations of station types
-    /// </summary>
-    public enum StationType
-    {
-        CAR,
-        BOAT,
-        HELI
-    }
-
     public class FuelStation
     {
-        public FuelStation(string Name, float Radius, Vector3 Location, int WantedStars, StationType Type, bool DisplayBlip, float Price)
+        public FuelStation(string Name, float Radius, Vector3 Location, int WantedStars, VehicleTypes Type, bool DisplayBlip, float Price)
         {
             this.Name = Name;
             this.Radius = Radius;
@@ -54,7 +44,7 @@ namespace ultimate_fuel_script
         /// <summary>
         /// Vehicle type for this station
         /// </summary>
-        public StationType Type
+        public VehicleTypes Type
         { get; private set; }
         /// <summary>
         /// Map blip handle
@@ -110,14 +100,14 @@ namespace ultimate_fuel_script
             // Place the appropriate icon 79 for Cars, 56 for Helis and 48 for Boats
             switch (this.Type)
             {
-                case StationType.CAR:
+                case VehicleTypes.CAR:
                 default:
                     StationBlip.Icon = (BlipIcon)79;
                     break;
-                case StationType.HELI:
+                case VehicleTypes.HELI:
                     StationBlip.Icon = (BlipIcon)56;
                     break;
-                case StationType.BOAT:
+                case VehicleTypes.BOAT:
                     StationBlip.Icon = (BlipIcon)48;
                     break;
             }
@@ -141,11 +131,11 @@ namespace ultimate_fuel_script
         {
             switch (this.Type)
             {
-                case StationType.CAR:
+                case VehicleTypes.CAR:
                     return (this.Price * FuelStation.CarRefuelTick) + model.LastRefuelCost <= Money;
-                case StationType.BOAT:
+                case VehicleTypes.BOAT:
                     return (this.Price * FuelStation.BoatRefuelTick) + model.LastRefuelCost <= Money;
-                case StationType.HELI:
+                case VehicleTypes.HELI:
                     return (this.Price * FuelStation.HeliRefuelTick) + model.LastRefuelCost <= Money;
                 default:
                     return false;
@@ -167,7 +157,7 @@ namespace ultimate_fuel_script
                 // Clear any existing records
                 FuelStation.Items.Clear();
                 // Load all types
-                foreach (StationType type in (StationType[])Enum.GetValues(typeof(StationType)))
+                foreach (VehicleTypes type in (VehicleTypes[])Enum.GetValues(typeof(VehicleTypes)))
                     LoadStations(type, settingsFile);
             }
             catch (Exception E)
@@ -179,20 +169,20 @@ namespace ultimate_fuel_script
         /// Loads a specific type of station
         /// </summary>
         /// <param name="type"></param>
-        public static void LoadStations(StationType type, SettingsFile settingsFile)
+        public static void LoadStations(VehicleTypes type, SettingsFile settingsFile)
         {
             try
             {
                 // Refuel tick
                 switch (type)
                 {
-                    case StationType.CAR:
+                    case VehicleTypes.CAR:
                         FuelStation.CarRefuelTick = settingsFile.GetValueFloat("CARREFUELTICK", .25f);
                         break;
-                    case StationType.BOAT:
+                    case VehicleTypes.BOAT:
                         FuelStation.BoatRefuelTick = settingsFile.GetValueFloat("BOATREFUELTICK", .5f);
                         break;
-                    case StationType.HELI:
+                    case VehicleTypes.HELI:
                         FuelStation.HeliRefuelTick = settingsFile.GetValueFloat("HELIREFUELTICK", 1.0f);
                         break;
                 }
@@ -226,15 +216,6 @@ namespace ultimate_fuel_script
             }
         }
         /// <summary>
-        /// Returns the appropriate StationType for a given vehicle
-        /// </summary>
-        /// <param name="veh"></param>
-        /// <returns></returns>
-        public static StationType GetStationTypeFromVehicle(Vehicle veh)
-        {
-            return (veh.Model.isHelicopter) ? StationType.HELI : (veh.Model.isBoat) ? StationType.BOAT : StationType.CAR;
-        }
-        /// <summary>
         /// Gets the nearest station to a given origin
         /// </summary>
         /// <param name="origin"></param>
@@ -252,7 +233,7 @@ namespace ultimate_fuel_script
         /// </summary>
         /// <param name="origin"></param>
         /// <returns></returns>
-        public static FuelStation GetNearestStation(Vector3 origin, StationType type)
+        public static FuelStation GetNearestStation(Vector3 origin, VehicleTypes type)
         {
             FuelStation res = null;
             foreach (FuelStation fs in FuelStation.Items)
@@ -271,16 +252,16 @@ namespace ultimate_fuel_script
             return (location.DistanceTo(station.Location) < station.Radius) ? station : null;
         }
 
-        public static float GetRefuelTick(StationType type)
+        public static float GetRefuelTick(VehicleTypes type)
         {
             switch (type)
             {
                 default:
-                case StationType.CAR:
+                case VehicleTypes.CAR:
                     return FuelStation.CarRefuelTick;
-                case StationType.BOAT:
+                case VehicleTypes.BOAT:
                     return FuelStation.BoatRefuelTick;
-                case StationType.HELI:
+                case VehicleTypes.HELI:
                     return FuelStation.HeliRefuelTick;
             }
         }

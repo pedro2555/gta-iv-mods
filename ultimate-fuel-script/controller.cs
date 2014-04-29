@@ -50,7 +50,7 @@ namespace ultimate_fuel_script
                 FuelStation.IsAtStation(
                 FuelStation.GetNearestStation(
                     Player.Character.Position,
-                    FuelStation.GetStationTypeFromVehicle(Player.Character.CurrentVehicle)),
+                    VehicleType.GetVehicleTypeFromVehicle(Player.Character.CurrentVehicle)),
                     Player.Character.Position) :
                     null;
 

@@ -76,6 +76,9 @@ namespace ultimate_fuel_script
             // Subscribes the sender to continuos notification of fuel data changes
             BindScriptCommand("FuelDataSubscription", new ScriptCommandDelegate(FuelDataSubscription_handler));
 
+            // Initialize refuel data
+            RefuelData.InitializeRefuelTick(this.Settings);
+
             // Tick spacing
             this.Interval = 100;
             // Tick handler
@@ -131,7 +134,7 @@ namespace ultimate_fuel_script
                     Player.Character.CurrentVehicle.EngineRunning = false;
 
                     // Actually refuel
-                    model.LastRefuelAmount += Player.Character.CurrentVehicle.Metadata.Fuel.AddFuel(FuelStation.GetRefuelTick(FuelStation.GetStationTypeFromVehicle(Player.Character.CurrentVehicle)));
+                    model.LastRefuelAmount += Player.Character.CurrentVehicle.Metadata.Fuel.AddFuel(FuelStation.GetRefuelTick(VehicleType.GetVehicleTypeFromVehicle(Player.Character.CurrentVehicle)));
                     model.LastRefuelCost = model.LastRefuelAmount * model.CurrentFuelStation.Price;
 
                     // Update cross script data
