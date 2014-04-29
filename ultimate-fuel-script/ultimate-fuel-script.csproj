@@ -59,12 +59,18 @@
     <Content Include="cross-script-samples\FuelDataRequest.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="cross-script-samples\FuelDataSubscription.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Compile Include="model-classes\FuelData.cs" />
     <Compile Include="model-classes\FuelStation.cs" />
     <Compile Include="model.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="view-classes\Gauge.cs" />
     <Compile Include="view.cs" />
+    <Content Include="cross-script-samples\FuelDataSubscription.vb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <None Include="LICENSE.txt">
