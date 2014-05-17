@@ -74,6 +74,8 @@ namespace ultimate_fuel_script
             // Initialize refuel data
             RefuelData.InitializeRefuelTick(this.Settings);
 
+            model.FuelDataSubscribers = new List<Guid>();
+
             // Tick spacing
             this.Interval = 100;
             // Tick handler
@@ -135,9 +137,6 @@ namespace ultimate_fuel_script
 
                     // Update cross script data
                     UpdateFuelData((FuelData)Player.Character.CurrentVehicle.Metadata.Fuel);
-                    break;
-                case Actions.None:
-                    view.ReserveBeepHasBeenPlayed = false;
                     break;
             }
         }
