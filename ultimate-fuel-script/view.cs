@@ -15,9 +15,15 @@ namespace ultimate_fuel_script
     {
         #region Properties
 
+        /// <summary>
+        /// Ultimate Indicator Script Guid
+        /// </summary>
+        public readonly Guid UltimateIndicatorScript = new Guid("775df3cb-41c0-45f7-bd8f-d989853c838b");
+        /// <summary>
+        /// Graphical fuel level displayer
+        /// </summary>
         private Gauge gauge
         { get; set; }
-
         /// <summary>
         /// Gets or sets if a welcome message has been displayed for the model.CurrentFuelStation
         /// </summary>
@@ -26,7 +32,7 @@ namespace ultimate_fuel_script
         /// <summary>
         /// Gets or sets if the reserve level beep indicator has already played
         /// </summary>
-        public static bool ReserveBeepHasBeenPlayed
+        public static bool ReserveLevelNotifications
         { get; set; }
 
         #endregion Properties
@@ -38,7 +44,7 @@ namespace ultimate_fuel_script
         {
             // Initiate working propeties
             view.StationWelcomeMessageHasBeenDisplayed = false;
-            view.ReserveBeepHasBeenPlayed = false;
+            view.ReserveLevelNotifications = false;
 
             // Load Gauge data
             gauge = new Gauge(
@@ -71,10 +77,13 @@ namespace ultimate_fuel_script
                     {
                         case Actions.Driving:
                             // Handle reserve sound
-                            if (model.CurrentFuelData.isOnReserve && !view.ReserveBeepHasBeenPlayed && Player.Character.CurrentVehicle.Speed > 5f)
+                            if (model.CurrentFuelData.isOnReserve && !view.ReserveLevelNotifications && Player.Character.CurrentVehicle.Speed > 5f)
                             {
                                 view.Play("reserve");
-                                view.ReserveBeepHasBeenPlayed = true;
+                                if (isScriptRunning(UltimateIndicatorScript))
+                                    // Request Hazard Light on with a locking state
+                                    SendScriptCommand(UltimateIndicatorScript, "HazardsOn", Player.Character.CurrentVehicle, true);
+                                view.ReserveLevelNotifications = true;
                             }
                             if (model.LastAction == Actions.Refueling)
                             {
@@ -110,9 +119,24 @@ namespace ultimate_fuel_script
                                     view.StationWelcomeMessageHasBeenDisplayed = true;
                                 }
                             }
+                            if (view.ReserveLevelNotifications && !model.CurrentFuelData.isOnReserve)
+                            {
+                                // Request a indicator script unlock
+                                SendScriptCommand(UltimateIndicatorScript, "ResetAll", Player.Character.CurrentVehicle);
+                                view.ReserveLevelNotifications = false;
+                            }
                             break;
                         case Actions.Refueling:
                             GTA.Native.Function.Call("PRINT_STRING_WITH_LITERAL_STRING_NOW", "STRING", String.Format("Refueling . . . ~n~~b~{0} liters ~w~for ~g~${1}~w~", model.CurrentRefuelData.UnitCount.ToString("F2"), model.CurrentRefuelData.TotalCostRounded), 500, 1);
+                            if (view.ReserveLevelNotifications)
+                            {
+                                // Request a indicator script unlock
+                                SendScriptCommand(UltimateIndicatorScript, "ResetAll", Player.Character.CurrentVehicle);
+                                view.ReserveLevelNotifications = false;
+                            }
+                            break;
+                        case Actions.None:
+                            view.ReserveLevelNotifications = false;
                             break;
                         default:
                             ClearHelp();
