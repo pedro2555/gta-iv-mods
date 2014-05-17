@@ -58,37 +58,30 @@ namespace ultimate_fuel_script
         /// <param name="veh"></param>
         public void Draw(GTA.Graphics graphics, FuelData fuelData)
         {
-            try
-            {
-                // Define drawing scale
-                graphics.Scaling = FontScaling.ScreenUnits;
+            // Define drawing scale
+            graphics.Scaling = FontScaling.ScreenUnits;
 
-                // Draw fuel level meter's black background.
-                graphics.DrawRectangle(Background, GTA.ColorIndex.Black);
+            // Draw fuel level meter's black background.
+            graphics.DrawRectangle(Background, GTA.ColorIndex.Black);
 
-                // Draw fuel level meter's dark grey foreground.
-                graphics.DrawRectangle(Foreground, (GTA.ColorIndex)1);
+            // Draw fuel level meter's dark grey foreground.
+            graphics.DrawRectangle(Foreground, (GTA.ColorIndex)1);
 
-                // Draw the front rectange widening how much fuel vehicle has.
-                // Green as normal, and red when running on reserved.
-                Display.Width = (fuelData.Fuel * (Width - 0.008f)) / fuelData.Tank;
-                graphics.DrawRectangle(Display,
-                        (fuelData.isOnReserve)
-                            ? ((Flashing < 5)
-                                ? (GTA.ColorIndex)1
-                                : (GTA.ColorIndex)35
-                            )
-                        : (GTA.ColorIndex)50); // at this point, if we have issues about performance the color can very well be select when any of the 3 conditions change in the first place
+            // Draw the front rectange widening how much fuel vehicle has.
+            // Green as normal, and red when running on reserved.
+            Display.Width = (fuelData.Fuel * (Width - 0.008f)) / fuelData.Tank;
+            graphics.DrawRectangle(Display,
+                    (fuelData.isOnReserve)
+                        ? ((Flashing < 5)
+                            ? (GTA.ColorIndex)1
+                            : (GTA.ColorIndex)35
+                        )
+                    : (GTA.ColorIndex)50); // at this point, if we have issues about performance the color can very well be select when any of the 3 conditions change in the first place
 
-                // Controls the Flashinging when on reserved fuel.
-                // Strange, but it won't flash if we used Flashing++;
-                // It's not strange it is expected behaviour: Flashing++ uses the variable Flashing and updates it with 1. ++Flashing updates the variable with 1 and then uses it.
-                Flashing = (Flashing == 20) ? 0 : ++Flashing;
-            }
-            catch (Exception E)
-            {
-
-            }
+            // Controls the Flashinging when on reserved fuel.
+            // Strange, but it won't flash if we used Flashing++;
+            // It's not strange it is expected behaviour: Flashing++ uses the variable Flashing and updates it with 1. ++Flashing updates the variable with 1 and then uses it.
+            Flashing = (Flashing == 20) ? 0 : ++Flashing;
         }
     }
 }
