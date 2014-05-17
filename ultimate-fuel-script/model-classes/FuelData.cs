@@ -57,6 +57,16 @@ namespace ultimate_fuel_script
             }
         }
         /// <summary>
+        /// Gets a value indicating if the fuel tank is empty
+        /// </summary>
+        public bool isEmpty
+        {
+            get
+            {
+                return this.Fuel <= 0;
+            }
+        }
+        /// <summary>
         /// Gets a value indicating if the current fuel level is bellow the specified reserve level
         /// </summary>
         public bool isOnReserve

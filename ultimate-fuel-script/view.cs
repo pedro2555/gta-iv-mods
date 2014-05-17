@@ -80,13 +80,14 @@ namespace ultimate_fuel_script
                             if (model.CurrentFuelData.isOnReserve && !view.ReserveLevelNotifications && Player.Character.CurrentVehicle.Speed > 5f)
                             {
                                 view.Play("reserve");
-                                if (isScriptRunning(UltimateIndicatorScript))
-                                    // Request Hazard Light on with a locking state
-                                    SendScriptCommand(UltimateIndicatorScript, "HazardsOn", Player.Character.CurrentVehicle, true);
                                 view.ReserveLevelNotifications = true;
+                                if (model.CurrentFuelData.isEmpty && isScriptRunning(UltimateIndicatorScript))
+                                        SendScriptCommand(UltimateIndicatorScript, "HazardsOn", Player.Character.CurrentVehicle, true);
                             }
                             if (model.LastAction == Actions.Refueling)
                             {
+                                if (isScriptRunning(UltimateIndicatorScript))
+                                    SendScriptCommand(UltimateIndicatorScript, "ResetAll", Player.Character.CurrentVehicle);
                                 // Display refuel cost message
                                 if (model.CurrentFuelStation.DisplayBlip)
                                 {
@@ -128,12 +129,6 @@ namespace ultimate_fuel_script
                             break;
                         case Actions.Refueling:
                             GTA.Native.Function.Call("PRINT_STRING_WITH_LITERAL_STRING_NOW", "STRING", String.Format("Refueling . . . ~n~~b~{0} liters ~w~for ~g~${1}~w~", model.CurrentRefuelData.UnitCount.ToString("F2"), model.CurrentRefuelData.TotalCostRounded), 500, 1);
-                            if (view.ReserveLevelNotifications)
-                            {
-                                // Request a indicator script unlock
-                                SendScriptCommand(UltimateIndicatorScript, "ResetAll", Player.Character.CurrentVehicle);
-                                view.ReserveLevelNotifications = false;
-                            }
                             break;
                         case Actions.None:
                             view.ReserveLevelNotifications = false;
