@@ -12,18 +12,18 @@ using GTA.Native;
 
 namespace ultimatebreakreverseseparator
 {
-    public partial class DisableAutoReverse : Script
+    public partial class Ultimatebreakreverseseparator : Script
     {
 
-        public DisableAutoReverse()
+        public Ultimatebreakreverseseparator()
         {
             base.KeyDown += Main_KeyDown;
             base.Tick += Main_Tick;
-            
+
             Wait(30);
         }
 
-        private bool CarIsMovingFowards;
+        private bool CarIsMovingForwards;
         private float MaxForwardSpeed;
         private float CurrentSpeed;
         private bool DidEmergencyStop = true;
@@ -32,7 +32,7 @@ namespace ultimatebreakreverseseparator
         {
             if (PlayerIsInVehicleAndRightTriggerOrMoveForwardIsPressed())
             {
-                CarIsMovingFowards = true;
+                CarIsMovingForwards = true;
             }
 
 
@@ -65,44 +65,41 @@ namespace ultimatebreakreverseseparator
                     RunOnce = false;
                     if (!Player.Character.CurrentVehicle.Model.isCar || !Player.Character.CurrentVehicle.Model.isBike)
                     {
-                        CarIsMovingFowards = false;
+                        CarIsMovingForwards = false;
                         return;
                     }
                     Log(nameof(Main_Tick), "RUN ONCE HAS EXECUTED", true);
                 }
 
-
-                if (Function.Call<bool>("IS_BUTTON_PRESSED", new Parameter[] { 0, 5 }))
-                {
-                    Log(nameof(Main_KeyDown), "IS_BUTTON_PRESSED: LEFT TRIGGER IS PRESSED", true);
-                }
                 if (PlayerIsInVehicleAndRightTriggerOrMoveForwardIsPressed())
                 {
-                    CarIsMovingFowards = true;
-                    Log(nameof(Main_KeyDown), "IS_BUTTON_PRESSED: CarIsMovingForwards = True", true);
-
+                    CarIsMovingForwards = true;
+                    //Log(nameof(Main_KeyDown), "IS_BUTTON_PRESSED: CarIsMovingForwards = True", true);
                 }
 
-                if (CarIsMovingFowards)
+                if (CarIsMovingForwards)
                 {
                     CurrentSpeed = Player.Character.CurrentVehicle.Speed;
 
                     if (PlayerIsMovingForwardOrRightTriggerIsPressed())
                     {
+                        //Log(nameof(Main_Tick), $"GAS PRESSED, DECIDED TO SET MAXFORWARDSPEED. MaxForwardSpeed={MaxForwardSpeed}, CurrentSpeed={CurrentSpeed}, CurrentSpeed > MaxForwardSpeed? {CurrentSpeed > MaxForwardSpeed}", true);
+
                         MaxForwardSpeed = Player.Character.CurrentVehicle.Speed;
                     }
 
                     if (MovingBackwardsOrLeftTriggerPressed())
                     {
-                        if (IsPlayerStopped() || CurrentSpeed > MaxForwardSpeed)
-                        {
 
-                            Log(nameof(Main_Tick), "CAR IS STOPPED WHILE GOING BACKWARDS, DOING EMERGENCY STOP", true);
-                            CarIsMovingFowards = false;
+                        if (IsPlayerStopped() || CurrentSpeed <= 0.7)
+                        {
+                            //Log(nameof(Main_Tick), $"BREAKS PRESSED, DECIDED TO FORCE CAR STOP. MaxForwardSpeed={MaxForwardSpeed}, CurrentSpeed={CurrentSpeed}, IsPlayerStopped() ? {IsPlayerStopped()} CurrentSpeed <= 0.7? {CurrentSpeed <= 0.7} CurrentSpeed > MaxForwardSpeed? {CurrentSpeed > MaxForwardSpeed}", true);
+                            CarIsMovingForwards = false;
                             ForceCarStop();
                         }
                         else
                         {
+                            //Log(nameof(Main_Tick), $"BREAKS PRESSED BUT DECIDED NOT TO FORCE CAR STOP. MaxForwardSpeed={MaxForwardSpeed}, CurrentSpeed={CurrentSpeed}, IsPlayerStopped() ? {IsPlayerStopped()} CurrentSpeed <= 0.7? {CurrentSpeed <= 0.7} CurrentSpeed > MaxForwardSpeed? {CurrentSpeed > MaxForwardSpeed}", true);
                             MaxForwardSpeed = CurrentSpeed;
                         }
                     }
@@ -111,7 +108,7 @@ namespace ultimatebreakreverseseparator
                 {
                     if (!DidEmergencyStop)
                     {
-                        Log(nameof(Main_Tick), "CAR IS STOPPED WHILE GOING FORWARDS, DOING EMERGENCY STOP", true);
+                        //Log(nameof(Main_Tick), $"CAR IS STOPPED WHILE GOING FORWARDS, DOING EMERGENCY STOP. MaxForwardSpeed={MaxForwardSpeed}, CurrentSpeed={CurrentSpeed}, IsPlayerStopped() ? {IsPlayerStopped()} CurrentSpeed <= 0.7? {CurrentSpeed <= 0.7} CurrentSpeed > MaxForwardSpeed? {CurrentSpeed > MaxForwardSpeed}", true);
                         ForceCarStop();
                     }
                 }
@@ -119,7 +116,7 @@ namespace ultimatebreakreverseseparator
             else if (!RunOnce)
             {
                 Function.Call("SET_PLAYER_CONTROL", Player, true);
-                CarIsMovingFowards = false;
+                CarIsMovingForwards = false;
                 RunOnce = true;
             }
         }
@@ -129,7 +126,7 @@ namespace ultimatebreakreverseseparator
             return !MovingBackwardsOrLeftTriggerPressed() && IsPlayerStopped();
         }
 
- 
+
 
         /// <summary>
         /// More details at https://gtamods.com/wiki/02A0
@@ -146,7 +143,11 @@ namespace ultimatebreakreverseseparator
 
         private void ForceCarStop()
         {
+
             DidEmergencyStop = !DidEmergencyStop;
+
+            Log(nameof(Main_KeyDown), $"DidEmergencyStop = {DidEmergencyStop}", true);
+
             Function.Call("SET_CAMERA_CONTROLS_DISABLED_WITH_PLAYER_CONTROLS", false);
             Function.Call("SET_PLAYER_CONTROL", Player, DidEmergencyStop);
             Function.Call("SET_EVERYONE_IGNORE_PLAYER", Player, false);
@@ -193,7 +194,7 @@ namespace ultimatebreakreverseseparator
             {
                 if (!string.IsNullOrEmpty(message))
                 {
-                    using (StreamWriter streamWriter = File.AppendText(Game.InstallFolder + "\\scripts\\" + nameof(DisableAutoReverse) + ".log"))
+                    using (StreamWriter streamWriter = File.AppendText(Game.InstallFolder + "\\scripts\\" + nameof(Ultimatebreakreverseseparator) + ".log"))
                     {
                         streamWriter.WriteLine($"[{DateTime.Now:hh:mm:ss.fff}] @ {methodName}: {message}");
                         streamWriter.Flush();
