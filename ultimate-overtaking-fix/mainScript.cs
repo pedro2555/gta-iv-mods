@@ -7,7 +7,7 @@ using GTA.Native;
 
 namespace ultimate_overtaking_fix
 {
-    public class mainScript : Script
+    public class MainScript : Script
     {
         #region Properties
         ///
@@ -22,7 +22,7 @@ namespace ultimate_overtaking_fix
         /// <summary>
         /// The script entry point
         /// </summary>
-        public mainScript()
+        public MainScript()
         {
             ///
             /// TODO:
@@ -33,10 +33,10 @@ namespace ultimate_overtaking_fix
             // Set timer interval time
             this.Interval = 100;
             // Assign timer tick event
-            this.Tick += new EventHandler(mainScript_Tick);
+            this.Tick += new EventHandler(MainScript_Tick);
             #region Log script start
-            mainScript.Log(" - - - - - - - - - - - - - - - STARTUP - - - - - - - - - - - - - - - ", String.Format("GTA IV {0} under {1}", Game.Version.ToString(), mainScript.getOSInfo()));
-            mainScript.Log("Started", String.Format("{0} v{1}", mainScript.scriptName, FileVersionInfo.GetVersionInfo(Game.InstallFolder + "\\scripts\\" + mainScript.scriptName + ".net.dll").ProductVersion, true));
+            MainScript.Log(" - - - - - - - - - - - - - - - STARTUP - - - - - - - - - - - - - - - ", String.Format("GTA IV {0} under {1}", Game.Version.ToString(), MainScript.GetOSInfo()));
+            MainScript.Log("Started", String.Format("{0} v{1}", MainScript.scriptName, FileVersionInfo.GetVersionInfo(Game.InstallFolder + "\\scripts\\" + MainScript.scriptName + ".net.dll").ProductVersion, true));
             #endregion Log script start
         }
 
@@ -45,7 +45,7 @@ namespace ultimate_overtaking_fix
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        void mainScript_Tick(object sender, EventArgs e)
+        void MainScript_Tick(object sender, EventArgs e)
         {
             try
             {
@@ -109,7 +109,7 @@ namespace ultimate_overtaking_fix
             {
                 if (!string.IsNullOrEmpty(message))
                 {
-                    using (StreamWriter streamWriter = File.AppendText(Game.InstallFolder + "\\scripts\\" + mainScript.scriptName + ".log"))
+                    using (StreamWriter streamWriter = File.AppendText(Game.InstallFolder + "\\scripts\\" + MainScript.scriptName + ".log"))
                     {
                         streamWriter.WriteLine("[{0}] @ {1}: {2}", DateTime.Now.ToString("hh:mm:ss.fff"), methodName, message);
                         streamWriter.Flush();
@@ -127,7 +127,7 @@ namespace ultimate_overtaking_fix
             finally
             {
                 if (printToConsole)
-                    Game.Console.Print(String.Format("{1}: {2}", methodName, message));
+                    Game.Console.Print($"{message}: {2}");
             }
 
         }
@@ -135,7 +135,7 @@ namespace ultimate_overtaking_fix
         /// Get OS name and SP
         /// </summary>
         /// <returns></returns>
-        internal static string getOSInfo()
+        internal static string GetOSInfo()
         {
             //Get Operating system information.
             OperatingSystem os = Environment.OSVersion;
@@ -206,7 +206,7 @@ namespace ultimate_overtaking_fix
                     operatingSystem += " " + os.ServicePack;
                 }
                 //Append the OS architecture.  i.e. "Windows XP Service Pack 3 32-bit"
-                operatingSystem += " " + getOSArchitecture().ToString() + "-bit";
+                operatingSystem += " " + GetOSArchitecture().ToString() + "-bit";
             }
             //Return the information we've gathered.
             return operatingSystem;
@@ -215,7 +215,7 @@ namespace ultimate_overtaking_fix
         /// Get OS architecture
         /// </summary>
         /// <returns></returns>
-        private static int getOSArchitecture()
+        private static int GetOSArchitecture()
         {
             string pa = Environment.GetEnvironmentVariable("PROCESSOR_ARCHITECTURE");
             return ((String.IsNullOrEmpty(pa) || String.Compare(pa, 0, "x86", 0, 3, true) == 0) ? 32 : 64);

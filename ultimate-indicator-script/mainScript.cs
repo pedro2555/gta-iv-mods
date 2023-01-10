@@ -490,6 +490,7 @@ namespace ultimate_indicator_script
             }
         }
 
+        #region Helper Methods
         /// <summary>
         /// Displays a message at the bottom of the screen
         /// </summary>
@@ -641,7 +642,9 @@ namespace ultimate_indicator_script
             string pa = Environment.GetEnvironmentVariable("PROCESSOR_ARCHITECTURE");
             return ((String.IsNullOrEmpty(pa) || String.Compare(pa, 0, "x86", 0, 3, true) == 0) ? 32 : 64);
         }
-        #endregion Logging and Updating
+        #endregion Logging and Updating 
+        #endregion
+
         #endregion Methods
     }
 }

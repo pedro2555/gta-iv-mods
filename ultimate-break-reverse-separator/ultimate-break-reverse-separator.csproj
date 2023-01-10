@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{A2F7E938-41AF-47B2-929D-08897A414593}</ProjectGuid>
+    <ProjectGuid>{729FD5D3-E744-442D-AFBD-BCDD41900CC8}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ultimate_overtaking_fix</RootNamespace>
-    <AssemblyName>ultimate-overtaking-fix.net</AssemblyName>
+    <RootNamespace>ultimate-break-reverse-separator</RootNamespace>
+    <AssemblyName>ultimate-break-reverse-separator.net</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -29,7 +29,6 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
@@ -52,12 +51,15 @@
   <ItemGroup>
     <Reference Include="AdvancedHook">
       <HintPath>..\advanced-hook\AdvancedHook.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="ScriptHookDotNet">
       <HintPath>..\scripthook-net\ScriptHookDotNet.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -79,12 +81,6 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <UseHostCompilerIfAvailable>False</UseHostCompilerIfAvailable>
-    <PostBuildEvent>cd "$(ProjectDir)"
-git log --pretty=format:%25%25H -1 &gt; version
-set /p hash= &lt; version
-del version
-cd "$(TargetDir)"
-"C:\Program Files\7-Zip\7z.exe" a -tzip -i!*.dll -i!*.ini -i!README.txt -i!LICENSE.txt ultimate-overtaking-fix-%25hash%25.zip</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PreBuildEvent>
