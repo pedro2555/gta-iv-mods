@@ -12,10 +12,10 @@ using GTA.Native;
 
 namespace ultimatebreakreverseseparator
 {
-    public partial class Ultimatebreakreverseseparator : Script
+    public partial class MainScript : Script
     {
 
-        public Ultimatebreakreverseseparator()
+        public MainScript()
         {
             base.KeyDown += Main_KeyDown;
             base.Tick += Main_Tick;
@@ -146,11 +146,12 @@ namespace ultimatebreakreverseseparator
 
             DidEmergencyStop = !DidEmergencyStop;
 
-            Log(nameof(Main_KeyDown), $"DidEmergencyStop = {DidEmergencyStop}", true);
+            // Log(nameof(Main_KeyDown), $"DidEmergencyStop = {DidEmergencyStop}", true);
 
-            Function.Call("SET_CAMERA_CONTROLS_DISABLED_WITH_PLAYER_CONTROLS", false);
             Function.Call("SET_PLAYER_CONTROL", Player, DidEmergencyStop);
+            Function.Call("SET_CAMERA_CONTROLS_DISABLED_WITH_PLAYER_CONTROLS", false);
             Function.Call("SET_EVERYONE_IGNORE_PLAYER", Player, false);
+            
         }
 
         #region Helper Methods
@@ -194,7 +195,7 @@ namespace ultimatebreakreverseseparator
             {
                 if (!string.IsNullOrEmpty(message))
                 {
-                    using (StreamWriter streamWriter = File.AppendText(Game.InstallFolder + "\\scripts\\" + nameof(Ultimatebreakreverseseparator) + ".log"))
+                    using (StreamWriter streamWriter = File.AppendText(Game.InstallFolder + "\\scripts\\" + nameof(MainScript) + ".log"))
                     {
                         streamWriter.WriteLine($"[{DateTime.Now:hh:mm:ss.fff}] @ {methodName}: {message}");
                         streamWriter.Flush();

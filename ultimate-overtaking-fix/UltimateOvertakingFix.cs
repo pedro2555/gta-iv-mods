@@ -7,14 +7,9 @@ using GTA.Native;
 
 namespace ultimate_overtaking_fix
 {
-    public class MainScript : Script
+    public class UltimateOvertakingFix : Script
     {
         #region Properties
-        ///
-        /// TODO:
-        ///
-
-        // code goes here
 
         internal static readonly string scriptName = "ultimate-overtaking-fix";
         #endregion Properties
@@ -22,21 +17,15 @@ namespace ultimate_overtaking_fix
         /// <summary>
         /// The script entry point
         /// </summary>
-        public MainScript()
+        public UltimateOvertakingFix()
         {
-            ///
-            /// TODO:
-            ///
-
-            // code goes here
-
             // Set timer interval time
             this.Interval = 100;
             // Assign timer tick event
             this.Tick += new EventHandler(MainScript_Tick);
             #region Log script start
-            MainScript.Log(" - - - - - - - - - - - - - - - STARTUP - - - - - - - - - - - - - - - ", String.Format("GTA IV {0} under {1}", Game.Version.ToString(), MainScript.GetOSInfo()));
-            MainScript.Log("Started", String.Format("{0} v{1}", MainScript.scriptName, FileVersionInfo.GetVersionInfo(Game.InstallFolder + "\\scripts\\" + MainScript.scriptName + ".net.dll").ProductVersion, true));
+            UltimateOvertakingFix.Log(" - - - - - - - - - - - - - - - STARTUP - - - - - - - - - - - - - - - ", String.Format("GTA IV {0} under {1}", Game.Version.ToString(), UltimateOvertakingFix.GetOSInfo()));
+            UltimateOvertakingFix.Log("Started", String.Format("{0} v{1}", UltimateOvertakingFix.scriptName, FileVersionInfo.GetVersionInfo(Game.InstallFolder + "\\scripts\\" + UltimateOvertakingFix.scriptName + ".net.dll").ProductVersion, true));
             #endregion Log script start
         }
 
@@ -50,10 +39,16 @@ namespace ultimate_overtaking_fix
             try
             {
                 // Player must be in a vehicle, in the driver seat, with the vehicle stopped
-                if (Player.Character.isInVehicle() && Player.Character.CurrentVehicle.GetPedOnSeat(VehicleSeat.Driver) == Player.Character && Function.Call<bool>("IS_CAR_STOPPED", new Parameter[] { Player.Character.CurrentVehicle }))
+                if (Player.Character.isInVehicle() &&
+                    Player.Character.CurrentVehicle.GetPedOnSeat(VehicleSeat.Driver) == Player.Character &&
+                    Function.Call<bool>("IS_CAR_STOPPED", new Parameter[] { Player.Character.CurrentVehicle }))
+                {
                     // Get a vehicle behind the layer vehicle in a 4 meter radius and order it's driver to stand still
-                    World.GetClosestVehicle(Player.Character.CurrentVehicle.GetOffsetPosition(new Vector3(0f, -7f, 0f)), 4f).GetPedOnSeat(VehicleSeat.Driver).Task.StandStill(110);
-                
+                    var car = World.GetClosestVehicle(Player.Character.CurrentVehicle.GetOffsetPosition(new Vector3(0f, -5f, 0f)), 1f);
+                    var carDriver = car.GetPedOnSeat(VehicleSeat.Driver);
+
+                    carDriver.Task.StandStill(10);
+                }
             }
             catch (Exception E)
             {
@@ -62,12 +57,6 @@ namespace ultimate_overtaking_fix
         }
 
         #region Methods
-
-        ///
-        /// TODO:
-        ///
-
-        // code goes here
 
         /// <summary>
         /// Displays a message at the bottom of the screen
@@ -109,7 +98,7 @@ namespace ultimate_overtaking_fix
             {
                 if (!string.IsNullOrEmpty(message))
                 {
-                    using (StreamWriter streamWriter = File.AppendText(Game.InstallFolder + "\\scripts\\" + MainScript.scriptName + ".log"))
+                    using (StreamWriter streamWriter = File.AppendText(Game.InstallFolder + "\\scripts\\" + UltimateOvertakingFix.scriptName + ".log"))
                     {
                         streamWriter.WriteLine("[{0}] @ {1}: {2}", DateTime.Now.ToString("hh:mm:ss.fff"), methodName, message);
                         streamWriter.Flush();
