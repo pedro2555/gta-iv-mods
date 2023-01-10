@@ -4,6 +4,311 @@
         "ScriptHookDotNet"
     </assembly>
     <members>
+        <member name="M:GTA.Viewport.Equals(GTA.Viewport@,GTA.Viewport@)">
+            <summary>
+Returns a value indicating whether the two viewports are equivalent.
+</summary>
+            <param name="value1">The first value to compare.</param>
+            <param name="value2">The second value to compare.</param>
+            <returns>
+                <c>true</c> if <paramref name="value1" /> has the same value as <paramref name="value2" />; otherwise, <c>false</c>.</returns>
+        </member>
+        <member name="M:GTA.Viewport.Equals(GTA.Viewport)">
+            <summary>
+Returns a value indicating whether this instance is equal to the specified object.
+</summary>
+            <param name="other">A <see cref="T:GTA.Viewport" /> to compare with this instance.</param>
+            <returns>
+                <c>true</c> if <paramref name="other" /> has the same value as this instance; otherwise, <c>false</c>.</returns>
+        </member>
+        <member name="M:GTA.Viewport.Equals(System.Object)">
+            <summary>
+Returns a value indicating whether this instance is equal to the specified object.
+</summary>
+            <param name="obj">An object to compare with this instance.</param>
+            <returns>
+                <c>true</c> if <paramref name="obj" /> has the same value as this instance; otherwise, <c>false</c>.</returns>
+        </member>
+        <member name="M:GTA.Viewport.GetHashCode">
+            <summary>
+Returns the hash code for this instance.
+</summary>
+            <returns>A 32-bit signed integer hash code.</returns>
+        </member>
+        <member name="M:GTA.Viewport.ToString">
+            <summary>
+Converts the value of the viewport to its equivalent string representation.
+</summary>
+            <returns>The string representation of the value of this instance.</returns>
+        </member>
+        <member name="M:GTA.Viewport.op_Inequality(GTA.Viewport,GTA.Viewport)">
+            <summary>
+Tests for inequality between two viewports.
+</summary>
+            <param name="left">The first value to compare.</param>
+            <param name="right">The second value to compare.</param>
+            <returns>
+                <c>true</c> if <paramref name="left" /> has a different value than <paramref name="right" />; otherwise, <c>false</c>.</returns>
+        </member>
+        <member name="M:GTA.Viewport.op_Equality(GTA.Viewport,GTA.Viewport)">
+            <summary>
+Tests for equality between two viewports.
+</summary>
+            <param name="left">The first value to compare.</param>
+            <param name="right">The second value to compare.</param>
+            <returns>
+                <c>true</c> if <paramref name="left" /> has the same value as <paramref name="right" />; otherwise, <c>false</c>.</returns>
+        </member>
+        <member name="M:GTA.Viewport.#ctor(System.Int32,System.Int32,System.Int32,System.Int32,System.Single,System.Single)">
+            <summary>
+Initializes a new instance of the <see cref="T:GTA.Viewport" /> structure.
+</summary>
+            <param name="x">The X coordinate of the viewport.</param>
+            <param name="y">The Y coordinate of the viewport.</param>
+            <param name="width">The width of the viewport.</param>
+            <param name="height">The height of the viewport.</param>
+            <param name="minZ">The minimum Z distance of the viewport.</param>
+            <param name="maxZ">The maximum Z distance of the viewport.</param>
+        </member>
+        <member name="M:GTA.Viewport.#ctor(System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>
+Initializes a new instance of the <see cref="T:GTA.Viewport" /> structure.
+</summary>
+            <param name="x">The X coordinate of the viewport.</param>
+            <param name="y">The Y coordinate of the viewport.</param>
+            <param name="width">The width of the viewport.</param>
+            <param name="height">The height of the viewport.</param>
+        </member>
+        <member name="P:GTA.Viewport.MaxZ">
+            <summary>
+Gets or sets the viewport's maximum Z depth.
+</summary>
+        </member>
+        <member name="P:GTA.Viewport.MinZ">
+            <summary>
+Gets or sets the viewport's minimum Z depth.
+</summary>
+        </member>
+        <member name="P:GTA.Viewport.Height">
+            <summary>
+Gets or sets the viewport's height.
+</summary>
+        </member>
+        <member name="P:GTA.Viewport.Width">
+            <summary>
+Gets or sets the viewport's width.
+</summary>
+        </member>
+        <member name="P:GTA.Viewport.Y">
+            <summary>
+Gets or sets the viewport's Y position.
+</summary>
+        </member>
+        <member name="P:GTA.Viewport.X">
+            <summary>
+Gets or sets the viewport's X position.
+</summary>
+        </member>
+        <member name="T:GTA.Viewport">
+            <summary>
+Defines a rectangular region of a render-target surface onto which 
+a 3D rendering is projected.
+</summary>
+            <unmanaged>D3DVIEWPORT9</unmanaged>
+        </member>
+        <member name="M:GTA.value.Resources.GetTexture(System.String)">
+            <summary>
+Returns a Texture contained as an embedded resource file in the script
+</summary>
+        </member>
+        <member name="M:GTA.value.Resources.GetText(System.String)">
+            <summary>
+Returns the text of an embedded resource file included in the script
+</summary>
+        </member>
+        <member name="M:GTA.value.Resources.GetText(System.String,System.Text.Encoding)">
+            <summary>
+Returns the text of an embedded resource file included in the script
+</summary>
+        </member>
+        <member name="M:GTA.value.Resources.GetData(System.String)">
+            <summary>
+Returns the data of an embedded resource file included in the script
+</summary>
+        </member>
+        <member name="M:GTA.Garage.GetVehiclesInside">
+            <summary>
+Returns all vehicles inside the garage. SLOW! Use isVehicleInside istead if possible!
+</summary>
+        </member>
+        <member name="M:GTA.SettingsFile.GetValueModel(System.String)">
+            <summary>
+Get a value with the given name from the settings file and convert is to a model.
+The model may be given as modelname, integer or hex value.
+</summary>
+            <param name="OptionName">The name of the value to look for.</param>
+        </member>
+        <member name="M:GTA.SettingsFile.GetValueModel(System.String,System.String)">
+            <summary>
+Get a value with the given name from the settings file and convert is to a model.
+The model may be given as modelname, integer or hex value.
+</summary>
+            <param name="Category">The category of the value to look for. (without the []-brackets)</param>
+            <param name="OptionName">The name of the value to look for.</param>
+        </member>
+        <member name="M:GTA.SettingsFile.GetValueModel(System.String,GTA.Model)">
+            <summary>
+Get a value with the given name from the settings file and convert is to a model.
+The model may be given as modelname, integer or hex value.
+</summary>
+            <param name="OptionName">The name of the value to look for.</param>
+            <param name="DefaultValue">Is returned when the value is not found or invalid.</param>
+        </member>
+        <member name="M:GTA.SettingsFile.GetValueModel(System.String,System.String,GTA.Model)">
+            <summary>
+Get a value with the given name from the settings file and convert is to a model.
+The model may be given as modelname, integer or hex value.
+</summary>
+            <param name="Category">The category of the value to look for. (without the []-brackets)</param>
+            <param name="OptionName">The name of the value to look for.</param>
+            <param name="DefaultValue">Is returned when the value is not found or invalid.</param>
+        </member>
+        <member name="M:GTA.SettingsFile.GetValueKey(System.String,System.Windows.Forms.Keys)">
+            <summary>
+Get a value with the given name from the settings file and convert is to a key.
+The key may be given as the key's name or as keycode.
+</summary>
+            <param name="OptionName">The name of the value to look for.</param>
+            <param name="DefaultValue">Is returned when the value is not found or invalid.</param>
+        </member>
+        <member name="M:GTA.SettingsFile.GetValueKey(System.String,System.String,System.Windows.Forms.Keys)">
+            <summary>
+Get a value with the given name from the settings file and convert is to a key.
+The key may be given as the key's name or as keycode.
+</summary>
+            <param name="Category">The category of the value to look for. (without the []-brackets)</param>
+            <param name="OptionName">The name of the value to look for.</param>
+            <param name="DefaultValue">Is returned when the value is not found or invalid.</param>
+        </member>
+        <member name="M:GTA.SettingsFile.GetValueString(System.String)">
+            <summary>
+Get a string value with the given name from the settings file.
+</summary>
+            <param name="OptionName">The name of the value to look for.</param>
+        </member>
+        <member name="M:GTA.SettingsFile.GetValueString(System.String,System.String)">
+            <summary>
+Get a string value with the given name from the settings file.
+</summary>
+            <param name="Category">The category of the value to look for. (without the []-brackets)</param>
+            <param name="OptionName">The name of the value to look for.</param>
+        </member>
+        <member name="M:GTA.SettingsFile.GetValueString(System.String,System.String,System.String)">
+            <summary>
+Get a string value with the given name and category from the settings file.
+</summary>
+            <param name="Category">The category of the value to look for. (without the []-brackets)</param>
+            <param name="OptionName">The name of the value to look for.</param>
+            <param name="DefaultValue">Is returned when the value is not found or invalid.</param>
+        </member>
+        <member name="M:GTA.SettingsFile.GetValueInteger(System.String,System.Int32)">
+            <summary>
+Get an integer value with the given name from the settings file.
+</summary>
+            <param name="OptionName">The name of the value to look for.</param>
+            <param name="DefaultValue">Is returned when the value is not found or invalid.</param>
+        </member>
+        <member name="M:GTA.SettingsFile.GetValueInteger(System.String,System.String,System.Int32)">
+            <summary>
+Get an integer value with the given name from the settings file.
+</summary>
+            <param name="Category">The category of the value to look for. (without the []-brackets)</param>
+            <param name="OptionName">The name of the value to look for.</param>
+            <param name="DefaultValue">Is returned when the value is not found or invalid.</param>
+        </member>
+        <member name="M:GTA.SettingsFile.GetValueFloat(System.String,System.Single)">
+            <summary>
+Get a float value with the given name from the settings file.
+</summary>
+            <param name="OptionName">The name of the value to look for.</param>
+            <param name="DefaultValue">Is returned when the value is not found or invalid.</param>
+        </member>
+        <member name="M:GTA.SettingsFile.GetValueFloat(System.String,System.String,System.Single)">
+            <summary>
+Get a float value with the given name from the settings file.
+</summary>
+            <param name="Category">The category of the value to look for. (without the []-brackets)</param>
+            <param name="OptionName">The name of the value to look for.</param>
+            <param name="DefaultValue">Is returned when the value is not found or invalid.</param>
+        </member>
+        <member name="M:GTA.SettingsFile.GetValueBool(System.String,System.Boolean)">
+            <summary>
+Get a boolean value with the given name from the settings file.
+INI values that return true: true, yes, on, 1.
+INI values that return false: false, no, off, 0.
+</summary>
+            <param name="OptionName">The name of the value to look for.</param>
+            <param name="DefaultValue">Is returned when the value is not found or invalid.</param>
+        </member>
+        <member name="M:GTA.SettingsFile.GetValueBool(System.String,System.String,System.Boolean)">
+            <summary>
+Get a boolean value with the given name from the settings file.
+INI values that return true: true, yes, on, 1.
+INI values that return false: false, no, off, 0.
+</summary>
+            <param name="Category">The category of the value to look for. (without the []-brackets)</param>
+            <param name="OptionName">The name of the value to look for.</param>
+            <param name="DefaultValue">Is returned when the value is not found or invalid.</param>
+        </member>
+        <member name="M:GTA.SettingsFile.GetValueVector3(System.String)">
+            <summary>
+Get the value with the given name from the settings file and convert it to a Vector3.
+The 3 float values can be seperated by space or by a comma ',' .
+</summary>
+            <param name="OptionName">The name of the value to look for.</param>
+        </member>
+        <member name="M:GTA.SettingsFile.GetValueVector3(System.String,System.String)">
+            <summary>
+Get the value with the given name from the settings file and convert it to a Vector3.
+The 3 float values can be seperated by space or by a comma ',' .
+</summary>
+            <param name="Category">The category of the value to look for. (without the []-brackets)</param>
+            <param name="OptionName">The name of the value to look for.</param>
+        </member>
+        <member name="M:GTA.SettingsFile.GetValueVector3(System.String,System.String,GTA.Vector3)">
+            <summary>
+Get the value with the given name from the settings file and convert it to a Vector3.
+The 3 float values can be seperated by space or by a comma ',' .
+</summary>
+            <param name="Category">The category of the value to look for. (without the []-brackets)</param>
+            <param name="OptionName">The name of the value to look for.</param>
+            <param name="DefaultValue">Is returned when the value is not found or invalid.</param>
+        </member>
+        <member name="M:GTA.SettingsFile.GetValueNames">
+            <summary>
+Get the names of all values in the default category.
+</summary>
+        </member>
+        <member name="M:GTA.SettingsFile.GetValueNames(System.String)">
+            <summary>
+Get the names of all values in this category.
+</summary>
+        </member>
+        <member name="M:GTA.SettingsFile.GetCategoryNames">
+            <summary>
+Get the names of all categories.
+</summary>
+        </member>
+        <member name="M:GTA.SettingsFile.Load">
+            <summary>
+Load the settings file again. In is automatically loaded on script startup.
+</summary>
+        </member>
+        <member name="P:GTA.SettingsFile.Filename">
+            <summary>
+The setting file has the same filename as the script, just with an 'ini' extension.
+</summary>
+        </member>
         <member name="M:GTA.Timer.Stop">
             <summary>
 Stops the Timer from firing Tick events and freezes the current value of ElapsedTime.
@@ -23,6 +328,102 @@ Any Wait() in your Script will delay the next Tick until after the Wait is finis
         <member name="P:GTA.Timer.ElapsedTime">
             <summary>
 Time elapsed since the last Start. Does not increase when the Timer is stopped.
+</summary>
+        </member>
+        <member name="P:GTA.Euphoria.LeanTowardsObjectHelper.Offset">
+            <summary>
+The offset from the object.
+positive X is right, positive Y is in front, positive Z is on Top 
+</summary>
+        </member>
+        <member name="P:GTA.Euphoria.GrabHelper.Offset4">
+            <summary>
+The Offset from ItemToGrab, that defines the area where to grab. LineGrab uses offsets 1+2, SurfaceGrab uses offsets 1-4.
+</summary>
+        </member>
+        <member name="P:GTA.Euphoria.GrabHelper.Offset3">
+            <summary>
+The Offset from ItemToGrab, that defines the area where to grab. LineGrab uses offsets 1+2, SurfaceGrab uses offsets 1-4.
+</summary>
+        </member>
+        <member name="P:GTA.Euphoria.GrabHelper.Offset2">
+            <summary>
+The Offset from ItemToGrab, that defines the area where to grab. LineGrab uses offsets 1+2, SurfaceGrab uses offsets 1-4.
+</summary>
+        </member>
+        <member name="P:GTA.Euphoria.GrabHelper.Offset1">
+            <summary>
+The Offset from ItemToGrab, that defines the area where to grab. LineGrab uses offsets 1+2, SurfaceGrab uses offsets 1-4.
+</summary>
+        </member>
+        <member name="P:GTA.Euphoria.BeingShotHelper.TimeBeforeCollapse">
+            <summary>
+Time before the ped will collapse, given in seconds.
+</summary>
+        </member>
+        <member name="P:GTA.Euphoria.BeingShotHelper.TimeBeforeReachForWound">
+            <summary>
+Time before the ped will reach for the wound, given in seconds.
+</summary>
+        </member>
+        <member name="M:GTA.Euphoria.CustomHelper.Start">
+            <summary>
+Start the Euphoria animation. It will run up to a maximum of 65 seconds, or until the first previous Euphoria animation ends. Previous Euphoria animations will NOT be disabled.
+</summary>
+        </member>
+        <member name="M:GTA.Euphoria.CustomHelper.Start(System.Int32)">
+            <summary>
+Start the Euphoria animation. Maximum duration is 65535 milliseconds. Calling this will disable previous Euphoria animations.
+</summary>
+        </member>
+        <member name="M:GTA.Euphoria.CustomMessage.SendTo(GTA.Ped)">
+            <summary>
+Start the Euphoria animation. It will run up to a maximum of 65 seconds, or until the first previous Euphoria animation ends. Previous Euphoria animations will NOT be disabled.
+</summary>
+        </member>
+        <member name="M:GTA.Euphoria.CustomMessage.SendTo(GTA.Ped,System.Int32)">
+            <summary>
+Start the Euphoria animation. Maximum duration is 65535 milliseconds. Calling this will disable previous Euphoria animations.
+</summary>
+        </member>
+        <member name="M:GTA.Euphoria.BaseMessage.SetValue(GTA.Euphoria.nmString,GTA.Vector3)">
+            <summary>
+For directional vectors: positive X is right, positive Y is front, positive Z is Top 
+</summary>
+        </member>
+        <member name="M:GTA.value.PedComponent.ChangeIfValid(System.Int32,System.Int32)">
+            <summary>
+Changes ModelIndex and TextureIndex at the same time. Will do nothing when a given index is invalid.
+</summary>
+        </member>
+        <member name="M:GTA.value.PedComponent.Change(System.Int32,System.Int32)">
+            <summary>
+Changes ModelIndex and TextureIndex at the same time. May throw an ArgumentOutOfRangeException when a given index is invalid.
+</summary>
+        </member>
+        <member name="M:GTA.value.PedComponent.isValid(System.Int32,System.Int32)">
+            <summary>
+Returns whether or not the given model and texture index combination is valid.
+</summary>
+        </member>
+        <member name="P:GTA.value.PedComponent.TextureIndex">
+            <summary>
+Gets or sets the index of the texture for the currently selected component model. (Value range: 0 to AvailableTextures-1)
+</summary>
+        </member>
+        <member name="P:GTA.value.PedComponent.ModelIndex">
+            <summary>
+Gets or sets the index of the model for this component. Changing it will reset the TextureIndex to 0! (Value range: 0 to AvailableModels-1)
+</summary>
+        </member>
+        <member name="P:GTA.value.PedComponent.AvailableTextures">
+            <summary>
+Returns the number of available textures for the currently selected component model.
+</summary>
+        </member>
+        <member name="P:GTA.value.PedComponent.AvailableModels">
+            <summary>
+Returns the number of available models for the component.
 </summary>
         </member>
         <member name="M:GTA.Vector4.Equals(GTA.Vector4@,GTA.Vector4@)">
@@ -318,95 +719,14 @@ Defines a four component vector.
 </summary>
             <unmanaged>D3DXVECTOR4</unmanaged>
         </member>
-        <member name="M:GTA.value.Resources.GetTexture(System.String)">
+        <member name="P:GTA.Group.SeparationRange">
             <summary>
-Returns a Texture contained as an embedded resource file in the script
+The distance at which members leave the group automatically (in meters/yard). Default is 75.
 </summary>
         </member>
-        <member name="M:GTA.value.Resources.GetText(System.String)">
+        <member name="M:GTA.Native.Pointer.ToInputParameter">
             <summary>
-Returns the text of an embedded resource file included in the script
-</summary>
-        </member>
-        <member name="M:GTA.value.Resources.GetText(System.String,System.Text.Encoding)">
-            <summary>
-Returns the text of an embedded resource file included in the script
-</summary>
-        </member>
-        <member name="M:GTA.value.Resources.GetData(System.String)">
-            <summary>
-Returns the data of an embedded resource file included in the script
-</summary>
-        </member>
-        <member name="M:GTA.Garage.GetVehiclesInside">
-            <summary>
-Returns all vehicles inside the garage. SLOW! Use isVehicleInside istead if possible!
-</summary>
-        </member>
-        <member name="P:GTA.Euphoria.LeanTowardsObjectHelper.Offset">
-            <summary>
-The offset from the object.
-positive X is right, positive Y is in front, positive Z is on Top 
-</summary>
-        </member>
-        <member name="P:GTA.Euphoria.GrabHelper.Offset4">
-            <summary>
-The Offset from ItemToGrab, that defines the area where to grab. LineGrab uses offsets 1+2, SurfaceGrab uses offsets 1-4.
-</summary>
-        </member>
-        <member name="P:GTA.Euphoria.GrabHelper.Offset3">
-            <summary>
-The Offset from ItemToGrab, that defines the area where to grab. LineGrab uses offsets 1+2, SurfaceGrab uses offsets 1-4.
-</summary>
-        </member>
-        <member name="P:GTA.Euphoria.GrabHelper.Offset2">
-            <summary>
-The Offset from ItemToGrab, that defines the area where to grab. LineGrab uses offsets 1+2, SurfaceGrab uses offsets 1-4.
-</summary>
-        </member>
-        <member name="P:GTA.Euphoria.GrabHelper.Offset1">
-            <summary>
-The Offset from ItemToGrab, that defines the area where to grab. LineGrab uses offsets 1+2, SurfaceGrab uses offsets 1-4.
-</summary>
-        </member>
-        <member name="P:GTA.Euphoria.BeingShotHelper.TimeBeforeCollapse">
-            <summary>
-Time before the ped will collapse, given in seconds.
-</summary>
-        </member>
-        <member name="P:GTA.Euphoria.BeingShotHelper.TimeBeforeReachForWound">
-            <summary>
-Time before the ped will reach for the wound, given in seconds.
-</summary>
-        </member>
-        <member name="M:GTA.Euphoria.CustomHelper.Start">
-            <summary>
-Start the Euphoria animation. It will run up to a maximum of 65 seconds, or until the first previous Euphoria animation ends. Previous Euphoria animations will NOT be disabled.
-</summary>
-        </member>
-        <member name="M:GTA.Euphoria.CustomHelper.Start(System.Int32)">
-            <summary>
-Start the Euphoria animation. Maximum duration is 65535 milliseconds. Calling this will disable previous Euphoria animations.
-</summary>
-        </member>
-        <member name="M:GTA.Euphoria.CustomMessage.SendTo(GTA.Ped)">
-            <summary>
-Start the Euphoria animation. It will run up to a maximum of 65 seconds, or until the first previous Euphoria animation ends. Previous Euphoria animations will NOT be disabled.
-</summary>
-        </member>
-        <member name="M:GTA.Euphoria.CustomMessage.SendTo(GTA.Ped,System.Int32)">
-            <summary>
-Start the Euphoria animation. Maximum duration is 65535 milliseconds. Calling this will disable previous Euphoria animations.
-</summary>
-        </member>
-        <member name="M:GTA.Euphoria.BaseMessage.SetValue(GTA.Euphoria.nmString,GTA.Vector3)">
-            <summary>
-For directional vectors: positive X is right, positive Y is front, positive Z is Top 
-</summary>
-        </member>
-        <member name="T:GTA.TaskSequence">
-            <summary>
-TaskSequences are used to arrange several Tasks into a sequence.
+Unpoints the pointer and returns it as a usual parameter that is NOT a poitner anymore.
 </summary>
         </member>
         <member name="P:GTA.DecisionMaker.WeaponAccuracy">
@@ -469,44 +789,168 @@ Not sure what it does or which values it takes. Common values are 0, 1 and 2.
 Not sure which values it takes. 2 is a common value and means most likely "more cautious than normal".
 </summary>
         </member>
-        <member name="M:GTA.value.PedComponent.ChangeIfValid(System.Int32,System.Int32)">
+        <member name="M:GTA.Game.Exists(GTA.base.Object)">
             <summary>
-Changes ModelIndex and TextureIndex at the same time. Will do nothing when a given index is invalid.
+Returns whether the given object still exists in game.
 </summary>
         </member>
-        <member name="M:GTA.value.PedComponent.Change(System.Int32,System.Int32)">
+        <member name="T:GTA.TaskSequence">
             <summary>
-Changes ModelIndex and TextureIndex at the same time. May throw an ArgumentOutOfRangeException when a given index is invalid.
+TaskSequences are used to arrange several Tasks into a sequence.
 </summary>
         </member>
-        <member name="M:GTA.value.PedComponent.isValid(System.Int32,System.Int32)">
+        <member name="M:GTA.Graphics.DrawLine(System.Drawing.PointF,System.Drawing.PointF,System.Single,System.Drawing.Color)">
             <summary>
-Returns whether or not the given model and texture index combination is valid.
+Draws a colored line.
 </summary>
         </member>
-        <member name="P:GTA.value.PedComponent.TextureIndex">
+        <member name="M:GTA.Graphics.DrawLine(System.Single,System.Single,System.Single,System.Single,System.Single,System.Drawing.Color)">
             <summary>
-Gets or sets the index of the texture for the currently selected component model. (Value range: 0 to AvailableTextures-1)
+Draws a colored line.
 </summary>
         </member>
-        <member name="P:GTA.value.PedComponent.ModelIndex">
+        <member name="M:GTA.Graphics.DrawRectangle(System.Single,System.Single,System.Single,System.Single,System.Drawing.Color)">
             <summary>
-Gets or sets the index of the model for this component. Changing it will reset the TextureIndex to 0! (Value range: 0 to AvailableModels-1)
+Draws a colored Rectangle.
 </summary>
         </member>
-        <member name="P:GTA.value.PedComponent.AvailableTextures">
+        <member name="M:GTA.Graphics.DrawRectangle(System.Drawing.RectangleF,System.Drawing.Color)">
             <summary>
-Returns the number of available textures for the currently selected component model.
+Draws a colored Rectangle.
 </summary>
         </member>
-        <member name="P:GTA.value.PedComponent.AvailableModels">
+        <member name="M:GTA.Direct3D.NewTextureInternal(System.Byte[],GTA.ImageInformation@)">
             <summary>
-Returns the number of available models for the component.
+Creates a new Direct3D Font and returns the pointer. LOCAL ONLY!
 </summary>
         </member>
-        <member name="M:GTA.Native.Pointer.ToInputParameter">
+        <member name="M:GTA.Direct3D.NewFontInternal(System.Int32,System.Int32,System.Int32,System.Int32,System.Boolean,System.Int32,System.Int32,System.Int32,System.Int32,System.String)">
             <summary>
-Unpoints the pointer and returns it as a usual parameter that is NOT a poitner anymore.
+Creates a new Direct3D Font and returns the pointer. LOCAL ONLY!
+</summary>
+        </member>
+        <member name="M:GTA.Direct3D.AddNewObject(GTA.base.iD3DObject)">
+            <summary>
+Adds a new Direct3D object to the ObjectCache and returns the ID.
+</summary>
+        </member>
+        <member name="M:GTA.World.SetDoorState(GTA.Model,GTA.Vector3,System.Boolean,System.Single)">
+            <summary>
+Sets the state of the closest door with the given model.
+</summary>
+            <param name="DoorModel">Model of the nearby door to open.</param>
+            <param name="NearbyPosition">A position close to the door.</param>
+            <param name="Locked">The door cannot be moved when locked.</param>
+            <param name="Angle">The current door angle. 0 is closed, 1 is open, -1 is open to the other direction.</param>
+        </member>
+        <member name="M:GTA.World.GetAllObjects">
+            <summary>
+Returns all currently existing objects. VERY SLOW! Also includes mission objects!
+Make sure to check every returned Object with Exists() before using it!
+</summary>
+        </member>
+        <member name="M:GTA.World.GetAllObjects(GTA.Model)">
+            <summary>
+Returns all currently existing objects of one model. VERY SLOW! Also includes mission objects!
+Make sure to check every returned Object with Exists() before using it!
+</summary>
+        </member>
+        <member name="M:GTA.World.GetAllVehicles">
+            <summary>
+Returns all currently existing vehicles. SLOW! Also includes player and mission vehicles!
+Make sure to check every returned Vehicle with Exists() before using it!
+</summary>
+        </member>
+        <member name="M:GTA.World.GetAllVehicles(GTA.Model)">
+            <summary>
+Returns all currently existing vehicles of one model. Slow, but very reliable! Also includes player and mission vehicles!
+Make sure to check every returned Vehicle with Exists() before using it!
+</summary>
+        </member>
+        <member name="M:GTA.World.GetVehicles(GTA.Vector3,System.Single)">
+            <summary>
+Returns all vehicles in the given area. Slow, but very reliable! Also includes player and mission vehicles!
+</summary>
+        </member>
+        <member name="M:GTA.World.GetVehicles(GTA.Vector3,System.Single,GTA.Model)">
+            <summary>
+Returns all vehicles of one model in the given area. Slow, but very reliable! Also includes player and mission vehicles!
+</summary>
+        </member>
+        <member name="M:GTA.World.GetAllPeds">
+            <summary>
+Returns all currently existing peds. SLOW! Also includes players, mission peds and vehicle passengers!
+Make sure to check every returned Ped with Exists() before using it!
+</summary>
+        </member>
+        <member name="M:GTA.World.GetAllPeds(GTA.Model)">
+            <summary>
+Returns all currently existing peds of one model. Slow, but very reliable! Also includes players, mission peds and vehicle passengers!
+Make sure to check every returned Ped with Exists() before using it!
+</summary>
+        </member>
+        <member name="M:GTA.World.GetPeds(GTA.Vector3,System.Single)">
+            <summary>
+Returns all peds in the given area. Slow, but very reliable! Also includes players, mission peds and vehicle passengers!
+</summary>
+        </member>
+        <member name="M:GTA.World.GetPeds(GTA.Vector3,System.Single,System.Int32)">
+            <summary>
+Returns all peds in the given area. Slow, but very reliable! Also includes players, mission peds and vehicle passengers!
+</summary>
+        </member>
+        <member name="P:GTA.World.PedDensity">
+            <summary>
+Sets the ped density. 1.0 is default, 2.0 is twice as much as normal, etc.
+</summary>
+        </member>
+        <member name="P:GTA.World.CarDensity">
+            <summary>
+Sets the car density. 1.0 is default, 2.0 is twice as much as normal, etc.
+</summary>
+        </member>
+        <member name="M:GTA.World.DrawLight(GTA.Vector3,System.Drawing.Color,System.Single,System.Single)">
+            <summary>
+Draws a 3D Light at the given position.
+</summary>
+            <param name="Intensity">Light Intensity. 50 is a common value.</param>
+        </member>
+        <member name="M:GTA.World.DrawCheckpoint(GTA.Vector3,System.Single,System.Drawing.Color)">
+            <summary>
+Draws a 3D Checkpoint at the given position.
+</summary>
+        </member>
+        <member name="P:GTA.Script.GeneralInfo">
+            <summary>
+The general info is shown by the 'ScriptHelp' console command, together with all available console commands.
+</summary>
+        </member>
+        <member name="P:GTA.Script.GUID">
+            <summary>
+The GUID is used to uniquely idetify your script. With it you are able to communicate between scripts.
+DO NOT use the same GUID for multiple scripts!
+If you want to get a new GUID for your script, just google "generate guid" to find an online generator.
+</summary>
+        </member>
+        <member name="E:GTA.Script.PerFrameDrawing">
+            <summary>
+Will run every Frame. Use ONLY for drawing functions! Do NOT call Wait() here!
+</summary>
+        </member>
+        <member name="P:GTA.Script.Resources">
+            <summary>
+Allows access to resources embedded in the script
+</summary>
+        </member>
+        <member name="P:GTA.Script.Settings">
+            <summary>
+Access the settings file of the script.
+It has the same filename as the script, just with an 'ini' extension.
+</summary>
+        </member>
+        <member name="T:GTA.RemoteScriptDomain">
+            <summary>
+Factory class to create objects exposing IRemoteInterface
 </summary>
         </member>
         <member name="M:GTA.Vehicle.GetOffset(GTA.Vector3)">
@@ -589,268 +1033,9 @@ Gets or sets the rotation of the vehicle. X is pitch, Y is roll, Z is yaw.
 Can be slightly off. Use RotationQuaternion if it should be perfectly accurate.
 </summary>
         </member>
-        <member name="M:GTA.SettingsFile.GetValueModel(System.String)">
-            <summary>
-Get a value with the given name from the settings file and convert is to a model.
-The model may be given as modelname, integer or hex value.
-</summary>
-            <param name="OptionName">The name of the value to look for.</param>
-        </member>
-        <member name="M:GTA.SettingsFile.GetValueModel(System.String,System.String)">
-            <summary>
-Get a value with the given name from the settings file and convert is to a model.
-The model may be given as modelname, integer or hex value.
-</summary>
-            <param name="Category">The category of the value to look for. (without the []-brackets)</param>
-            <param name="OptionName">The name of the value to look for.</param>
-        </member>
-        <member name="M:GTA.SettingsFile.GetValueModel(System.String,GTA.Model)">
-            <summary>
-Get a value with the given name from the settings file and convert is to a model.
-The model may be given as modelname, integer or hex value.
-</summary>
-            <param name="OptionName">The name of the value to look for.</param>
-            <param name="DefaultValue">Is returned when the value is not found or invalid.</param>
-        </member>
-        <member name="M:GTA.SettingsFile.GetValueModel(System.String,System.String,GTA.Model)">
-            <summary>
-Get a value with the given name from the settings file and convert is to a model.
-The model may be given as modelname, integer or hex value.
-</summary>
-            <param name="Category">The category of the value to look for. (without the []-brackets)</param>
-            <param name="OptionName">The name of the value to look for.</param>
-            <param name="DefaultValue">Is returned when the value is not found or invalid.</param>
-        </member>
-        <member name="M:GTA.SettingsFile.GetValueKey(System.String,System.Windows.Forms.Keys)">
-            <summary>
-Get a value with the given name from the settings file and convert is to a key.
-The key may be given as the key's name or as keycode.
-</summary>
-            <param name="OptionName">The name of the value to look for.</param>
-            <param name="DefaultValue">Is returned when the value is not found or invalid.</param>
-        </member>
-        <member name="M:GTA.SettingsFile.GetValueKey(System.String,System.String,System.Windows.Forms.Keys)">
-            <summary>
-Get a value with the given name from the settings file and convert is to a key.
-The key may be given as the key's name or as keycode.
-</summary>
-            <param name="Category">The category of the value to look for. (without the []-brackets)</param>
-            <param name="OptionName">The name of the value to look for.</param>
-            <param name="DefaultValue">Is returned when the value is not found or invalid.</param>
-        </member>
-        <member name="M:GTA.SettingsFile.GetValueString(System.String)">
-            <summary>
-Get a string value with the given name from the settings file.
-</summary>
-            <param name="OptionName">The name of the value to look for.</param>
-        </member>
-        <member name="M:GTA.SettingsFile.GetValueString(System.String,System.String)">
-            <summary>
-Get a string value with the given name from the settings file.
-</summary>
-            <param name="Category">The category of the value to look for. (without the []-brackets)</param>
-            <param name="OptionName">The name of the value to look for.</param>
-        </member>
-        <member name="M:GTA.SettingsFile.GetValueString(System.String,System.String,System.String)">
-            <summary>
-Get a string value with the given name and category from the settings file.
-</summary>
-            <param name="Category">The category of the value to look for. (without the []-brackets)</param>
-            <param name="OptionName">The name of the value to look for.</param>
-            <param name="DefaultValue">Is returned when the value is not found or invalid.</param>
-        </member>
-        <member name="M:GTA.SettingsFile.GetValueInteger(System.String,System.Int32)">
-            <summary>
-Get an integer value with the given name from the settings file.
-</summary>
-            <param name="OptionName">The name of the value to look for.</param>
-            <param name="DefaultValue">Is returned when the value is not found or invalid.</param>
-        </member>
-        <member name="M:GTA.SettingsFile.GetValueInteger(System.String,System.String,System.Int32)">
-            <summary>
-Get an integer value with the given name from the settings file.
-</summary>
-            <param name="Category">The category of the value to look for. (without the []-brackets)</param>
-            <param name="OptionName">The name of the value to look for.</param>
-            <param name="DefaultValue">Is returned when the value is not found or invalid.</param>
-        </member>
-        <member name="M:GTA.SettingsFile.GetValueFloat(System.String,System.Single)">
-            <summary>
-Get a float value with the given name from the settings file.
-</summary>
-            <param name="OptionName">The name of the value to look for.</param>
-            <param name="DefaultValue">Is returned when the value is not found or invalid.</param>
-        </member>
-        <member name="M:GTA.SettingsFile.GetValueFloat(System.String,System.String,System.Single)">
-            <summary>
-Get a float value with the given name from the settings file.
-</summary>
-            <param name="Category">The category of the value to look for. (without the []-brackets)</param>
-            <param name="OptionName">The name of the value to look for.</param>
-            <param name="DefaultValue">Is returned when the value is not found or invalid.</param>
-        </member>
-        <member name="M:GTA.SettingsFile.GetValueBool(System.String,System.Boolean)">
-            <summary>
-Get a boolean value with the given name from the settings file.
-INI values that return true: true, yes, on, 1.
-INI values that return false: false, no, off, 0.
-</summary>
-            <param name="OptionName">The name of the value to look for.</param>
-            <param name="DefaultValue">Is returned when the value is not found or invalid.</param>
-        </member>
-        <member name="M:GTA.SettingsFile.GetValueBool(System.String,System.String,System.Boolean)">
-            <summary>
-Get a boolean value with the given name from the settings file.
-INI values that return true: true, yes, on, 1.
-INI values that return false: false, no, off, 0.
-</summary>
-            <param name="Category">The category of the value to look for. (without the []-brackets)</param>
-            <param name="OptionName">The name of the value to look for.</param>
-            <param name="DefaultValue">Is returned when the value is not found or invalid.</param>
-        </member>
-        <member name="M:GTA.SettingsFile.GetValueVector3(System.String)">
-            <summary>
-Get the value with the given name from the settings file and convert it to a Vector3.
-The 3 float values can be seperated by space or by a comma ',' .
-</summary>
-            <param name="OptionName">The name of the value to look for.</param>
-        </member>
-        <member name="M:GTA.SettingsFile.GetValueVector3(System.String,System.String)">
-            <summary>
-Get the value with the given name from the settings file and convert it to a Vector3.
-The 3 float values can be seperated by space or by a comma ',' .
-</summary>
-            <param name="Category">The category of the value to look for. (without the []-brackets)</param>
-            <param name="OptionName">The name of the value to look for.</param>
-        </member>
-        <member name="M:GTA.SettingsFile.GetValueVector3(System.String,System.String,GTA.Vector3)">
-            <summary>
-Get the value with the given name from the settings file and convert it to a Vector3.
-The 3 float values can be seperated by space or by a comma ',' .
-</summary>
-            <param name="Category">The category of the value to look for. (without the []-brackets)</param>
-            <param name="OptionName">The name of the value to look for.</param>
-            <param name="DefaultValue">Is returned when the value is not found or invalid.</param>
-        </member>
-        <member name="M:GTA.SettingsFile.GetValueNames">
-            <summary>
-Get the names of all values in the default category.
-</summary>
-        </member>
-        <member name="M:GTA.SettingsFile.GetValueNames(System.String)">
-            <summary>
-Get the names of all values in this category.
-</summary>
-        </member>
-        <member name="M:GTA.SettingsFile.GetCategoryNames">
-            <summary>
-Get the names of all categories.
-</summary>
-        </member>
-        <member name="M:GTA.SettingsFile.Load">
-            <summary>
-Load the settings file again. In is automatically loaded on script startup.
-</summary>
-        </member>
-        <member name="P:GTA.SettingsFile.Filename">
-            <summary>
-The setting file has the same filename as the script, just with an 'ini' extension.
-</summary>
-        </member>
         <member name="P:GTA.Pickup.CurrentRoom">
             <summary>
 Gets or sets the interior room the pickup currently is at. It needs to be set correctly for the pickup to be visible inside the room.
-</summary>
-        </member>
-        <member name="M:GTA.Object.GetOffsetPosition(GTA.Vector3)">
-            <summary>
-Returns the given offset in world coordinates.
-Directions: positive X is right, positive Y is front, positive Z is Top 
-</summary>
-        </member>
-        <member name="M:GTA.Object.ApplyForceRelative(GTA.Vector3)">
-            <summary>
-Applies a force that is relative to the current orientation of the object.
-Directions: positive X is right, positive Y is front, positive Z is Top 
-</summary>
-        </member>
-        <member name="M:GTA.Object.ApplyForceRelative(GTA.Vector3,GTA.Vector3)">
-            <summary>
-Applies a force that is relative to the current orientation of the object.
-Directions: positive X is right, positive Y is front, positive Z is Top 
-</summary>
-        </member>
-        <member name="M:GTA.Object.ApplyForce(GTA.Vector3)">
-            <summary>
-Applies a force given in world coordinates to the object.
-</summary>
-        </member>
-        <member name="M:GTA.Object.ApplyForce(GTA.Vector3,GTA.Vector3)">
-            <summary>
-Applies a force given in world coordinates to the object.
-</summary>
-        </member>
-        <member name="P:GTA.Object.CurrentRoom">
-            <summary>
-Gets or sets the interior room the object currently is at. It needs to be set correctly for the object to be visible inside the room.
-</summary>
-        </member>
-        <member name="P:GTA.Group.SeparationRange">
-            <summary>
-The distance at which members leave the group automatically (in meters/yard). Default is 75.
-</summary>
-        </member>
-        <member name="M:GTA.Blip.GetAttachedItem">
-            <summary>
-Returns the item the Blip is attached to or Nothing/Null if it isn't attached to an item.
-</summary>
-        </member>
-        <member name="P:GTA.Script.GeneralInfo">
-            <summary>
-The general info is shown by the 'ScriptHelp' console command, together with all available console commands.
-</summary>
-        </member>
-        <member name="P:GTA.Script.GUID">
-            <summary>
-The GUID is used to uniquely idetify your script. With it you are able to communicate between scripts.
-DO NOT use the same GUID for multiple scripts!
-If you want to get a new GUID for your script, just google "generate guid" to find an online generator.
-</summary>
-        </member>
-        <member name="E:GTA.Script.PerFrameDrawing">
-            <summary>
-Will run every Frame. Use ONLY for drawing functions! Do NOT call Wait() here!
-</summary>
-        </member>
-        <member name="P:GTA.Script.Resources">
-            <summary>
-Allows access to resources embedded in the script
-</summary>
-        </member>
-        <member name="P:GTA.Script.Settings">
-            <summary>
-Access the settings file of the script.
-It has the same filename as the script, just with an 'ini' extension.
-</summary>
-        </member>
-        <member name="M:GTA.Graphics.DrawLine(System.Drawing.PointF,System.Drawing.PointF,System.Single,System.Drawing.Color)">
-            <summary>
-Draws a colored line.
-</summary>
-        </member>
-        <member name="M:GTA.Graphics.DrawLine(System.Single,System.Single,System.Single,System.Single,System.Single,System.Drawing.Color)">
-            <summary>
-Draws a colored line.
-</summary>
-        </member>
-        <member name="M:GTA.Graphics.DrawRectangle(System.Single,System.Single,System.Single,System.Single,System.Drawing.Color)">
-            <summary>
-Draws a colored Rectangle.
-</summary>
-        </member>
-        <member name="M:GTA.Graphics.DrawRectangle(System.Drawing.RectangleF,System.Drawing.Color)">
-            <summary>
-Draws a colored Rectangle.
 </summary>
         </member>
         <member name="M:GTA.Ped.GetOffsetPosition(GTA.Vector3)">
@@ -948,227 +1133,42 @@ Applies a force given in world coordinates to the ped.
 Gets or sets the interior room the ped currently is at. It needs to be set correctly for the ped to be visible inside the room.
 </summary>
         </member>
-        <member name="M:GTA.World.SetDoorState(GTA.Model,GTA.Vector3,System.Boolean,System.Single)">
+        <member name="M:GTA.Object.GetOffsetPosition(GTA.Vector3)">
             <summary>
-Sets the state of the closest door with the given model.
-</summary>
-            <param name="DoorModel">Model of the nearby door to open.</param>
-            <param name="NearbyPosition">A position close to the door.</param>
-            <param name="Locked">The door cannot be moved when locked.</param>
-            <param name="Angle">The current door angle. 0 is closed, 1 is open, -1 is open to the other direction.</param>
-        </member>
-        <member name="M:GTA.World.GetAllObjects">
-            <summary>
-Returns all currently existing objects. VERY SLOW! Also includes mission objects!
-Make sure to check every returned Object with Exists() before using it!
+Returns the given offset in world coordinates.
+Directions: positive X is right, positive Y is front, positive Z is Top 
 </summary>
         </member>
-        <member name="M:GTA.World.GetAllObjects(GTA.Model)">
+        <member name="M:GTA.Object.ApplyForceRelative(GTA.Vector3)">
             <summary>
-Returns all currently existing objects of one model. VERY SLOW! Also includes mission objects!
-Make sure to check every returned Object with Exists() before using it!
+Applies a force that is relative to the current orientation of the object.
+Directions: positive X is right, positive Y is front, positive Z is Top 
 </summary>
         </member>
-        <member name="M:GTA.World.GetAllVehicles">
+        <member name="M:GTA.Object.ApplyForceRelative(GTA.Vector3,GTA.Vector3)">
             <summary>
-Returns all currently existing vehicles. SLOW! Also includes player and mission vehicles!
-Make sure to check every returned Vehicle with Exists() before using it!
+Applies a force that is relative to the current orientation of the object.
+Directions: positive X is right, positive Y is front, positive Z is Top 
 </summary>
         </member>
-        <member name="M:GTA.World.GetAllVehicles(GTA.Model)">
+        <member name="M:GTA.Object.ApplyForce(GTA.Vector3)">
             <summary>
-Returns all currently existing vehicles of one model. Slow, but very reliable! Also includes player and mission vehicles!
-Make sure to check every returned Vehicle with Exists() before using it!
+Applies a force given in world coordinates to the object.
 </summary>
         </member>
-        <member name="M:GTA.World.GetVehicles(GTA.Vector3,System.Single)">
+        <member name="M:GTA.Object.ApplyForce(GTA.Vector3,GTA.Vector3)">
             <summary>
-Returns all vehicles in the given area. Slow, but very reliable! Also includes player and mission vehicles!
+Applies a force given in world coordinates to the object.
 </summary>
         </member>
-        <member name="M:GTA.World.GetVehicles(GTA.Vector3,System.Single,GTA.Model)">
+        <member name="P:GTA.Object.CurrentRoom">
             <summary>
-Returns all vehicles of one model in the given area. Slow, but very reliable! Also includes player and mission vehicles!
+Gets or sets the interior room the object currently is at. It needs to be set correctly for the object to be visible inside the room.
 </summary>
         </member>
-        <member name="M:GTA.World.GetAllPeds">
+        <member name="M:GTA.Blip.GetAttachedItem">
             <summary>
-Returns all currently existing peds. SLOW! Also includes players, mission peds and vehicle passengers!
-Make sure to check every returned Ped with Exists() before using it!
-</summary>
-        </member>
-        <member name="M:GTA.World.GetAllPeds(GTA.Model)">
-            <summary>
-Returns all currently existing peds of one model. Slow, but very reliable! Also includes players, mission peds and vehicle passengers!
-Make sure to check every returned Ped with Exists() before using it!
-</summary>
-        </member>
-        <member name="M:GTA.World.GetPeds(GTA.Vector3,System.Single)">
-            <summary>
-Returns all peds in the given area. Slow, but very reliable! Also includes players, mission peds and vehicle passengers!
-</summary>
-        </member>
-        <member name="M:GTA.World.GetPeds(GTA.Vector3,System.Single,System.Int32)">
-            <summary>
-Returns all peds in the given area. Slow, but very reliable! Also includes players, mission peds and vehicle passengers!
-</summary>
-        </member>
-        <member name="P:GTA.World.PedDensity">
-            <summary>
-Sets the ped density. 1.0 is default, 2.0 is twice as much as normal, etc.
-</summary>
-        </member>
-        <member name="P:GTA.World.CarDensity">
-            <summary>
-Sets the car density. 1.0 is default, 2.0 is twice as much as normal, etc.
-</summary>
-        </member>
-        <member name="M:GTA.World.DrawLight(GTA.Vector3,System.Drawing.Color,System.Single,System.Single)">
-            <summary>
-Draws a 3D Light at the given position.
-</summary>
-            <param name="Intensity">Light Intensity. 50 is a common value.</param>
-        </member>
-        <member name="M:GTA.World.DrawCheckpoint(GTA.Vector3,System.Single,System.Drawing.Color)">
-            <summary>
-Draws a 3D Checkpoint at the given position.
-</summary>
-        </member>
-        <member name="M:GTA.Game.Exists(GTA.base.Object)">
-            <summary>
-Returns whether the given object still exists in game.
-</summary>
-        </member>
-        <member name="M:GTA.Viewport.Equals(GTA.Viewport@,GTA.Viewport@)">
-            <summary>
-Returns a value indicating whether the two viewports are equivalent.
-</summary>
-            <param name="value1">The first value to compare.</param>
-            <param name="value2">The second value to compare.</param>
-            <returns>
-                <c>true</c> if <paramref name="value1" /> has the same value as <paramref name="value2" />; otherwise, <c>false</c>.</returns>
-        </member>
-        <member name="M:GTA.Viewport.Equals(GTA.Viewport)">
-            <summary>
-Returns a value indicating whether this instance is equal to the specified object.
-</summary>
-            <param name="other">A <see cref="T:GTA.Viewport" /> to compare with this instance.</param>
-            <returns>
-                <c>true</c> if <paramref name="other" /> has the same value as this instance; otherwise, <c>false</c>.</returns>
-        </member>
-        <member name="M:GTA.Viewport.Equals(System.Object)">
-            <summary>
-Returns a value indicating whether this instance is equal to the specified object.
-</summary>
-            <param name="obj">An object to compare with this instance.</param>
-            <returns>
-                <c>true</c> if <paramref name="obj" /> has the same value as this instance; otherwise, <c>false</c>.</returns>
-        </member>
-        <member name="M:GTA.Viewport.GetHashCode">
-            <summary>
-Returns the hash code for this instance.
-</summary>
-            <returns>A 32-bit signed integer hash code.</returns>
-        </member>
-        <member name="M:GTA.Viewport.ToString">
-            <summary>
-Converts the value of the viewport to its equivalent string representation.
-</summary>
-            <returns>The string representation of the value of this instance.</returns>
-        </member>
-        <member name="M:GTA.Viewport.op_Inequality(GTA.Viewport,GTA.Viewport)">
-            <summary>
-Tests for inequality between two viewports.
-</summary>
-            <param name="left">The first value to compare.</param>
-            <param name="right">The second value to compare.</param>
-            <returns>
-                <c>true</c> if <paramref name="left" /> has a different value than <paramref name="right" />; otherwise, <c>false</c>.</returns>
-        </member>
-        <member name="M:GTA.Viewport.op_Equality(GTA.Viewport,GTA.Viewport)">
-            <summary>
-Tests for equality between two viewports.
-</summary>
-            <param name="left">The first value to compare.</param>
-            <param name="right">The second value to compare.</param>
-            <returns>
-                <c>true</c> if <paramref name="left" /> has the same value as <paramref name="right" />; otherwise, <c>false</c>.</returns>
-        </member>
-        <member name="M:GTA.Viewport.#ctor(System.Int32,System.Int32,System.Int32,System.Int32,System.Single,System.Single)">
-            <summary>
-Initializes a new instance of the <see cref="T:GTA.Viewport" /> structure.
-</summary>
-            <param name="x">The X coordinate of the viewport.</param>
-            <param name="y">The Y coordinate of the viewport.</param>
-            <param name="width">The width of the viewport.</param>
-            <param name="height">The height of the viewport.</param>
-            <param name="minZ">The minimum Z distance of the viewport.</param>
-            <param name="maxZ">The maximum Z distance of the viewport.</param>
-        </member>
-        <member name="M:GTA.Viewport.#ctor(System.Int32,System.Int32,System.Int32,System.Int32)">
-            <summary>
-Initializes a new instance of the <see cref="T:GTA.Viewport" /> structure.
-</summary>
-            <param name="x">The X coordinate of the viewport.</param>
-            <param name="y">The Y coordinate of the viewport.</param>
-            <param name="width">The width of the viewport.</param>
-            <param name="height">The height of the viewport.</param>
-        </member>
-        <member name="P:GTA.Viewport.MaxZ">
-            <summary>
-Gets or sets the viewport's maximum Z depth.
-</summary>
-        </member>
-        <member name="P:GTA.Viewport.MinZ">
-            <summary>
-Gets or sets the viewport's minimum Z depth.
-</summary>
-        </member>
-        <member name="P:GTA.Viewport.Height">
-            <summary>
-Gets or sets the viewport's height.
-</summary>
-        </member>
-        <member name="P:GTA.Viewport.Width">
-            <summary>
-Gets or sets the viewport's width.
-</summary>
-        </member>
-        <member name="P:GTA.Viewport.Y">
-            <summary>
-Gets or sets the viewport's Y position.
-</summary>
-        </member>
-        <member name="P:GTA.Viewport.X">
-            <summary>
-Gets or sets the viewport's X position.
-</summary>
-        </member>
-        <member name="T:GTA.Viewport">
-            <summary>
-Defines a rectangular region of a render-target surface onto which 
-a 3D rendering is projected.
-</summary>
-            <unmanaged>D3DVIEWPORT9</unmanaged>
-        </member>
-        <member name="T:GTA.RemoteScriptDomain">
-            <summary>
-Factory class to create objects exposing IRemoteInterface
-</summary>
-        </member>
-        <member name="M:GTA.Direct3D.NewTextureInternal(System.Byte[],GTA.ImageInformation@)">
-            <summary>
-Creates a new Direct3D Font and returns the pointer. LOCAL ONLY!
-</summary>
-        </member>
-        <member name="M:GTA.Direct3D.NewFontInternal(System.Int32,System.Int32,System.Int32,System.Int32,System.Boolean,System.Int32,System.Int32,System.Int32,System.Int32,System.String)">
-            <summary>
-Creates a new Direct3D Font and returns the pointer. LOCAL ONLY!
-</summary>
-        </member>
-        <member name="M:GTA.Direct3D.AddNewObject(GTA.base.iD3DObject)">
-            <summary>
-Adds a new Direct3D object to the ObjectCache and returns the ID.
+Returns the item the Blip is attached to or Nothing/Null if it isn't attached to an item.
 </summary>
         </member>
         <member name="P:GTA.Forms.Form.Resources">
