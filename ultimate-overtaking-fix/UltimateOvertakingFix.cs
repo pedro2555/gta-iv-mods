@@ -44,10 +44,9 @@ namespace ultimate_overtaking_fix
                     Function.Call<bool>("IS_CAR_STOPPED", new Parameter[] { Player.Character.CurrentVehicle }))
                 {
                     // Get a vehicle behind the layer vehicle in a 4 meter radius and order it's driver to stand still
-                    var car = World.GetClosestVehicle(Player.Character.CurrentVehicle.GetOffsetPosition(new Vector3(0f, -5f, 0f)), 1f);
+                    var car = World.GetClosestVehicle(Player.Character.CurrentVehicle.GetOffsetPosition(new Vector3(0f, -7f, 0f)), 4f);
                     var carDriver = car.GetPedOnSeat(VehicleSeat.Driver);
-
-                    carDriver.Task.StandStill(10);
+                    carDriver.Task.StandStill(250);
                 }
             }
             catch (Exception E)

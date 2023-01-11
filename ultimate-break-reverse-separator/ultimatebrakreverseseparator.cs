@@ -9,17 +9,19 @@ using AdvancedHookManaged;
 using System.IO;
 using GTA;
 using GTA.Native;
+using System.Linq;
+using System.Collections.Generic;
+using System.Net;
 
 namespace ultimatebreakreverseseparator
 {
-    public partial class MainScript : Script
+    public partial class UltimateBreakReverseSeparator : Script
     {
 
-        public MainScript()
+        public UltimateBreakReverseSeparator()
         {
             base.KeyDown += Main_KeyDown;
             base.Tick += Main_Tick;
-
             Wait(30);
         }
 
@@ -55,6 +57,18 @@ namespace ultimatebreakreverseseparator
 
         private bool RunOnce = true;
         private void Main_Tick(object sender, EventArgs e)
+        {
+            try
+            {
+                ManageCarStop();
+            }
+            catch(Exception ex)
+            {
+                Log(ex.Message, ex.StackTrace, printToConsole: true);
+            }
+        }
+
+        private void ManageCarStop()
         {
             if (Player.Character.isInVehicle())
             {
@@ -146,12 +160,51 @@ namespace ultimatebreakreverseseparator
 
             DidEmergencyStop = !DidEmergencyStop;
 
-            // Log(nameof(Main_KeyDown), $"DidEmergencyStop = {DidEmergencyStop}", true);
+            Log(nameof(Main_KeyDown), $"ForceCarStop called - SET_PLAYER_CONTROL({Player}, {DidEmergencyStop})", true);
+
+            // https://gtaforums.com/topic/456138-disable-auto-reverse/
+            // https://www.google.com/search?q=gta+4+SET_PLAYER_CONTROL&rlz=1C1ONGR_frFR931FR931&oq=gta+4+SET_PLAYER_CONTROL&aqs=chrome..69i57j69i64j69i60l2.1869j0j4&sourceid=chrome&ie=UTF-8
+            // extern void SET_PLAYER_CONTROL_ADVANCED(Player playerIndex, boolean unknown1, boolean unknown2, boolean unknown3); ?? 
 
             Function.Call("SET_PLAYER_CONTROL", Player, DidEmergencyStop);
+            Player.Character.CurrentVehicle.FreezePosition = DidEmergencyStop;
             Function.Call("SET_CAMERA_CONTROLS_DISABLED_WITH_PLAYER_CONTROLS", false);
             Function.Call("SET_EVERYONE_IGNORE_PLAYER", Player, false);
-            
+
+            if (Player.Character.isInVehicle() && Player.Character.CurrentVehicle != null && Player.Character.CurrentVehicle.Exists() &&
+                Player.Character.CurrentVehicle.GetPedOnSeat(VehicleSeat.Driver) == Player.Character &&
+                Function.Call<bool>("IS_CAR_STOPPED", new Parameter[] { Player.Character.CurrentVehicle }))
+            {
+                Log(nameof(Main_KeyDown), $"Ordering vehicle behind player to stand still.", true);
+
+                // Get a vehicle behind the layer vehicle in a 4 meter radius and order it's driver to stand still
+                var closestCar = World.GetClosestVehicle(Player.Character.CurrentVehicle.GetOffsetPosition(new Vector3(0f, -7f, 0f)), 4f);
+                if (closestCar == null) return;
+                var carDriver = closestCar.GetPedOnSeat(VehicleSeat.Driver);
+
+                carDriver.Task.StandStill(250);
+                Log(nameof(Main_KeyDown), $"Ordering vehicle behind player to stand still. Car: {closestCar.Name} Driver: {carDriver.Position}", true);
+
+                //MakeOtherVehiclesMoveAnyway();
+
+
+                //void MakeOtherVehiclesMoveAnyway()
+                //{
+                //    var vehicles = World.GetVehicles(Player.Character.CurrentVehicle.Position, 20);
+                //    Log(nameof(Main_KeyDown), $"Found {vehicles.Count()} cars around the 20 meter radius off the player", true);
+
+                //    var closeCarsExceptVehicleBehind = vehicles.ToList().Except(new List<Vehicle>() { closestCar, Player.Character.CurrentVehicle });
+                //    foreach (var closeCar in closeCarsExceptVehicleBehind)
+                //    {
+                //        if (closeCar == null || !closeCar.Exists()) continue;
+                //        var closeCarDriver = closeCar.GetPedOnSeat(VehicleSeat.Driver);
+                //        if (closeCarDriver == null) continue;
+                //        closeCarDriver.Task.CruiseWithVehicle(Vehicle: closeCar, SpeedMph: 3, ObeyTrafficLaws: true);
+                //        Log(nameof(Main_KeyDown), $"Ordering vehicle to drive at 3 miles per hour. Car: {closeCar.Name} Driver: {closeCarDriver.Position}", true);
+                //    }
+                //}
+            }
+  
         }
 
         #region Helper Methods
@@ -195,7 +248,7 @@ namespace ultimatebreakreverseseparator
             {
                 if (!string.IsNullOrEmpty(message))
                 {
-                    using (StreamWriter streamWriter = File.AppendText(Game.InstallFolder + "\\scripts\\" + nameof(MainScript) + ".log"))
+                    using (StreamWriter streamWriter = File.AppendText(Game.InstallFolder + "\\scripts\\" + nameof(UltimateBreakReverseSeparator) + ".log"))
                     {
                         streamWriter.WriteLine($"[{DateTime.Now:hh:mm:ss.fff}] @ {methodName}: {message}");
                         streamWriter.Flush();
